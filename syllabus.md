@@ -13,7 +13,7 @@ Computer Architecture - Spring 2026
 **Instructor's Office Hours:**
 
   * Chat on Microsoft Teams: Mon-Fri 9:00 AM - 6:00 PM
-  * Physical Office Hours: Mon 1:30 PM - 3:30 PM, Thu 12:30 PM - 2:30 PM @ 5423 Sennott Square
+  * Physical Office Hours: Mon 1:45 -3:45 PM, Thu 12:30 PM - 2:30 PM @ 5423 Sennott Square, or by appointment
 
 **Class GitHub repo:** https://www.github.com/wonsunahn/CS2410_Spring2026
 
