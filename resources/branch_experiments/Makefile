@@ -1,3 +1,5 @@
+# Do 'make' on thompson.cs.pitt.edu
+
 TARGETS = branch
 
 CC = g++

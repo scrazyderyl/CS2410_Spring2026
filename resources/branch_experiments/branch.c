@@ -1,3 +1,8 @@
+/*
+ * Copyright (c) 2026 Wonsun Ahn
+ * All rights reserved.
+ */
+
 #include <algorithm>
 #include <vector>
 #include <iostream>
