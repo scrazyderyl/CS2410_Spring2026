@@ -10,6 +10,8 @@
 #include <stdio.h>
 #include <unistd.h>
 
+const unsigned int PROFILE_ITERATIONS = 1000;
+
 size_t arraySize;
 bool *array;
 bool sorted;
@@ -36,18 +38,19 @@ extern "C" void run() {
     // 1. Tell perf to start (write "enable\n" to fd 3)
     write(3, "enable\n", 7);
 
-    long long sum = 0;
-    for (unsigned c = 0; c < arraySize; ++c)
+    for (unsigned i = 0; i < PROFILE_ITERATIONS; i++)
     {
-	// Profile the branch
-	if (array[c])
-	    sum += data[c];
+	    long long sum = 0;
+	    for (unsigned c = 0; c < arraySize; ++c)
+	    {
+		// Profile the branch
+		if (array[c])
+		    sum += data[c];
+	    }
     }
 
     // 2. Tell perf to stop (write "disable\n" to fd 3)
     write(3, "disable\n", 8);
-
-    printf("sum = %lld\n", sum);
 }
 
 int main(int args, char **argv)

@@ -2,15 +2,16 @@
 
 TARGETS = branch
 
+GNUPLOT = gnuplot
 CC = g++
 COPT = 
 LOPT = 
 TYPES = sort nosort
-SIZES = 100000 1000000
-PERF_DATA := $(foreach type,$(TYPES),$(foreach size, $(SIZES), outputs/$(type).$(size).perf))
+SIZES = 10 100 1000 2000 3000 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 30000 40000 50000 60000 70000 80000 90000 100000
 STAT_DATA := $(foreach type,$(TYPES),$(foreach size, $(SIZES), outputs/$(type).$(size).stat))
+PLOTS := BranchMisprediction.pdf IPC.pdf
 
-all: $(TARGETS) $(STAT_DATA)
+all: $(TARGETS) $(STAT_DATA) $(PLOTS)
 
 build: $(TARGETS)
 
@@ -21,6 +22,18 @@ branch: branch.o
 	$(CC) $(LOPT) $^ -o $@
 
 $(foreach target,$(TARGETS), $(eval $(call link_rules,$(target))))
+
+BranchMisprediction.pdf: BranchMisprediction.dat generate_bp_plot.plt
+	$(GNUPLOT) -e "inputFile='$<'" -e "outputFile='$@'" generate_bp_plot.plt
+
+BranchMisprediction.dat: $(STAT_DATA) generate_bp_plot.py
+	python generate_bp_plot.py -i outputs -o $@
+
+IPC.pdf: IPC.dat generate_ipc_plot.plt
+	$(GNUPLOT) -e "inputFile='$<'" -e "outputFile='$@'" generate_ipc_plot.plt
+
+IPC.dat: $(STAT_DATA) generate_ipc_plot.py
+	python generate_ipc_plot.py -i outputs -o $@
 
 define perf_rules
 outputs/$(1).$(2).perf: $(TARGETS)
@@ -42,4 +55,4 @@ endef
 $(foreach type,$(TYPES),$(foreach size, $(SIZES), $(eval $(call stat_rules,$(type),$(size)))))
 
 clean:
-	rm -f $(TARGETS) $(PERF_DATA) $(STAT_DATA) *.o
+	rm -f $(TARGETS) $(STAT_DATA) *.dat $(PLOTS) *.o
