@@ -45,7 +45,7 @@ extern "C" void run() {
 	    {
 		// Profile the branch
 		if (array[c])
-		    sum += data[c];
+		    sum++;
 	    }
     }
 

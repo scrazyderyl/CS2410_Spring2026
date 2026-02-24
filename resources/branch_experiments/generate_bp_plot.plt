@@ -23,9 +23,5 @@ if (!exists("inputFile")) inputFile='BranchMisprediction.dat'
 if (!exists("outputFile")) outputFile='BranchMisprediction.pdf'
 set output outputFile
 plot inputFile using 1:2 with linespoints linestyle 1 t "nosort", inputFile using 1:3 with linespoints linestyle 2 t "sort"
-#plot inputFile using 1:2 with linespoints linestyle 1 t "nosort", \
-#     ""        using 1:2:(sprintf("%.2f", $2)) with labels offset char 0,1 notitle, \
-#     ""        using 1:3 with linespoints linestyle 2 t "sort", \
-#     ""        using 1:3:(sprintf("%.2f", $3)) with labels offset char 0,1 notitle
 unset out
 

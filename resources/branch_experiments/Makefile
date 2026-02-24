@@ -1,15 +1,15 @@
 # Do 'make' on thompson.cs.pitt.edu
 
-TARGETS = branch
+TARGETS = branch branch.s
 
 GNUPLOT = gnuplot
 CC = g++
-COPT = 
-LOPT = 
+COPT = -O0
+LOPT = -O0
 TYPES = sort nosort
 SIZES = 10 100 1000 2000 3000 4000 5000 6000 7000 8000 9000 10000 11000 12000 13000 14000 15000 16000 17000 18000 19000 20000 30000 40000 50000 60000 70000 80000 90000 100000
 STAT_DATA := $(foreach type,$(TYPES),$(foreach size, $(SIZES), outputs/$(type).$(size).stat))
-PLOTS := BranchMisprediction.pdf IPC.pdf
+PLOTS := BranchMispredictionRate.pdf IPC.pdf
 
 all: $(TARGETS) $(STAT_DATA) $(PLOTS)
 
@@ -21,12 +21,15 @@ build: $(TARGETS)
 branch: branch.o
 	$(CC) $(LOPT) $^ -o $@
 
+branch.s: branch.c
+	$(CC) -S -g -fverbose-asm -Wa,-adhln $< | c++filt > $@
+
 $(foreach target,$(TARGETS), $(eval $(call link_rules,$(target))))
 
-BranchMisprediction.pdf: BranchMisprediction.dat generate_bp_plot.plt
+BranchMispredictionRate.pdf: BranchMispredictionRate.dat generate_bp_plot.plt
 	$(GNUPLOT) -e "inputFile='$<'" -e "outputFile='$@'" generate_bp_plot.plt
 
-BranchMisprediction.dat: $(STAT_DATA) generate_bp_plot.py
+BranchMispredictionRate.dat: $(STAT_DATA) generate_bp_plot.py
 	python generate_bp_plot.py -i outputs -o $@
 
 IPC.pdf: IPC.dat generate_ipc_plot.plt
