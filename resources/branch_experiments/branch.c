@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-const unsigned int PROFILE_ITERATIONS = 1000;
+unsigned int PROFILE_ITERATIONS = 100000000;
 
 size_t arraySize;
 bool *array;
@@ -37,6 +37,9 @@ extern "C" void create() {
 extern "C" void run() {
     // 1. Tell perf to start (write "enable\n" to fd 3)
     write(3, "enable\n", 7);
+
+    // Adjust so that the total number of profiled iterations is constant regardless of array size
+    PROFILE_ITERATIONS /= arraySize;
 
     for (unsigned i = 0; i < PROFILE_ITERATIONS; i++)
     {

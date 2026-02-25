@@ -13,7 +13,7 @@ def getIPC(reportRoot, target, size):
   if f==0:
     return 0
 
-  rate = 0
+  ipc = 0
   while True:
     l = f.readline()
     if "insn per cycle" in l:

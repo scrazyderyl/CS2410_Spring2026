@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include <unistd.h>
 
-const unsigned int PROFILE_ITERATIONS = 1000;
+const unsigned int PROFILE_ITERATIONS = 100000;
 const unsigned int ARRAY_SIZE = 1000;
 
 int modulus = 1;
