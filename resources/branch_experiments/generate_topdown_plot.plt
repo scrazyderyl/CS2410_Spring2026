@@ -18,6 +18,7 @@ set y2range [ * : * ] noreverse writeback
 set cbrange [ * : * ] noreverse writeback
 set rrange [ * : * ] noreverse writeback
 set key outside top right
+set xtics rotate by -45
 
 # Render plot
 set terminal pdf transparent enhanced font "arial,10" fontscale 5.0 size 45, 30
