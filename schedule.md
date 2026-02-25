@@ -57,7 +57,7 @@ CS 2410 Computer Architecture
 
 ## WEEK 10 (Week of 16 MAR)
 
-* Class 1: Paper Discussion / Homework 3 Review
+* Class 1: Paper Discussion / Midterm 1 Review
 
 * Class 2: Midterm 1
 
