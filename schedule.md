@@ -41,13 +41,13 @@ CS 2410 Computer Architecture
 
 * Class 1: Superscalars
 
-* Class 2: Exceptions
+* Class 2: Superscalars (cont'd)
 
 ## WEEK 8 (Week of 2 MAR)
 
-* Class 1: Multithreading
+* Class 1: Exceptions / Misprediction Recovery
 
-* Class 2: Midterm 1 
+* Class 2: Multithreading 
 
 ## WEEK 9 (Week of 9 MAR)
 
@@ -57,13 +57,13 @@ CS 2410 Computer Architecture
 
 ## WEEK 10 (Week of 16 MAR)
 
-* Class 1: The Memory Hierarchy and Midterm 1 discussion
+* Class 1: Paper Discussion / Homework 3 Review
 
-* Class 2: The Memory Hierarchy (cont'd)
+* Class 2: Midterm 1
 
 ## WEEK 11 (Week of 23 MAR)
 
-* Class 1: Introduction to caches
+* Class 1: The Memory Hierarchy / Introduction to caches
 
 * Class 2: Temporal vs. spatial Locality / Cold vs. capacity misses
 
