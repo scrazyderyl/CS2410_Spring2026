@@ -44,7 +44,7 @@ def main():
     elif opt in ("-o", "--outputFile"):
        fileName = arg
 
-  sizes = ["10", "100", "1000", "10000", "100000"]
+  sizes = ["10", "100", "200", "300", "400", "500", "600", "700", "800", "900", "1000", "10000", "100000"]
 
   f = open(fileName,"w")
   f.write("%10s " % "#Modulus")
