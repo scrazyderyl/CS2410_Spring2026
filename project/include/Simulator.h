@@ -9,38 +9,39 @@
 #include <sys/types.h>
 #include <vector>
 
-#ifndef RV32SIM_SIMULATOR_H
-#	define RV32SIM_SIMULATOR_H
+#include "Config.h"
+#include "json.hpp"
+using namespace nlohmann::literals;
 
-#	define MAX_MEM_SIZE 1024
-#	define NUM_PHYS_REG 32
+#ifndef SIMULATOR_H
+#define SIMULATOR_H
 
-struct config
-{
-	int NF; // Issue Width
-	int NI; // Instruction Queue Size
-	int NW; // Number of Instructions Executable
-	int NR; // Reorder Buffer Size
-	int NB; // Number of Common Data Buses (CDB)
-};
+#define MAX_MEM_SIZE 1024
+#define NUM_PHYS_REG 32
+#define NUM_PHYS_REG_INCLUDING_X0 NUM_PHYS_REG + 1 // We will use the last register as a "dummy" register to represent the value of X0, which is always 0
 
-enum debugArg
+enum DebugArg
 {
 	DEBUG_DCACHE,
 	DEBUG_REGISTERS
 };
 
-struct virtualRegister
+struct ArchitecturalRegister
 {
 	enum
 	{
-		R,
+		X,
 		F
 	} type;
 	int32_t num;
+
+	bool operator<(const ArchitecturalRegister& o) const
+	{
+		return (type < o.type) || (type == o.type && num < o.num);
+	}
 };
 
-struct registerFileEntry
+struct RegisterFileEntry
 {
 	double value;
 };
@@ -51,7 +52,7 @@ public:
 	/**
 	 * @brief Simulator Configuration
 	 */
-	struct config configuration;
+	Config *configuration;
 
 	/**
 	 * @brief Data Memory ($D Cache)
@@ -64,8 +65,8 @@ public:
 	 * @note This is a map of physical register number -> value
 	 * @note For bookkeeping, we also store the ROB number and whether the register is busy
 	 */
-	registerFileEntry registerFile[NUM_PHYS_REG];
-	std::map<virtualRegister, int> registerMapTable;
+	RegisterFileEntry registerFile[NUM_PHYS_REG_INCLUDING_X0];
+	std::map<ArchitecturalRegister, int> registerMapTable;
 
 	// *PUBLIC --------------------
 	/**
@@ -73,17 +74,23 @@ public:
 	 * @param program Pointer to ifstream object containing the program
 	 * @param c Configuration struct
 	 */
-	Simulator(std::ifstream* program, struct config c);
+	Simulator(std::ifstream* program, Config *c);
 
 	/**
 	 * @brief Debugging function
 	 * @param argc Number of arguments excluding argc
-	 * @param ... Variable arguments - see enum debugArg
+	 * @param ... Variable arguments - see enum DebugArg
 	 * 
-	 * @example this->debug(1, DEBUG_ALL);
+	 * @example this->dump(1, DEBUG_ALL);
 	 */
 	void dump(int argc...);
 	void printStats();
+
+	/**
+	 * @brief Serialize the simulator state to a JSON file
+	 * @param output Pointer to ofstream object where the serialized data is written
+	 */
+	void serializeJSON(std::ofstream* output);
 };
 
-#endif // RV32SIM_SIMULATOR_H
+#endif // SIMULATOR_H
