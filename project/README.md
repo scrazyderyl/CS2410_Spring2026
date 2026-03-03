@@ -27,16 +27,18 @@ Please refer to the [Project.pdf](Project.pdf) file for detailed instructions.
 
 ## Environment Setup
 
-The project is setup to run with the g++ compiler (GNU C++ compiler) and a
-Make build system.  This system is already in place on the departmental
-Linux machine (thoth.cs.pitt.edu).  If you have a similar setup on your
-local computer, please feel free to use your machine for development.
-Otherwise, you need to log in to thoth.cs.pitt.edu which may involve some
-setup.  Note that you need to be on Pitt VPN to connect to thompson.cs.pitt.edu
-off-campus (instructions at
+The project is setup to run with the g++ compiler (GNU C++ compiler) and a Make
+build system.  This system is already in place on the departmental Linux
+machine (thompson.cs.pitt.edu) and on the Codespace Devcontainer.  If you have
+a similar setup on your local computer, please feel free to use your machine
+for development (you can view the [packages installed in the
+Devcontainer](.devcontainer/Dockerfile) to see what setup you need).
+
+If you choose to use the departmental machine, note that you need to be on Pitt
+VPN to connect to thompson.cs.pitt.edu (instructions at
 https://www.technology.pitt.edu/services/pittnet-vpn-pulse-secure).
 
-Assuming you are on the Pitt network, here are the steps you need to take:
+Here are the steps you need to take:
 
 1. Most OSes (Windows, MacOS, Linux) comes with built-in SSH clients accessible using this simple command on your commandline shell:
    ```
@@ -58,6 +60,16 @@ on GitHub has been deprecated on August 2021, so now you have to use something
 called a Personal Authenication Token (PAT) in place of the password.  Here are
 instructions on how to create a PAT:
 https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
+
+Alternatively, you can choose to you
+[Codespacea](https://docs.github.com/en/codespaces).  You do not have to worry
+about billing since you will be using my educational credits if you create
+codespaces from the github classroom repository you fork off using the above
+link.  If you haven't used Codespaces before, The only thing is that you have
+to be careful of is that the codespace will be garbage collected after 30 days
+of inactivity (it uses cloud storage after all).  You will get a warning email
+to the email connected with your github account.  So, it is a good habit to
+regularly commit and push any changes to the central repository.
 
 ## Directory Structure and Makefile Script
 
