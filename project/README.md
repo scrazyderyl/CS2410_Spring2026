@@ -57,16 +57,16 @@ Here are the steps you need to take:
    This will ask for your Username and Password.  Username is your GitHub
 account username, but Password is not your password.  Password authentication
 on GitHub has been deprecated on August 2021, so now you have to use something
-called a Personal Authenication Token (PAT) in place of the password.  Here are
+called a Personal Authentication Token (PAT) in place of the password.  Here are
 instructions on how to create a PAT:
 https://docs.github.com/en/github/authenticating-to-github/keeping-your-account-and-data-secure/creating-a-personal-access-token
 
-Alternatively, you can choose to you
-[Codespacea](https://docs.github.com/en/codespaces).  You do not have to worry
+Alternatively, you can choose to use 
+[Codespaces](https://docs.github.com/en/codespaces).  You do not have to worry
 about billing since you will be using my educational credits if you create
-codespaces from the github classroom repository you fork off using the above
+Codespaces from the github classroom repository you fork off using the above
 link.  If you haven't used Codespaces before, The only thing is that you have
-to be careful of is that the codespace will be garbage collected after 30 days
+to be careful of is that the Codespace will be garbage collected after 30 days
 of inactivity (it uses cloud storage after all).  You will get a warning email
 to the email connected with your github account.  So, it is a good habit to
 regularly commit and push any changes to the central repository.
