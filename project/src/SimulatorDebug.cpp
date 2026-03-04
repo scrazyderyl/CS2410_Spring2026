@@ -4,23 +4,23 @@
 #include <iostream>
 
 template <typename T>
-void printElement(T t, const int& width)
+void printElement(T t, const int &width)
 {
 	std::cout << std::left << std::setw(width) << std::setfill(' ') << t;
 }
 
-void dumpDataMemory(double* dataMemory)
+void dumpDataMemory(double *dataMemory)
 {
 	std::cout << "Data Cache\n";
 	std::cout << "\tAddress\tValue" << std::endl;
-	for(int i = 0; i < MAX_MEM_SIZE - 1; i++)
+	for (int i = 0; i < MAX_MEM_SIZE - 1; i++)
 	{
-		if(dataMemory[i] != 0)
+		if (dataMemory[i] != 0)
 			std::cout << "\t" << i << ":\t" << (int)dataMemory[i] << "\n";
 	}
 }
 
-void dumpRegisters(registerFileEntry* registers, std::map<virtualRegister, int> registerMapTable)
+void dumpRegisters(RegisterFileEntry *registers, std::map<ArchitecturalRegister, int> registerMapTable)
 {
 
 	std::cout
@@ -29,15 +29,22 @@ void dumpRegisters(registerFileEntry* registers, std::map<virtualRegister, int> 
 		   "register with value = 0."
 		<< std::endl;
 
-	for(auto& v : registerMapTable)
+	for (auto &v : registerMapTable)
 	{
-		switch(v.first.type)
+		switch (v.first.type)
 		{
-		case virtualRegister::R:
-			std::cout << "\tR" << v.first.num << " -> $" << v.second << " = "
-					  << registers[v.second].value << std::endl;
+		case ArchitecturalRegister::X:
+			if (v.first.num != 0)
+			{
+				std::cout << "\tX" << v.first.num << " -> $" << v.second << " = "
+						  << registers[v.second].value << std::endl;
+			}
+			else
+			{
+				assert(v.second == NUM_PHYS_REG); // Architectural register X0 should always be mapped to the last physical register, which has value 0.
+			}
 			break;
-		case virtualRegister::F:
+		case ArchitecturalRegister::F:
 			std::cout << "\tF" << v.first.num << " -> $" << v.second << " = "
 					  << registers[v.second].value << std::endl;
 			break;
@@ -46,7 +53,7 @@ void dumpRegisters(registerFileEntry* registers, std::map<virtualRegister, int> 
 	std::cout << "=========Physical Registers=========" << std::endl;
 	std::cout << "\tRegister ,  Value" << std::endl;
 	std::cout << std::boolalpha;
-	for(int i = 0; i < NUM_PHYS_REG; i++)
+	for (int i = 0; i < NUM_PHYS_REG; i++)
 	{
 		std::cout << "\t";
 		printElement(i, 10);
@@ -64,11 +71,11 @@ void Simulator::dump(int argc...)
 {
 	va_list args;
 	va_start(args, argc);
-	while(argc > 0)
+	while (argc > 0)
 	{
 		argc--;
-		enum debugArg arg = (enum debugArg)va_arg(args, int);
-		switch(arg)
+		enum DebugArg arg = (enum DebugArg)va_arg(args, int);
+		switch (arg)
 		{
 		case DEBUG_DCACHE:
 			dumpDataMemory(this->dataMemory);
