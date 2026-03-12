@@ -65,7 +65,7 @@ CS 2410 Computer Architecture
     2. Click on assignment "Midterm 1" on GradeScope (will appear at start of class).
     3. Click on the "Start Assignment" button.  There will be a count down timer on the top right once you start.
     4. Finish and submit the exam within 75 minutes.  You can submit multiple times.
-  * Exam is open book (Lecture slides, notes, textbook, exercises and deliverables).  All materials have to be on paper.
+  * Exam is open book (Lecture slides, notes, textbook, homework).  All materials have to be on paper.
   * You should have only GradeScope on your laptop screen at all times.
     * No internet access.  No generative AI.
   * Feel free to try out "Sample GradeScope Exam (For Practice)" on GradeScope to get used to the UI of a GradeScope exam.
