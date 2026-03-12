@@ -66,8 +66,10 @@ CS 2410 Computer Architecture
     3. Click on the "Start Assignment" button.  There will be a count down timer on the top right once you start.
     4. Finish and submit the exam within 75 minutes.  You can submit multiple times.
   * Exam is open book (Lecture slides, notes, textbook, exercises and deliverables).  All materials have to be on paper.
-  * No internet access.  No generative AI.
   * You should have only GradeScope on your laptop screen at all times.
+    * No internet access.  No generative AI.
+  * Feel free to try out "Sample GradeScope Exam (For Practice)" on GradeScope to get used to the UI of a GradeScope exam.
+    * FYI, the content is not about computer architecture.  Please refer to past homework and lecture notes to prepare.
 
 ## WEEK 11 (Week of 23 MAR)
 
