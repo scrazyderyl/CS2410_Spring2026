@@ -1,0 +1,11 @@
+outputs/
+resources/branch_experiments/*.pdf
+resources/branch_experiments/*.dat
+resources/branch_experiments/*.o
+resources/branch_experiments/*.s
+resources/branch_experiments/branch
+resources/ipc_experiments/*.pdf
+resources/ipc_experiments/*.dat
+resources/ipc_experiments/*.o
+resources/ipc_experiments/*.s
+resources/ipc_experiments/ipc
