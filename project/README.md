@@ -1,9 +1,13 @@
-- [CS 2410 - Computer Architecture](#cs-1541---introduction-to-computer-architecture)
+- [CS 2410 - Computer Architecture](#cs-2410---computer-architecture)
 - [Introduction](#introduction)
   * [Description](#description)
 - [Building and Running](#building-and-running)
   * [Environment Setup](#environment-setup)
   * [Directory Structure and Makefile Script](#directory-structure-and-makefile-script)
+  * [Debugging](#debugging)
+    + [VSCode Debugger](#vscode-debugger)
+    + [Google Address Sanitizer](#google-address-sanitizer)
+    + [Logging](#logging)
 
 # CS 2410 - Computer Architecture
 Spring Semester 2026 - Project
@@ -136,3 +140,44 @@ If you wish to remove all files generated from your build, invoke the "clean" ta
 make clean
 ```
 
+## Debugging
+
+Here are some suggestions for debugging your simulator.
+
+### VSCode Debugger
+
+You can use the VSCode debugger to run the simulator in debug mode.  If you
+have never used the VSCode debugger before, here is a tutorial:
+https://code.visualstudio.com/docs/debugtest/debugging.
+
+You can change the debugger launch configurations by editing the
+[launch.json](.vscode/launch.json) file.  Currently it is configured to run the
+2-wide.cfg configuration on the prog-noloop.dat program.
+
+You can use the standard debugging techniques such as setting break points,
+stepping through code, and watching values of variables and expressions.
+
+
+### Google Address Sanitizer
+
+You might have noticed that the Makefile passes the "-fsanitize=address" flag
+to gcc when you compile the program.  What this flag does is to instrument your
+binary with memory access checking code so that whenever you have an illegal
+memory access or memory leak it throws an exception, much like how Java throws
+an exception on an illegal access.  It is meant to help you and make C++
+programming feel more like Java programming, as the biggest headache with C/C++
+programming often is memory management.
+
+This instrumentation pass and associated library is called the Gooogle Address
+Sanitizer (ASAN).  You can read more about it here:
+https://github.com/google/sanitizers/wiki/addresssanitize.
+
+The expectation is that your simulator has no memory errors when submitted.  If
+it does, then it is going to be a very flaky simulator that is unusable.
+
+### Logging
+
+You will benefit from having logging functions that output internal state of
+the CPU so that you can view what is happening at each cycle.  Writing these
+logging functions is a part of writing a good simulator.  Ideally, you can
+enable logging by passing a command line flag.
