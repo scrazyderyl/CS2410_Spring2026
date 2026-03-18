@@ -170,7 +170,7 @@ programming often is memory management.
 
 This instrumentation pass and associated library is called the Gooogle Address
 Sanitizer (ASAN).  You can read more about it here:
-https://github.com/google/sanitizers/wiki/addresssanitize.
+https://github.com/google/sanitizers/wiki/addresssanitizer.
 
 The expectation is that your simulator has no memory errors when submitted.  If
 it does, then it is going to be a very flaky simulator that is unusable.
