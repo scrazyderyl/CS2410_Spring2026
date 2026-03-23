@@ -9,3 +9,4 @@ resources/ipc_experiments/*.dat
 resources/ipc_experiments/*.o
 resources/ipc_experiments/*.s
 resources/ipc_experiments/ipc
+.DS_Store
