@@ -4,8 +4,8 @@ TARGETS = ipc ipc.s
 
 GNUPLOT = gnuplot
 CC = g++
-COPT = -O0
-LOPT = -O0
+COPT = -O3
+LOPT = -O3
 TYPES = ipc
 SIZES = 1 2 3 4 5 6 7 8 9
 STAT_DATA := $(foreach type,$(TYPES),$(foreach size, $(SIZES), outputs/$(type).$(size).stat))
