@@ -7,20 +7,19 @@ GNUPLOT = gnuplot
 CC = g++
 COPT = -O3
 LOPT = -O3
-SIZES = 100 200 300 400 500 600 700 800 900 1000 2000 3000 4000 5000 6000 7000 8000 9000 10000 50000 100000 500000 1000000 5000000 10000000
+SIZES = 200 400 600 800 1000 2000 4000 6000 8000 10000 20000 40000 60000 80000 100000 200000 400000 600000 800000 1000000 2000000 4000000 6000000 8000000 10000000
 STAT_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(target).$(size).stat))
 TOPDOWN_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(target).$(size).topdown))
 TOPDOWN_PLOTS := $(foreach target,$(TARGETS), plots/Topdown.$(target).pdf)
 MEMSTALLS_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(target).$(size).memstalls))
 MEMSTALLS_PLOTS := $(foreach target,$(TARGETS), plots/MemStalls.$(target).pdf)
 CACHE_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(target).$(size).cache))
-CACHE_PLOTS := $(foreach target,$(TARGETS), plots/CacheStats.$(target).pdf)
+CACHE_PLOTS := $(foreach target,$(TARGETS), plots/CacheStatsIncludingKernel.$(target).pdf)
 CACHE_USERSPACE_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(target).$(size).ucache))
-CACHE_USERSPACE_PLOTS := $(foreach target,$(TARGETS), plots/CacheUserSpaceStats.$(target).pdf)
-#PLOTS := plots/IPC.pdf $(TOPDOWN_PLOTS) $(MEMSTALLS_PLOTS) $(CACHE_PLOTS)
-PLOTS := plots/IPC.pdf $(MEMSTALLS_PLOTS) $(CACHE_PLOTS) $(CACHE_USERSPACE_PLOTS)
+CACHE_USERSPACE_PLOTS := $(foreach target,$(TARGETS), plots/CacheStats.$(target).pdf)
+PLOTS := plots/IPC.pdf $(TOPDOWN_PLOTS) $(MEMSTALLS_PLOTS) $(CACHE_USERSPACE_PLOTS)
 
-.PRECIOUS: $(STAT_DATA) $(TOPDOWN_DATA) $(MEMSTALLS_DATA) $(CACHE_DATA) $(CACHE_USERSPACE_DATA)
+.PRECIOUS: $(STAT_DATA) $(TOPDOWN_DATA) $(MEMSTALLS_DATA) $(CACHE_USERSPACE_DATA)
 
 all: $(TARGETS) $(ASSEMBLIES) $(PLOTS)
 
@@ -37,28 +36,28 @@ build: $(TARGETS)
 
 $(foreach target,$(TARGETS), $(eval $(call link_rules,$(target))))
 
-plots/IPC.pdf: plots/IPC.dat generate_ipc_plot.plt
+plots/IPC.pdf: data/IPC.dat generate_ipc_plot.plt
 	$(GNUPLOT) -e "inputFile='$<'" -e "outputFile='$@'" generate_ipc_plot.plt
 
-plots/IPC.dat: $(STAT_DATA) generate_ipc_plot.py
+data/IPC.dat: $(STAT_DATA) generate_ipc_plot.py
 	python generate_ipc_plot.py -i outputs -o $@
 
 define plot_rules
-plots/Topdown.$(1).pdf: plots/Topdown.$(1).dat generate_topdown_plot.plt
+plots/Topdown.$(1).pdf: data/Topdown.$(1).dat generate_topdown_plot.plt
 	$(GNUPLOT) -e "inputFile='$$<'" -e "outputFile='$$@'" generate_topdown_plot.plt
-plots/Topdown.$(1).dat: $(TOPDOWN_DATA) generate_topdown_plot.py
+data/Topdown.$(1).dat: $(TOPDOWN_DATA) generate_topdown_plot.py
 	python generate_topdown_plot.py -t $(1) -i outputs -o $$@
-plots/MemStalls.$(1).pdf: plots/MemStalls.$(1).dat generate_memstalls_plot.plt
+plots/MemStalls.$(1).pdf: data/MemStalls.$(1).dat generate_memstalls_plot.plt
 	$(GNUPLOT) -e "inputFile='$$<'" -e "outputFile='$$@'" generate_memstalls_plot.plt
-plots/MemStalls.$(1).dat: $(MEMSTALLS_DATA) generate_memstalls_plot.py
+data/MemStalls.$(1).dat: $(MEMSTALLS_DATA) generate_memstalls_plot.py
 	python generate_memstalls_plot.py -t $(1) -i outputs -o $$@
-plots/CacheStats.$(1).pdf: plots/CacheStats.$(1).dat generate_cachestats_plot.plt
+plots/CacheStatsIncludingKernel.$(1).pdf: data/CacheStatsIncludingKernel.$(1).dat generate_cachestats_plot.plt
 	$(GNUPLOT) -e "inputFile='$$<'" -e "outputFile='$$@'" generate_cachestats_plot.plt
-plots/CacheStats.$(1).dat: $(CACHE_DATA) generate_cachestats_plot.py
+data/CacheStatsIncludingKernel.$(1).dat: $(CACHE_DATA) generate_cachestats_plot.py
 	python generate_cachestats_plot.py -t $(1) -e cache -i outputs -o $$@
-plots/CacheUserSpaceStats.$(1).pdf: plots/CacheUserSpaceStats.$(1).dat generate_cachestats_plot.plt
+plots/CacheStats.$(1).pdf: data/CacheStats.$(1).dat generate_cachestats_plot.plt
 	$(GNUPLOT) -e "inputFile='$$<'" -e "outputFile='$$@'" generate_cachestats_plot.plt
-plots/CacheUserSpaceStats.$(1).dat: $(CACHE_USERSPACE_DATA) generate_cachestats_plot.py
+data/CacheStats.$(1).dat: $(CACHE_USERSPACE_DATA) generate_cachestats_plot.py
 	python generate_cachestats_plot.py -t $(1) -e ucache -i outputs -o $$@
 endef
 $(foreach target,$(TARGETS), $(eval $(call plot_rules,$(target))))
@@ -66,7 +65,7 @@ $(foreach target,$(TARGETS), $(eval $(call plot_rules,$(target))))
 define stat_rules
 outputs/$(1).$(2).stat: $(TARGETS)
 	mkfifo perf_ctl
-	perf stat -D -1 --control fd:3 -e cycles,instructions ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
+	perf stat -D -1 --control fd:3 -e cycles:u,instructions:u ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
 	rm -f perf_ctl
 outputs/$(1).$(2).topdown: $(TARGETS)
 	mkfifo perf_ctl
@@ -74,7 +73,7 @@ outputs/$(1).$(2).topdown: $(TARGETS)
 	rm -f perf_ctl
 outputs/$(1).$(2).memstalls: $(1)
 	mkfifo perf_ctl
-	perf stat -D -1 --control fd:3 -M tma_memory_bound,tma_l1_bound,tma_l2_bound,tma_l3_bound,tma_dram_bound,tma_store_bound -a ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
+	perf stat -D -1 --control fd:3 -e cycles:u,cycle_activity.stalls_mem_any:u,cycle_activity.stalls_l1d_miss:u,cycle_activity.stalls_l2_miss:u,cycle_activity.stalls_l3_miss:u -a ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
 	rm -f perf_ctl
 outputs/$(1).$(2).cache: $(1)
 	mkfifo perf_ctl
@@ -88,4 +87,4 @@ endef
 $(foreach target,$(TARGETS),$(foreach size, $(SIZES), $(eval $(call stat_rules,$(target),$(size)))))
 
 clean:
-	rm -f $(TARGETS) $(ASSEMBLIES) $(STAT_DATA) $(TOPDOWN_DATA) $(MEMSTALLS_DATA) $(CACHE_DATA) $(CACHE_USERSPACE_DATA) plots/*.dat $(PLOTS) *.o perf_ctl
+	rm -f $(TARGETS) $(ASSEMBLIES) $(STAT_DATA) $(TOPDOWN_DATA) $(MEMSTALLS_DATA) $(CACHE_DATA) $(CACHE_USERSPACE_DATA) data/*.dat $(PLOTS) *.o perf_ctl

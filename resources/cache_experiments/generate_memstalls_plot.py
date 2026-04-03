@@ -16,12 +16,6 @@ def getPercentage(reportRoot, target, size):
   global drambound
   global storebound
 
-  l1bound = 0
-  l2bound = 0
-  l3bound = 0
-  drambound = 0
-  storebound = 0
-
   fileList = glob.glob(reportRoot + "/" + target + "." + size + ".memstalls")
   assert len(fileList) == 1
   fileName = fileList[0]
@@ -32,31 +26,32 @@ def getPercentage(reportRoot, target, size):
 
   while True:
     l = f.readline()
-    if "tma_l1_bound" in l:
-      cols = l.split("#")
-      cols = cols[1].split("%")
-      l1bound = float(cols[0])
-    if "tma_l2_bound" in l:
-      cols = l.split("#")
-      cols = cols[1].split("%")
-      l2bound = float(cols[0])
-    if "tma_l3_bound" in l:
-      cols = l.split("#")
-      cols = cols[1].split("%")
-      l3bound = float(cols[0])
-    if "tma_dram_bound" in l:
-      cols = l.split("#")
-      cols = cols[1].split("%")
-      drambound = float(cols[0])
-    if "tma_store_bound" in l:
-      cols = l.split("#")
-      cols = cols[1].split("%")
-      storebound = float(cols[0])
+    if "cycles:u" in l:
+      cols = l.split()
+      cycles = float(cols[0].replace(",", ""))
+    if "cycle_activity.stalls_mem_any:u" in l:
+      cols = l.split()
+      stalls_mem_any = float(cols[0].replace(",", ""))
+    if "cycle_activity.stalls_l1d_miss:u" in l:
+      cols = l.split()
+      stalls_l1d_miss = float(cols[0].replace(",", ""))
+    if "cycle_activity.stalls_l2_miss:u" in l:
+      cols = l.split()
+      stalls_l2_miss = float(cols[0].replace(",", ""))
+    if "cycle_activity.stalls_l3_miss:u" in l:
+      cols = l.split()
+      stalls_l3_miss = float(cols[0].replace(",", ""))
     if len(l)==0:
       break
   f.close
 
-  # print ("target = %s, size = %s, l3misses = %f, l2misses = %f, l1misses=%f " % (target, size, l3misses, l2misses, l1misses))
+  l1bound = 100 * (stalls_mem_any - stalls_l1d_miss) / cycles
+  l2bound = 100 * (stalls_l1d_miss - stalls_l2_miss) / cycles
+  l3bound = 100 * (stalls_l2_miss - stalls_l3_miss) / cycles
+  drambound = 100 * stalls_l3_miss / cycles
+
+  # print ("target = %s, size = %s, cycles = %f" % (target, size, cycles))
+
   return
 
 def main():
@@ -84,12 +79,12 @@ def main():
 
   f = open(fileName,"w")
   f.write("%10s " % "#Elements")
-  f.write("%10s %10s %10s %10s %10s" % ("L1Bound", "L2Bound", "L3Bound", "DRAMBound", "StoreBound"))
+  f.write("%10s %10s %10s %10s" % ("L1Bound", "L2Bound", "L3Bound", "DRAMBound"))
   f.write('\n')
   for size in sizes:
     f.write("%10s " % size)
     getPercentage(reportRoot, target, size)
-    f.write("%10.2f %10.2f %10.2f %10.2f %10.2f" % (l1bound, l2bound, l3bound, drambound, storebound))
+    f.write("%10.2f %10.2f %10.2f %10.2f" % (l1bound, l2bound, l3bound, drambound))
     f.write('\n')
   f.close
 

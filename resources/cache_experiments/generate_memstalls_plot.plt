@@ -13,7 +13,7 @@ set boxwidth 0.8 relative
 set style fill solid 1.0 border -1
 set xrange [ * : * ] noreverse writeback
 set x2range [ * : * ] noreverse writeback
-set yrange [ * : * ] noreverse writeback
+set yrange [ 0 : 100 ] noreverse writeback
 set y2range [ * : * ] noreverse writeback
 set cbrange [ * : * ] noreverse writeback
 set rrange [ * : * ] noreverse writeback
@@ -30,7 +30,6 @@ set output outputFile
 plot inputFile using 2 t "L1 Bound", \
      '' using 3 t "L2 Bound", \
      '' using 4 t "L3 Bound", \
-     '' using 5 t "DRAM Bound", \
-     '' using 6:xticlabels(1) t "Store Bound"
+     '' using 5:xticlabels(1) t "DRAM Bound"
 unset out
 
