@@ -9,7 +9,7 @@
 // Define a linked list node type with no data
 typedef struct node {
   struct node* next;    // 8 bytes
-  int data[30];         // 120 bytes
+  int data[14];         // 56 bytes
 } node_t;
 
 
