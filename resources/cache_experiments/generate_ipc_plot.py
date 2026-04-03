@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import os
 import getopt
 import glob
 
@@ -22,6 +23,7 @@ def getIPC(reportRoot, target, size):
       ipc = float(cols[0])
       break
     if len(l)==0:
+      ipc = 0
       break
   f.close
 
@@ -43,10 +45,15 @@ def main():
        fileName = arg
 
   targets = ["array.bin", "array_nodata.bin", "linked-list.bin", "linked-list_nodata.bin"]
-  sizes = ["1", "5", "10", "50", "100", "500", "1000", "5000", "10000", "50000", "100000", "500000", "1000000", "5000000", "10000000"]
+
+  # Get all files for array.bin
+  files = [f for f in os.listdir(reportRoot) if f"array.bin" in f and "stat" in f.split(".")[-1]]
+  # Get all sizes executed for array.bin
+  files.sort(key=lambda k: int(k.split('.')[2], 0) )
+  sizes = [ f.split('.')[2] for f in files ]
 
   f = open(fileName,"w")
-  f.write("%10s " % "#Modulus")
+  f.write("%10s " % "#Elements")
   for target in targets:
     f.write("%10s " % target)
   f.write('\n')

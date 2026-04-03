@@ -4,45 +4,49 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#define ACCESSES 100000000
+#include <vector>
+#include <numeric>
+#include <algorithm>
+#include <random>
+
+#define ACCESSES 10000000
 
 // Define a linked list node type with no data
 typedef struct node {
   struct node* next;    // 8 bytes
-  // no data now
 } node_t;
+
 
 // Keep a pointer to the beginning and end of the list
 int items = 0;
 node_t* head = NULL;
-node_t* last = NULL;
+
+std::vector<int> random_permutation(int length) {
+  std::vector<int> arr(length);
+  std::iota(arr.begin(), arr.end(), 0);  // fill with 0, 1, 2, ..., length
+  std::mt19937 rng(42);  // fixed seed for reproducibility
+  std::shuffle(arr.begin(), arr.end(), rng);
+  return arr;
+}
 
 extern "C" void create() {
-  // Repeatedly add items to the end of the list
-  for(int i=0; i<items; i++) {
-    // Allocate memory for the linked list node
-    node_t* n = (node_t*)malloc(sizeof(node_t));
-    
-    // We're adding to the end, so the next pointer is NULL
-    n->next = NULL;
-    
-    // Is the list empty? If so, the new node is the head and tail
-    if(last == NULL) {
-      head = n;
-      last = n;
-    } else {
-      last->next = n;
-      last = n;
-    }
+  std::vector<int> array = random_permutation(items);
+
+  head = (node_t *) malloc(sizeof(node_t) * items);
+  for(int i=0; i<items-1; i++) {
+    node_t* n = &head[array[i]];
+    n->next = &head[array[i+1]];
   }
+  head[array[items-1]].next = NULL;
+  head = &head[array[0]];
 }
 
 extern "C" void run() {
   // 1. Tell perf to start (write "enable\n" to fd 3)
-  write(3, "enable\n", 7);
+  if (write(3, "enable\n", 7) != 7) { perror("enable"); exit(1); }
 
-  // Now that we have a list, traverse the list over and over again until we've
-  // visited `ACCESSES` nodes in our linked list.
+  // Now that we have an array, traverse the array over and over again until we've
+  // visited `ACCESSES` elements in our array.
   node_t* current = head;
   for(int i=0; i<ACCESSES; i++) {
     if(current == NULL) current = head;
@@ -50,13 +54,16 @@ extern "C" void run() {
   }
 
   // 2. Tell perf to stop (write "disable\n" to fd 3)
-  write(3, "disable\n", 8);
+  if (write(3, "disable\n", 8) != 8) { perror("disable"); exit(1); }
+
+  // Just so that the compiler does not remove the loop as redundant code
+  printf("Result = %p\n", (void*)current);
 }
 
 int main(int argc, char** argv) {
   // Check to make sure we received a command line option
   if(argc < 2) {
-    fprintf(stderr, "Usage: %s <list size>\n", argv[0]);
+    fprintf(stderr, "Usage: %s <array size>\n", argv[0]);
     return 1;
   }
 

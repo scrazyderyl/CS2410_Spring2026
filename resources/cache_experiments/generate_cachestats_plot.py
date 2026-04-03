@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import os
 import getopt
 import glob
 
@@ -8,19 +9,19 @@ l1missrate = 0
 l2missrate = 0
 l3missrate = 0
 
-def getPercentage(reportRoot, target, size):
+def getPercentage(reportRoot, target, size, extension):
   global l1missrate
   global l2missrate
   global l3missrate
 
-  l1loads = 0
+  l1hits = 0
   l1misses = 0
   l2hits = 0
   l2misses = 0
-  l3loads = 0
+  l3hits = 0
   l3misses = 0
 
-  fileList = glob.glob(reportRoot + "/" + target + "." + size + ".cache")
+  fileList = glob.glob(reportRoot + "/" + target + "." + size + "." + extension)
   assert len(fileList) == 1
   fileName = fileList[0]
 
@@ -30,37 +31,37 @@ def getPercentage(reportRoot, target, size):
 
   while True:
     l = f.readline()
-    if "L1-dcache-loads" in l:
+    if "mem_load_retired.l1_hit" in l:
       cols = l.split()
-      l1loads = float(cols[0].replace(",", ""))
-    if "L1-dcache-load-misses" in l:
+      l1hits = float(cols[0].replace(",", ""))
+    if "mem_load_retired.l1_miss" in l:
       cols = l.split()
       l1misses = float(cols[0].replace(",", ""))
-    if "l2_rqsts.demand_data_rd_hit" in l:
+    if "mem_load_retired.l2_hit" in l:
       cols = l.split()
       l2hits = float(cols[0].replace(",", ""))
-    if "l2_rqsts.demand_data_rd_miss" in l:
+    if "mem_load_retired.l2_miss" in l:
       cols = l.split()
       l2misses = float(cols[0].replace(",", ""))
-    if "LLC-loads" in l:
+    if "mem_load_retired.l3_hit" in l:
       cols = l.split()
-      l3loads = float(cols[0].replace(",", ""))
-    if "LLC-load-misses" in l:
+      l3hits = float(cols[0].replace(",", ""))
+    if "mem_load_retired.l3_miss" in l:
       cols = l.split()
       l3misses = float(cols[0].replace(",", ""))
     if len(l)==0:
       break
   f.close
 
-  l3missrate = l3misses / l3loads * 100 if l3loads > 0 else 0
+  l3missrate = l3misses / (l3misses + l3hits) * 100 if l3misses + l3hits > 0 else 0
   l2missrate = l2misses / (l2misses + l2hits) * 100 if l2misses + l2hits > 0 else 0
-  l1missrate = l1misses / l1loads * 100 if l1loads > 0 else 0
+  l1missrate = l1misses / (l1misses + l1hits) * 100 if l1misses + l1hits > 0 else 0
   # print ("target = %s, size = %s, l3misses = %f, l2misses = %f, l1misses=%f " % (target, size, l3misses, l2misses, l1misses))
   return
 
 def main():
   try:
-    opts, args = getopt.getopt(sys.argv[1:],"hi:o:t:",["inputDir=","outputFile=","targetName-"])
+    opts, args = getopt.getopt(sys.argv[1:],"hi:o:t:e:",["inputDir=","outputFile=","targetName=","extension="])
   except getopt.GetoptError:
     print ('generate_cachestats_plot.py -i <input directory> -o <output file> -t <target name>')
     sys.exit(1)
@@ -74,10 +75,14 @@ def main():
       fileName = arg
     elif opt in ("-t", "--targetName"):
       target = arg
+    elif opt in ("-e", "--extension"):
+      extension = arg
 
-  targets = ["array", "array_nodata", "linked-list", "linked-list_nodata"]
-  sizes = ["50", "100", "500", "1000", "5000", "10000", "50000", "100000", "500000", "1000000", "5000000", "10000000"]
-  #sizes = ["50", "100", "500", "600", "700", "800", "900", "1000", "1100", "1200", "1300", "1400", "1500", "1600", "1700", "1800", "1900", "2000", "5000", "10000", "50000", "100000", "500000", "1000000", "5000000", "10000000"]
+  # Get all files for target
+  files = [f for f in os.listdir(reportRoot) if f"{target}" in f and f"{extension}" in f.split(".")[-1]]
+  # Get all sizes executed for target
+  files.sort(key=lambda k: int(k.split('.')[2], 0) )
+  sizes = [ f.split('.')[2] for f in files ]
 
   f = open(fileName,"w")
   f.write("%10s " % "#Elements")
@@ -85,7 +90,7 @@ def main():
   f.write('\n')
   for size in sizes:
     f.write("%10s " % size)
-    getPercentage(reportRoot, target, size)
+    getPercentage(reportRoot, target, size, extension)
     f.write("%10.2f %10.2f %10.2f" % (l1missrate, l2missrate, l3missrate))
     f.write('\n')
   f.close

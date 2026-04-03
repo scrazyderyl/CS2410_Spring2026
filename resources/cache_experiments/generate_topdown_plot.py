@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 import sys
+import os
 import getopt
 import glob
 
@@ -44,10 +45,14 @@ def main():
     elif opt in ("-o", "--outputFile"):
        fileName = arg
 
-  sizes = ["1", "5", "10", "50", "100", "500", "1000", "5000", "10000", "50000", "100000", "500000", "1000000", "5000000", "10000000"]
+  # Get all files for target
+  files = [f for f in os.listdir(reportRoot) if f"{target}" in f and "topdown" in f.split(".")[-1]]
+  # Get all sizes executed for target
+  files.sort(key=lambda k: int(k.split('.')[2], 0) )
+  sizes = [ f.split('.')[2] for f in files ]
 
   f = open(fileName,"w")
-  f.write("%10s " % "#Modulus")
+  f.write("%10s " % "#Elements")
   f.write("%20s " % "frontend_bound")
   f.write("%20s " % "retiring")
   f.write("%20s " % "backend_bound")

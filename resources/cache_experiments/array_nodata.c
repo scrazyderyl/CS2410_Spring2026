@@ -4,12 +4,11 @@
 #include <pthread.h>
 #include <unistd.h>
 
-#define ACCESSES 100000000
+#define ACCESSES 10000000
 
 // Define a linked list node type with no data
 typedef struct node {
   struct node* next;    // 8 bytes
-  // no data now
 } node_t;
 
 
@@ -28,7 +27,7 @@ extern "C" void create() {
 
 extern "C" void run() {
   // 1. Tell perf to start (write "enable\n" to fd 3)
-  write(3, "enable\n", 7);
+  if (write(3, "enable\n", 7) != 7) { perror("enable"); exit(1); }
 
   // Now that we have an array, traverse the array over and over again until we've
   // visited `ACCESSES` elements in our array.
@@ -39,7 +38,10 @@ extern "C" void run() {
   }
 
   // 2. Tell perf to stop (write "disable\n" to fd 3)
-  write(3, "disable\n", 8);
+  if (write(3, "disable\n", 8) != 8) { perror("disable"); exit(1); }
+
+  // Just so that the compiler does not remove the loop as redundant code
+  printf("Result = %p\n", (void*)current);
 }
 
 int main(int argc, char** argv) {

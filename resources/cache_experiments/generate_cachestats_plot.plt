@@ -13,8 +13,8 @@ set yrange [ * : 100 ] noreverse writeback
 set y2range [ * : * ] noreverse writeback
 set cbrange [ * : * ] noreverse writeback
 set rrange [ * : * ] noreverse writeback
+set key bottom center outside horizontal
 set logscale x
-set key at graph 1.0, 0.7
 
 # Render plot
 set terminal pdf transparent enhanced font "arial,10" fontscale 5.0 size 45, 30

@@ -17,7 +17,8 @@ set yrange [ * : * ] noreverse writeback
 set y2range [ * : * ] noreverse writeback
 set cbrange [ * : * ] noreverse writeback
 set rrange [ * : * ] noreverse writeback
-set key outside top right
+set key bottom center outside horizontal
+set rmargin 5
 set xtics rotate by -45
 
 # Render plot
