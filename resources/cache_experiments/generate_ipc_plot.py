@@ -44,7 +44,8 @@ def main():
     elif opt in ("-o", "--outputFile"):
        fileName = arg
 
-  targets = ["array.bin", "array_nodata.bin", "linked-list.bin", "linked-list_nodata.bin"]
+  targets = ["array.bin", "array_nodata.bin", "array_optimized.bin",
+             "linked-list.bin", "linked-list_nodata.bin", "linked-list_optimized.bin"]
 
   # Get all files for array.bin
   files = [f for f in os.listdir(reportRoot) if f"array.bin" in f and "stat" in f.split(".")[-1]]

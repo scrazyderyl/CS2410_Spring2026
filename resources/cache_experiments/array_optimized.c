@@ -35,8 +35,9 @@ extern "C" void run() {
   // visited `ACCESSES` elements in our array.
   volatile int accesses = 0;
   while(true) {
-    for(int i = 0; i < OUTER_LOOP; i++) {
-      for(node_t* current = head; current != NULL; current = current->next) {
+    for(node_t* current = head; current != NULL; current = current->next) {
+      #pragma GCC unroll 1
+      for(int i = 0; i < OUTER_LOOP; i++) {
         accesses++;
       }
     }

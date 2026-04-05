@@ -9,11 +9,13 @@
 #include <algorithm>
 #include <random>
 
-#define ACCESSES 10000000
+#define MIN_ACCESSES	10000000
+#define OUTER_LOOP	4
 
 // Define a linked list node type with no data
 typedef struct node {
   struct node* next;    // 8 bytes
+  int data[1];          // 8 bytes
 } node_t;
 
 
@@ -47,17 +49,21 @@ extern "C" void run() {
 
   // Now that we have an array, traverse the array over and over again until we've
   // visited `ACCESSES` elements in our array.
-  node_t* current = head;
-  for(int i=0; i<ACCESSES; i++) {
-    if(current == NULL) current = head;
-    else current = current->next;
+  volatile int accesses = 0;
+  while(true) {
+    for(int i = 0; i < OUTER_LOOP; i++) {
+      for(node_t* current = head; current != NULL; current = current->next) {
+        accesses++;
+      }
+    }
+    if(accesses >= MIN_ACCESSES) break;
   }
 
   // 2. Tell perf to stop (write "disable\n" to fd 3)
   if (write(3, "disable\n", 8) != 8) { perror("disable"); exit(1); }
 
   // Just so that the compiler does not remove the loop as redundant code
-  printf("Result = %p\n", (void*)current);
+  printf("Accesses = %d\n", accesses);
 }
 
 int main(int argc, char** argv) {

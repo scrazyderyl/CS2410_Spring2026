@@ -4,6 +4,11 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include <vector>
+#include <numeric>
+#include <algorithm>
+#include <random>
+
 #define MIN_ACCESSES	10000000
 #define OUTER_LOOP	4
 
@@ -18,13 +23,24 @@ typedef struct node {
 int items = 0;
 node_t* head = NULL;
 
+std::vector<int> random_permutation(int length) {
+  std::vector<int> arr(length);
+  std::iota(arr.begin(), arr.end(), 0);  // fill with 0, 1, 2, ..., length
+  std::mt19937 rng(42);  // fixed seed for reproducibility
+  std::shuffle(arr.begin(), arr.end(), rng);
+  return arr;
+}
+
 extern "C" void create() {
+  std::vector<int> array = random_permutation(items);
+
   head = (node_t *) malloc(sizeof(node_t) * items);
   for(int i=0; i<items-1; i++) {
-    node_t* n = &head[i];
-    n->next = &head[i+1];
+    node_t* n = &head[array[i]];
+    n->next = &head[array[i+1]];
   }
-  head[items-1].next = NULL;
+  head[array[items-1]].next = NULL;
+  head = &head[array[0]];
 }
 
 extern "C" void run() {
@@ -35,8 +51,9 @@ extern "C" void run() {
   // visited `ACCESSES` elements in our array.
   volatile int accesses = 0;
   while(true) {
-    for(int i = 0; i < OUTER_LOOP; i++) {
-      for(node_t* current = head; current != NULL; current = current->next) {
+    for(node_t* current = head; current != NULL; current = current->next) {
+      #pragma GCC unroll 1
+      for(int i = 0; i < OUTER_LOOP; i++) {
         accesses++;
       }
     }

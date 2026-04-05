@@ -1,7 +1,7 @@
 # Do 'make' on thompson.cs.pitt.edu
 
-TARGETS = array.bin array_nodata.bin linked-list.bin linked-list_nodata.bin
-ASSEMBLIES = array.s array_nodata.s linked-list.s linked-list_nodata.s
+TARGETS = array.bin array_nodata.bin array_optimized.bin linked-list.bin linked-list_nodata.bin linked-list_optimized.bin
+ASSEMBLIES = array.s array_nodata.s array_optimized.s linked-list.s linked-list_nodata.s linked-list_optimized.s
 
 GNUPLOT = gnuplot
 CC = g++
@@ -17,7 +17,10 @@ CACHE_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(ta
 CACHE_PLOTS := $(foreach target,$(TARGETS), plots/CacheStatsIncludingKernel.$(target).pdf)
 CACHE_USERSPACE_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(target).$(size).ucache))
 CACHE_USERSPACE_PLOTS := $(foreach target,$(TARGETS), plots/CacheStats.$(target).pdf)
-PLOTS := plots/IPC.pdf $(TOPDOWN_PLOTS) $(MEMSTALLS_PLOTS) $(CACHE_USERSPACE_PLOTS)
+
+# Memstalls plot is inaccurate due to x86 PMU multiplexing so don't include it.
+#PLOTS := plots/IPC.pdf $(TOPDOWN_PLOTS) $(MEMSTALLS_PLOTS) $(CACHE_USERSPACE_PLOTS)
+PLOTS := plots/IPC.pdf $(TOPDOWN_PLOTS) $(CACHE_USERSPACE_PLOTS)
 
 .PRECIOUS: $(STAT_DATA) $(TOPDOWN_DATA) $(MEMSTALLS_DATA) $(CACHE_USERSPACE_DATA)
 
@@ -63,11 +66,11 @@ endef
 $(foreach target,$(TARGETS), $(eval $(call plot_rules,$(target))))
 
 define stat_rules
-outputs/$(1).$(2).stat: $(TARGETS)
+outputs/$(1).$(2).stat: $(1)
 	mkfifo perf_ctl
 	perf stat -D -1 --control fd:3 -e cycles:u,instructions:u ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
 	rm -f perf_ctl
-outputs/$(1).$(2).topdown: $(TARGETS)
+outputs/$(1).$(2).topdown: $(1)
 	mkfifo perf_ctl
 	perf stat -D -1 --control fd:3 --topdown ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
 	rm -f perf_ctl

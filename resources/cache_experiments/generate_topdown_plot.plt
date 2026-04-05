@@ -13,7 +13,7 @@ set boxwidth 0.8 relative
 set style fill solid 1.0 border -1
 set xrange [ * : * ] noreverse writeback
 set x2range [ * : * ] noreverse writeback
-set yrange [ * : * ] noreverse writeback
+set yrange [ 0 : 100 ] noreverse writeback
 set y2range [ * : * ] noreverse writeback
 set cbrange [ * : * ] noreverse writeback
 set rrange [ * : * ] noreverse writeback
