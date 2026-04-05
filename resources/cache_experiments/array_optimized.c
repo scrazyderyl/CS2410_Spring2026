@@ -36,7 +36,8 @@ extern "C" void run() {
   volatile int accesses = 0;
   while(true) {
     for(node_t* current = head; current != NULL; current = current->next) {
-      #pragma GCC unroll 1
+      #pragma GCC unroll 1  // Pragma prevents unrolling of inner loop, for
+                            // an apples-to-apples comparison.
       for(int i = 0; i < OUTER_LOOP; i++) {
         accesses++;
       }
