@@ -5,10 +5,10 @@ ASSEMBLIES = array.s array_nodata.s array_optimized.s linked-list.s linked-list_
 
 GNUPLOT = gnuplot
 CC = g++
-COPT = -O3
+COPT = -O3 -fno-tree-vectorize
 LOPT = -O3
-SIZES = 200 400 600 800 1000 2000 4000 6000 8000 10000 20000 40000 60000 80000 100000 200000 400000 600000 800000 1000000 2000000 4000000 6000000 8000000 10000000
-STAT_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(target).$(size).stat))
+SIZES = 100 200 400 600 800 1000 2000 4000 6000 8000 10000 20000 40000 60000 80000 100000 200000 400000 600000 800000 1000000
+STAT_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(target).$(size).ipc))
 TOPDOWN_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(target).$(size).topdown))
 TOPDOWN_PLOTS := $(foreach target,$(TARGETS), plots/Topdown.$(target).pdf)
 MEMSTALLS_DATA := $(foreach target,$(TARGETS),$(foreach size, $(SIZES), outputs/$(target).$(size).memstalls))
@@ -66,7 +66,7 @@ endef
 $(foreach target,$(TARGETS), $(eval $(call plot_rules,$(target))))
 
 define stat_rules
-outputs/$(1).$(2).stat: $(1)
+outputs/$(1).$(2).ipc: $(1)
 	mkfifo perf_ctl
 	perf stat -D -1 --control fd:3 -e cycles:u,instructions:u ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
 	rm -f perf_ctl
@@ -80,11 +80,11 @@ outputs/$(1).$(2).memstalls: $(1)
 	rm -f perf_ctl
 outputs/$(1).$(2).cache: $(1)
 	mkfifo perf_ctl
-	perf stat -D -1 --control fd:3 -e mem_load_retired.l1_hit,mem_load_retired.l1_miss,mem_load_retired.l2_hit,mem_load_retired.l2_miss,mem_load_retired.l3_hit,mem_load_retired.l3_miss ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
+	perf stat -D -1 --control fd:3 -e mem_inst_retired.all_loads,mem_load_retired.l1_hit,mem_load_retired.l1_miss,mem_load_retired.l2_hit,mem_load_retired.l2_miss,mem_load_retired.l3_hit,mem_load_retired.l3_miss ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
 	rm -f perf_ctl
 outputs/$(1).$(2).ucache: $(1)
 	mkfifo perf_ctl
-	perf stat -D -1 --control fd:3 -e mem_load_retired.l1_hit:u,mem_load_retired.l1_miss:u,mem_load_retired.l2_hit:u,mem_load_retired.l2_miss:u,mem_load_retired.l3_hit:u,mem_load_retired.l3_miss:u ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
+	perf stat -D -1 --control fd:3 -e mem_inst_retired.all_loads,mem_load_retired.l1_hit:u,mem_load_retired.l1_miss:u,mem_load_retired.l2_hit:u,mem_load_retired.l2_miss:u,mem_load_retired.l3_hit:u,mem_load_retired.l3_miss:u ./$(1) $(2) 3<>perf_ctl > $$@ 2>&1
 	rm -f perf_ctl
 endef
 $(foreach target,$(TARGETS),$(foreach size, $(SIZES), $(eval $(call stat_rules,$(target),$(size)))))

@@ -6,7 +6,7 @@ import getopt
 import glob
 
 def getIPC(reportRoot, target, size):
-  fileList = glob.glob(reportRoot + "/" + target + "." + size + ".stat")
+  fileList = glob.glob(reportRoot + "/" + target + "." + size + ".ipc")
   assert len(fileList) == 1
   fileName = fileList[0]
 
@@ -48,7 +48,7 @@ def main():
              "linked-list.bin", "linked-list_nodata.bin", "linked-list_optimized.bin"]
 
   # Get all files for array.bin
-  files = [f for f in os.listdir(reportRoot) if f"array.bin" in f and "stat" in f.split(".")[-1]]
+  files = [f for f in os.listdir(reportRoot) if f"array.bin" in f and "ipc" in f.split(".")[-1]]
   # Get all sizes executed for array.bin
   files.sort(key=lambda k: int(k.split('.')[2], 0) )
   sizes = [ f.split('.')[2] for f in files ]

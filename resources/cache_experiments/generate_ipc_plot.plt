@@ -1,11 +1,11 @@
 # Plot configurations
 
-set style line 1 lt rgb "red" lw 20 ps 5 dt 1
-set style line 2 lt rgb "red" lw 20 ps 5 dt 2
-set style line 3 lt rgb "red" lw 20 ps 5 dt 3
-set style line 4 lt rgb "blue" lw 20 ps 5 dt 1
-set style line 5 lt rgb "blue" lw 20 ps 5 dt 2
-set style line 6 lt rgb "blue" lw 20 ps 5 dt 3
+set style line 1 lt rgb "red" lw 20 ps 5 dt 1 pt 2
+set style line 2 lt rgb "red" lw 20 ps 5 dt 2 pt 4
+set style line 3 lt rgb "red" lw 20 ps 5 dt 3 pt 6
+set style line 4 lt rgb "blue" lw 20 ps 5 dt 1 pt 2
+set style line 5 lt rgb "blue" lw 20 ps 5 dt 2 pt 4
+set style line 6 lt rgb "blue" lw 20 ps 5 dt 3 pt 6
 set title "IPC (Instructions Per Cycle)" 
 set xlabel "Size"
 set ylabel "IPC"
@@ -19,6 +19,7 @@ set key bottom center outside horizontal
 set rmargin 5
 set xtics rotate by -45
 set logscale x
+set logscale y
 
 # Render plot
 set terminal pdf transparent enhanced font "arial,10" fontscale 5.0 size 45, 30

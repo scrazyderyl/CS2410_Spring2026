@@ -4,13 +4,19 @@
 #include <pthread.h>
 #include <unistd.h>
 
+#include <vector>
+#include <numeric>
+#include <algorithm>
+#include <random>
+
 #define MIN_ACCESSES	10000000
-#define OUTER_LOOP	4
+#define DATA_SIZE     2
+#define OUTER_LOOP    2
 
 // Define a linked list node type with no data
 typedef struct node {
   struct node* next;    // 8 bytes
-  int data[2];          // 8 bytes
+  int data[DATA_SIZE];  // 8 bytes
 } node_t;
 
 
@@ -20,11 +26,11 @@ node_t* head = NULL;
 
 extern "C" void create() {
   head = (node_t *) malloc(sizeof(node_t) * items);
-  for(int i=0; i<items-1; i++) {
+  for(int i = 0; i < items; i++) {
     node_t* n = &head[i];
-    n->next = &head[i+1];
+    n->next = (i < items - 1) ? &head[i+1] : NULL;
+    for(int j = 0; j < DATA_SIZE; j++) n->data[j] = j;
   }
-  head[items-1].next = NULL;
 }
 
 extern "C" void run() {
@@ -33,21 +39,21 @@ extern "C" void run() {
 
   // Now that we have an array, traverse the array over and over again until we've
   // visited `ACCESSES` elements in our array.
-  volatile int accesses = 0;
+  int accesses = 0, sum = 0;
   while(true) {
     for(int i = 0; i < OUTER_LOOP; i++) {
       for(node_t* current = head; current != NULL; current = current->next) {
-        accesses++;
+        sum += current->data[i];
       }
     }
+    accesses += OUTER_LOOP * items;
     if(accesses >= MIN_ACCESSES) break;
   }
 
   // 2. Tell perf to stop (write "disable\n" to fd 3)
   if (write(3, "disable\n", 8) != 8) { perror("disable"); exit(1); }
 
-  // Just so that the compiler does not remove the loop as redundant code
-  printf("Accesses = %d\n", accesses);
+  printf("Accesses = %d, Sum = %d\n", accesses, sum);
 }
 
 int main(int argc, char** argv) {

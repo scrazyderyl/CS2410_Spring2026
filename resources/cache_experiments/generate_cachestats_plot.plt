@@ -4,9 +4,9 @@ set style line 1 lt rgb "red" lw 20 ps 5
 set style line 2 lt rgb "blue" lw 20 ps 5
 set style line 3 lt rgb "green" lw 20 ps 5
 set style line 4 lt rgb "purple" lw 20 ps 5
-set title "L1/L2/L3 cache miss rates" 
+set title "L1/L2/L3 cache load miss rates" 
 set xlabel "Data structure size"
-set ylabel "Miss rate (%)"
+set ylabel "Load Miss rate (%)"
 set xrange [ * : * ] noreverse writeback
 set x2range [ * : * ] noreverse writeback
 set yrange [ * : 100 ] noreverse writeback
