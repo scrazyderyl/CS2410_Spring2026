@@ -16,7 +16,6 @@ void print_usage_info()
 
 int main(int argc, char *argv[])
 {
-	bool debug = false;
 	char *program_file_name = NULL;
 	char *config_file_name = NULL;
 	char *json_file_name = NULL;
@@ -73,6 +72,10 @@ int main(int argc, char *argv[])
 	}
 
 	Simulator *sim = new Simulator(&program, config);
+
+	// Set up hard coded X0 "Zero" register with value 0.
+	sim->registerMapTable[ArchitecturalRegister{ArchitecturalRegister::X, 0}] = NUM_PHYS_REG;
+	sim->registerFile[NUM_PHYS_REG].value = 0;
 
 	// Run the simulator until completion
 	
