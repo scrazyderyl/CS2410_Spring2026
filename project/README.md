@@ -12,7 +12,7 @@
 # CS 2410 - Computer Architecture
 Spring Semester 2026 - Project
 
-* DUE: April 26 (Sunday), 2026 11:59 PM 
+* DUE: April 29 (Wednesday), 2026 11:59 PM 
 
 Please accept the Project on **GitHub Classroom** using this link: https://classroom.github.com/a/Nsi2q5Zc
 
