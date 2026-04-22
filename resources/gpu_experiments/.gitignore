@@ -1,0 +1,6 @@
+devicequery
+mat_mul_gpu
+mat_vec_gpu
+max_blocks_per_sm
+*.dat
+*.pdf
