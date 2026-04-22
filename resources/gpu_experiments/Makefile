@@ -1,4 +1,4 @@
-TARGETS = devicequery max_blocks_per_sm mat_vec_gpu
+TARGETS = devicequery max_blocks_per_sm mat_vec_gpu mat_mul_gpu
 
 GNUPLOT = gnuplot
 CC = gcc
@@ -8,16 +8,19 @@ NVPROF = nvprof -m global_hit_rate,tex_cache_hit_rate,l2_tex_read_hit_rate,dram_
 NVCOPT = -arch=sm_60 -Xptxas -dlcm=ca
 
 POLICIES = 2 3
-MATVEC_VEC_SIZE = 8192
+MATVEC_DIMENSION_SIZE = 8192
 MATVEC_BLOCK_SIZES = 1 2 4 8 16 32 64 128 256 512 1024
 MATVEC_DATA := outputs/mat_vec_gpu.1.1.perf $(foreach policy,$(POLICIES),$(foreach size, $(MATVEC_BLOCK_SIZES), outputs/mat_vec_gpu.$(policy).$(size).perf))
 MATVEC_PROFILE := $(foreach policy,$(POLICIES),$(foreach size, $(MATVEC_BLOCK_SIZES), outputs/mat_vec_gpu.$(policy).$(size).prof))
 MATMUL_BLOCK_SIZES = 1 2 4 8 16 32 
 MATMUL_DATA := $(foreach policy,$(POLICIES),$(foreach size, $(MATMUL_BLOCK_SIZES), outputs/mat_mul_gpu.$(policy).$(size).perf))
+MATMUL_OUTPUTS := $(foreach policy,1 2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), outputs/mat_mul_gpu.$(policy).$(size).out))
+MATMUL_DIFFS := $(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), diffs/mat_mul_gpu.$(policy).$(size).diff))
 PLOTS := MatVecTime.pdf MatVecProfile.pdf MatMulTime.pdf MatMulTimeZoomIn.pdf
 
-all: build plots
+all: build diffs
 build: $(TARGETS)
+diffs: $(MATMUL_DIFFS)
 #plots: $(MATVEC_DATA) $(MATMUL_DATA) $(MATVEC_PROFILE) $(PLOTS)
 plots: $(MATVEC_DATA) $(MATVEC_PROFILE) $(PLOTS)
 
@@ -50,33 +53,57 @@ MatMulTime.dat: $(MATMUL_DATA) generate_plot.py
 
 # Measure CPU performance for given size
 outputs/mat_vec_gpu.1.1.perf: mat_vec_gpu
-	./mat_vec_gpu $(MATVEC_VEC_SIZE) 1 1 nodebug > $@
+	./mat_vec_gpu $(MATVEC_DIMENSION_SIZE) 1 1 nodebug > $@
 
 # Measure GPU performance for given size with different thread block sizes
 define matvec_rules
 outputs/mat_vec_gpu.$(1).$(2).perf: mat_vec_gpu
-	./mat_vec_gpu $(MATVEC_VEC_SIZE) $(2) $(1) nodebug > $$@
+	./mat_vec_gpu $(MATVEC_DIMENSION_SIZE) $(2) $(1) nodebug > $$@
 outputs/mat_vec_gpu.$(1).$(2).prof: mat_vec_gpu
-	$(NVPROF) ./mat_vec_gpu $(MATVEC_VEC_SIZE) $(2) $(1) nodebug > /dev/null 2> $$@
+	$(NVPROF) ./mat_vec_gpu $(MATVEC_DIMENSION_SIZE) $(2) $(1) nodebug > /dev/null 2> $$@
 endef
 $(foreach policy,2 3,$(foreach size, $(MATVEC_BLOCK_SIZES), $(eval $(call matvec_rules,$(policy),$(size)))))
 
 outputs/mat_mul_gpu.1.perf: mat_mul_gpu
 	./mat_mul_gpu 1024 1 1 nodebug > $@
 
-define matmul_cpu_rules
+define matmul_cpu_perf_rules
 outputs/mat_mul_gpu.1.$(1).perf: outputs/mat_mul_gpu.1.perf
 	cp $$< $$@
 endef
 
-$(foreach size, $(MATMUL_BLOCK_SIZES), $(eval $(call matmul_cpu_rules,$(size))))
+$(foreach size, $(MATMUL_BLOCK_SIZES), $(eval $(call matmul_cpu_perf_rules,$(size))))
 
-define matmul_rules
+define matmul_gpu_perf_rules
 outputs/mat_mul_gpu.$(1).$(2).perf: mat_mul_gpu
 	./mat_mul_gpu 1024 $(2) $(1) nodebug > $$@
 endef
 
-$(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), $(eval $(call matmul_rules,$(policy),$(size)))))
+$(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), $(eval $(call matmul_gpu_perf_rules,$(policy),$(size)))))
+
+outputs/mat_mul_gpu.1.out: mat_mul_gpu
+	./mat_mul_gpu 1024 1 1 debug > $@
+
+define matmul_cpu_output_rules
+outputs/mat_mul_gpu.1.$(1).out: outputs/mat_mul_gpu.1.out
+	cp $$< $$@
+endef
+
+$(foreach size, $(MATMUL_BLOCK_SIZES), $(eval $(call matmul_cpu_output_rules,$(size))))
+
+define matmul_gpu_output_rules
+outputs/mat_mul_gpu.$(1).$(2).out: mat_mul_gpu
+	./mat_mul_gpu 1024 $(2) $(1) debug > $$@
+endef
+
+$(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), $(eval $(call matmul_gpu_output_rules,$(policy),$(size)))))
+
+define matmul_diff_rules
+diffs/mat_mul_gpu.$(1).$(2).diff: outputs/mat_mul_gpu.1.$(2).out outputs/mat_mul_gpu.$(1).$(2).out mat_mul_gpu
+	-python diff.py outputs/mat_mul_gpu.1.$(2).out outputs/mat_mul_gpu.$(1).$(2).out > $$@
+endef
+
+$(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), $(eval $(call matmul_diff_rules,$(policy),$(size)))))
 
 clean:
-	rm -f $(TARGETS) *.pdf *.dat outputs/*.perf outputs/*.prof
+	rm -f $(TARGETS) $(PLOTS) $(MATMUL_DATA) $(MATMUL_OUTPUTS) $(MATMUL_DIFFS)
