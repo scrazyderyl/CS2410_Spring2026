@@ -1355,7 +1355,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$16 	$8  	$0  	0    
 	Load2	false	-1              fld 	$17 	$14 	$0  	1    
-	BU1   	true 	-1              bne 	$0  	$20 	$ZERO	2    
+	BU1   	true 	1               bne 	$0  	$20 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$20 	$15 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -1395,14 +1395,18 @@ Register Mapping
 	F22 -> $19 = 0
 	F23 -> $5 = 3
 Clock Cycle: 26
- PC: -1 ================================================
+ PC: 84 ================================================
 Fetch Queue
+	68: fld F20, 0(X1)
+	72: fmul F20, F20, F21
+	76: fadd F22, F20, F22
+	80: fsd F22, 0(X2)
 Instruction (Decode) Queue
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$16 	$8  	$0  	0    
 	Load2	false	-1              fld 	$17 	$14 	$0  	1    
-	BU1   	true 	1               bne 	$0  	$20 	$ZERO	2    
+	BU1   	false	-1              bne 	$0  	$20 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$20 	$15 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -1421,7 +1425,7 @@ Reorder Buffer
 	ROB  BUSY  DEST  VALUE OP
 	0    true        0     fsd 
 	1    false X4    16    addi
-	2    true        0     bne 
+	2    false       68    bne 
 	3    true  F22   0     fadd
 Register Mapping
 	X0 -> $ZERO = 0
@@ -1442,13 +1446,15 @@ Register Mapping
 	F22 -> $19 = 0
 	F23 -> $5 = 3
 Clock Cycle: 27
- PC: 84 ================================================
+ PC: 68 ================================================
 Fetch Queue
-	68: fld F20, 0(X1)
-	72: fmul F20, F20, F21
-	76: fadd F22, F20, F22
-	80: fsd F22, 0(X2)
+	84: addi X4, X4, -8
+	88: bne X4, X0, 68
 Instruction (Decode) Queue
+	fld  $21, 0($14)
+	fmul $22, $21, $4
+	fadd $23, $22, $19
+	fsd  $23, 0($8)
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$16 	$8  	$0  	0    
@@ -1488,23 +1494,26 @@ Register Mapping
 	F12 -> $11 = 0
 	F13 -> $12 = 6
 	F14 -> $13 = 2
-	F20 -> $18 = 200
+	F20 -> $22 = 0
 	F21 -> $4 = 1
-	F22 -> $19 = 0
+	F22 -> $23 = 0
 	F23 -> $5 = 3
 Clock Cycle: 28
- PC: 68 ================================================
+ PC: 84 ================================================
 Fetch Queue
-	84: addi X4, X4, -8
-	88: bne X4, X0, 68
+	68: fld F20, 0(X1)
+	72: fmul F20, F20, F21
+	76: fadd F22, F20, F22
+	80: fsd F22, 0(X2)
 Instruction (Decode) Queue
-	fld  $21, 0($14)
 	fmul $22, $21, $4
 	fadd $23, $22, $19
 	fsd  $23, 0($8)
+	addi $24, $20, -8
+	bne  $24, $ZERO, 68
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
-	Load1	false	-1              fld 	$16 	$8  	$0  	0    
+	Load1	true 	-1              fld 	$21 	$14 	$0  	3    
 	Load2	false	-1              fld 	$17 	$14 	$0  	1    
 	BU1   	false	-1              bne 	$0  	$20 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
@@ -1521,17 +1530,17 @@ Reservation Station
 	Store1	true 	1               fsd 	$0  	$8  	$19 	0    
 	Store2	false	-1              nop 	$0  	$0  	$0  	-1   
 Reorder Buffer
-	HEAD:	0	TAIL:	3
+	HEAD:	0	TAIL:	0
 	ROB  BUSY  DEST  VALUE OP
 	0    true        0     fsd 
 	1    false X4    16    addi
 	2    false       68    bne 
-	3    false F22   202   fadd
+	3    true  F20   0     fld 
 Register Mapping
 	X0 -> $ZERO = 0
 	X1 -> $14 = 16
 	X2 -> $8 = 124
-	X4 -> $20 = 0
+	X4 -> $24 = 0
 	F1 -> $0 = 1
 	F2 -> $1 = 2
 	F3 -> $2 = 3
@@ -1546,15 +1555,17 @@ Register Mapping
 	F22 -> $23 = 0
 	F23 -> $5 = 3
 Clock Cycle: 29
- PC: 84 ================================================
+ PC: -1 ================================================
 Fetch Queue
-	68: fld F20, 0(X1)
-	72: fmul F20, F20, F21
-	76: fadd F22, F20, F22
-	80: fsd F22, 0(X2)
+	84: addi X4, X4, -8
+	88: bne X4, X0, 68
 Instruction (Decode) Queue
 	addi $24, $20, -8
 	bne  $24, $ZERO, 68
+	fld  $25, 0($14)
+	fmul $26, $25, $4
+	fadd $27, $26, $23
+	fsd  $27, 0($8)
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	true 	1               fld 	$21 	$14 	$0  	3    
@@ -1594,21 +1605,21 @@ Register Mapping
 	F12 -> $11 = 0
 	F13 -> $12 = 6
 	F14 -> $13 = 2
-	F20 -> $22 = 0
+	F20 -> $26 = 0
 	F21 -> $4 = 1
-	F22 -> $23 = 0
+	F22 -> $27 = 0
 	F23 -> $5 = 3
 Clock Cycle: 30
  PC: -1 ================================================
 Fetch Queue
-	84: addi X4, X4, -8
-	88: bne X4, X0, 68
 Instruction (Decode) Queue
 	bne  $24, $ZERO, 68
 	fld  $25, 0($14)
 	fmul $26, $25, $4
 	fadd $27, $26, $23
 	fsd  $27, 0($8)
+	addi $28, $24, -8
+	bne  $28, $ZERO, 68
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$21 	$14 	$0  	3    
@@ -1638,7 +1649,7 @@ Register Mapping
 	X0 -> $ZERO = 0
 	X1 -> $14 = 16
 	X2 -> $8 = 124
-	X4 -> $24 = 0
+	X4 -> $28 = 0
 	F1 -> $0 = 1
 	F2 -> $1 = 2
 	F3 -> $2 = 3
@@ -1828,7 +1839,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$21 	$14 	$0  	3    
 	Load2	false	-1              fld 	$17 	$14 	$0  	1    
-	BU1   	true 	-1              bne 	$0  	$24 	$ZERO	0    
+	BU1   	true 	1               bne 	$0  	$24 	$ZERO	0    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$24 	$20 	$0  	3    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -1881,7 +1892,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$21 	$14 	$0  	3    
 	Load2	false	-1              fld 	$17 	$14 	$0  	1    
-	BU1   	true 	1               bne 	$0  	$24 	$ZERO	0    
+	BU1   	false	-1              bne 	$0  	$24 	$ZERO	0    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$24 	$20 	$0  	3    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -1898,7 +1909,7 @@ Reservation Station
 Reorder Buffer
 	HEAD:	1	TAIL:	1
 	ROB  BUSY  DEST  VALUE OP
-	0    true        0     bne 
+	0    false       68    bne 
 	1    true  F22   0     fadd
 	2    true        0     fsd 
 	3    false X4    8     addi
@@ -2274,7 +2285,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$25 	$14 	$0  	1    
 	Load2	false	-1              fld 	$17 	$14 	$0  	1    
-	BU1   	true 	-1              bne 	$0  	$28 	$ZERO	2    
+	BU1   	true 	1               bne 	$0  	$28 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$28 	$24 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -2316,12 +2327,16 @@ Register Mapping
 Clock Cycle: 44
  PC: -1 ================================================
 Fetch Queue
+	92: fadd F23, F23, F21
+	96: fsub F23, F23, F21
+	100: addi X2, X2, -8
+	104: bne X1, X0, 36
 Instruction (Decode) Queue
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$25 	$14 	$0  	1    
 	Load2	false	-1              fld 	$17 	$14 	$0  	1    
-	BU1   	true 	1               bne 	$0  	$28 	$ZERO	2    
+	BU1   	false	-1              bne 	$0  	$28 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$28 	$24 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -2340,7 +2355,7 @@ Reorder Buffer
 	ROB  BUSY  DEST  VALUE OP
 	0    true        0     fsd 
 	1    false X4    0     addi
-	2    true        0     bne 
+	2    false       92    bne 
 	3    true  F22   0     fadd
 Register Mapping
 	X0 -> $ZERO = 0
@@ -2361,13 +2376,17 @@ Register Mapping
 	F22 -> $27 = 0
 	F23 -> $5 = 3
 Clock Cycle: 45
- PC: -1 ================================================
+ PC: 52 ================================================
 Fetch Queue
-	92: fadd F23, F23, F21
-	96: fsub F23, F23, F21
-	100: addi X2, X2, -8
-	104: bne X1, X0, 36
+	36: fadd F10, F1, F2
+	40: fsub F11, F10, F3
+	44: fmul F12, F11, F4
+	48: fmul F13, F2, F3
 Instruction (Decode) Queue
+	fadd $29, $5, $4
+	fsub $30, $29, $4
+	addi $31, $8, -8
+	bne  $14, $ZERO, 36
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$25 	$14 	$0  	1    
@@ -2396,61 +2415,6 @@ Reorder Buffer
 Register Mapping
 	X0 -> $ZERO = 0
 	X1 -> $14 = 16
-	X2 -> $8 = 124
-	X4 -> $28 = 0
-	F1 -> $0 = 1
-	F2 -> $1 = 2
-	F3 -> $2 = 3
-	F4 -> $3 = 4
-	F10 -> $9 = 3
-	F11 -> $10 = 0
-	F12 -> $11 = 0
-	F13 -> $12 = 6
-	F14 -> $13 = 2
-	F20 -> $26 = 200
-	F21 -> $4 = 1
-	F22 -> $27 = 0
-	F23 -> $5 = 3
-Clock Cycle: 46
- PC: 52 ================================================
-Fetch Queue
-	36: fadd F10, F1, F2
-	40: fsub F11, F10, F3
-	44: fmul F12, F11, F4
-	48: fmul F13, F2, F3
-Instruction (Decode) Queue
-	fadd $29, $5, $4
-	fsub $30, $29, $4
-	addi $31, $8, -8
-	bne  $14, $ZERO, 36
-Reservation Station
-	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
-	Load1	false	-1              fld 	$25 	$14 	$0  	1    
-	Load2	false	-1              fld 	$17 	$14 	$0  	1    
-	BU1   	false	-1              bne 	$0  	$28 	$ZERO	2    
-	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
-	INT1	false	-1              addi	$28 	$24 	$0  	1    
-	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
-	INT3	false	-1              nop 	$0  	$0  	$0  	-1   
-	INT4	false	-1              nop 	$0  	$0  	$0  	-1   
-	FPadd1	false	-1              fadd	$27 	$26 	$23 	3    
-	FPadd2	false	-1              fsub	$10 	$9  	$2  	2    
-	FPadd3	false	-1              nop 	$0  	$0  	$0  	-1   
-	FPmult1	false	-1              fmul	$26 	$25 	$4  	2    
-	FPmult2	false	-1              fmul	$12 	$1  	$2  	0    
-	FPDiv1	false	-1              fdiv	$13 	$3  	$1  	1    
-	Store1	true 	1               fsd 	$0  	$8  	$27 	0    
-	Store2	false	-1              nop 	$0  	$0  	$0  	-1   
-Reorder Buffer
-	HEAD:	0	TAIL:	3
-	ROB  BUSY  DEST  VALUE OP
-	0    true        0     fsd 
-	1    false X4    0     addi
-	2    false       92    bne 
-	3    false F22   602   fadd
-Register Mapping
-	X0 -> $ZERO = 0
-	X1 -> $14 = 16
 	X2 -> $31 = 0
 	X4 -> $28 = 0
 	F1 -> $0 = 1
@@ -2464,9 +2428,9 @@ Register Mapping
 	F14 -> $13 = 2
 	F20 -> $26 = 200
 	F21 -> $4 = 1
-	F22 -> $27 = 602
+	F22 -> $27 = 0
 	F23 -> $30 = 0
-Clock Cycle: 47
+Clock Cycle: 46
  PC: 68 ================================================
 Fetch Queue
 	52: fdiv F14, F4, F2
@@ -2474,6 +2438,9 @@ Fetch Queue
 	60: addi X4, X0, 24
 	64: fld F22, 0(X2)
 Instruction (Decode) Queue
+	fsub $30, $29, $4
+	addi $31, $8, -8
+	bne  $14, $ZERO, 36
 	fadd $6, $0, $1
 	fsub $7, $6, $2
 	fmul $17, $7, $3
@@ -2482,26 +2449,26 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$25 	$14 	$0  	1    
 	Load2	false	-1              fld 	$17 	$14 	$0  	1    
-	BU1   	true 	1               bne 	$0  	$14 	$ZERO	2    
+	BU1   	false	-1              bne 	$0  	$28 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
-	INT1	true 	1               addi	$31 	$8  	$0  	1    
+	INT1	false	-1              addi	$28 	$24 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
 	INT3	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT4	false	-1              nop 	$0  	$0  	$0  	-1   
 	FPadd1	true 	3               fadd	$29 	$5  	$4  	3    
-	FPadd2	true 	-1              fsub	$30 	$29 	$4  	0    
+	FPadd2	false	-1              fsub	$10 	$9  	$2  	2    
 	FPadd3	false	-1              nop 	$0  	$0  	$0  	-1   
 	FPmult1	false	-1              fmul	$26 	$25 	$4  	2    
 	FPmult2	false	-1              fmul	$12 	$1  	$2  	0    
 	FPDiv1	false	-1              fdiv	$13 	$3  	$1  	1    
-	Store1	false	-1              fsd 	$0  	$8  	$27 	0    
+	Store1	true 	1               fsd 	$0  	$8  	$27 	0    
 	Store2	false	-1              nop 	$0  	$0  	$0  	-1   
 Reorder Buffer
-	HEAD:	3	TAIL:	3
+	HEAD:	0	TAIL:	0
 	ROB  BUSY  DEST  VALUE OP
-	0    true  F23   0     fsub
-	1    true  X2    0     addi
-	2    true        0     bne 
+	0    true        0     fsd 
+	1    false X4    0     addi
+	2    false       92    bne 
 	3    true  F23   0     fadd
 Register Mapping
 	X0 -> $ZERO = 0
@@ -2521,7 +2488,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $27 = 602
 	F23 -> $30 = 0
-Clock Cycle: 48
+Clock Cycle: 47
  PC: 84 ================================================
 Fetch Queue
 	68: fld F20, 0(X1)
@@ -2541,9 +2508,9 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$25 	$14 	$0  	1    
 	Load2	false	-1              fld 	$17 	$14 	$0  	1    
-	BU1   	false	-1              bne 	$0  	$14 	$ZERO	2    
+	BU1   	true 	1               bne 	$0  	$14 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
-	INT1	false	-1              addi	$31 	$8  	$0  	1    
+	INT1	true 	1               addi	$31 	$8  	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
 	INT3	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT4	false	-1              nop 	$0  	$0  	$0  	-1   
@@ -2559,8 +2526,8 @@ Reorder Buffer
 	HEAD:	3	TAIL:	3
 	ROB  BUSY  DEST  VALUE OP
 	0    true  F23   0     fsub
-	1    false X2    116   addi
-	2    false       36    bne 
+	1    true  X2    0     addi
+	2    true        0     bne 
 	3    true  F23   0     fadd
 Register Mapping
 	X0 -> $ZERO = 0
@@ -2580,7 +2547,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $19 = 202
 	F23 -> $30 = 0
-Clock Cycle: 49
+Clock Cycle: 48
  PC: 68 ================================================
 Fetch Queue
 	84: addi X4, X4, -8
@@ -2641,7 +2608,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $25 = 200
 	F23 -> $30 = 0
-Clock Cycle: 50
+Clock Cycle: 49
  PC: 84 ================================================
 Fetch Queue
 	68: fld F20, 0(X1)
@@ -2705,7 +2672,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $25 = 200
 	F23 -> $30 = 0
-Clock Cycle: 51
+Clock Cycle: 50
  PC: 68 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -2771,7 +2738,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $25 = 200
 	F23 -> $30 = 0
-Clock Cycle: 52
+Clock Cycle: 51
  PC: 68 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -2837,7 +2804,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $25 = 200
 	F23 -> $30 = 0
-Clock Cycle: 53
+Clock Cycle: 52
  PC: 84 ================================================
 Fetch Queue
 	68: fld F20, 0(X1)
@@ -2904,7 +2871,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $29 = 4
 	F23 -> $30 = 3
-Clock Cycle: 54
+Clock Cycle: 53
  PC: 88 ================================================
 Fetch Queue
 	72: fmul F20, F20, F21
@@ -2971,7 +2938,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $29 = 4
 	F23 -> $30 = 3
-Clock Cycle: 55
+Clock Cycle: 54
  PC: 88 ================================================
 Fetch Queue
 	72: fmul F20, F20, F21
@@ -3038,7 +3005,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $29 = 4
 	F23 -> $30 = 3
-Clock Cycle: 56
+Clock Cycle: 55
  PC: 88 ================================================
 Fetch Queue
 	72: fmul F20, F20, F21
@@ -3105,7 +3072,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $29 = 4
 	F23 -> $30 = 3
-Clock Cycle: 57
+Clock Cycle: 56
  PC: -1 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -3172,7 +3139,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $29 = 4
 	F23 -> $30 = 3
-Clock Cycle: 58
+Clock Cycle: 57
  PC: -1 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -3239,7 +3206,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $29 = 4
 	F23 -> $30 = 3
-Clock Cycle: 59
+Clock Cycle: 58
  PC: -1 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -3306,7 +3273,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $29 = 4
 	F23 -> $30 = 3
-Clock Cycle: 60
+Clock Cycle: 59
  PC: -1 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -3373,7 +3340,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $29 = 4
 	F23 -> $30 = 3
-Clock Cycle: 61
+Clock Cycle: 60
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -3436,7 +3403,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 62
+Clock Cycle: 61
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -3497,7 +3464,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 63
+Clock Cycle: 62
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -3557,7 +3524,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 64
+Clock Cycle: 63
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -3617,7 +3584,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 65
+Clock Cycle: 64
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -3677,7 +3644,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 66
+Clock Cycle: 65
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -3737,7 +3704,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 67
+Clock Cycle: 66
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -3757,7 +3724,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$19 	$31 	$0  	2    
 	Load2	false	-1              fld 	$20 	$18 	$0  	3    
-	BU1   	true 	-1              bne 	$0  	$23 	$ZERO	0    
+	BU1   	true 	1               bne 	$0  	$23 	$ZERO	0    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$23 	$21 	$0  	3    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -3796,7 +3763,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 68
+Clock Cycle: 67
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -3816,7 +3783,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$19 	$31 	$0  	2    
 	Load2	false	-1              fld 	$20 	$18 	$0  	3    
-	BU1   	true 	1               bne 	$0  	$23 	$ZERO	0    
+	BU1   	false	-1              bne 	$0  	$23 	$ZERO	0    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$23 	$21 	$0  	3    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -3833,7 +3800,7 @@ Reservation Station
 Reorder Buffer
 	HEAD:	1	TAIL:	1
 	ROB  BUSY  DEST  VALUE OP
-	0    true        0     bne 
+	0    false       68    bne 
 	1    true  F22   0     fadd
 	2    true        0     fsd 
 	3    false X4    16    addi
@@ -3855,7 +3822,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 69
+Clock Cycle: 68
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -3914,7 +3881,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 70
+Clock Cycle: 69
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -3972,7 +3939,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 71
+Clock Cycle: 70
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4027,7 +3994,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 72
+Clock Cycle: 71
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4081,7 +4048,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 73
+Clock Cycle: 72
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4135,7 +4102,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 74
+Clock Cycle: 73
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4189,7 +4156,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 75
+Clock Cycle: 74
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4243,7 +4210,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 76
+Clock Cycle: 75
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4257,7 +4224,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$24 	$18 	$0  	1    
 	Load2	false	-1              fld 	$20 	$18 	$0  	3    
-	BU1   	true 	-1              bne 	$0  	$8  	$ZERO	2    
+	BU1   	true 	1               bne 	$0  	$8  	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$8  	$23 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -4296,7 +4263,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 77
+Clock Cycle: 76
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4310,7 +4277,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$24 	$18 	$0  	1    
 	Load2	false	-1              fld 	$20 	$18 	$0  	3    
-	BU1   	true 	1               bne 	$0  	$8  	$ZERO	2    
+	BU1   	false	-1              bne 	$0  	$8  	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$8  	$23 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -4329,7 +4296,7 @@ Reorder Buffer
 	ROB  BUSY  DEST  VALUE OP
 	0    true        0     fsd 
 	1    false X4    8     addi
-	2    true        0     bne 
+	2    false       68    bne 
 	3    true  F22   0     fadd
 Register Mapping
 	X0 -> $ZERO = 0
@@ -4349,7 +4316,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 78
+Clock Cycle: 77
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4402,7 +4369,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 79
+Clock Cycle: 78
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4454,7 +4421,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 80
+Clock Cycle: 79
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4503,7 +4470,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 81
+Clock Cycle: 80
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4551,7 +4518,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 82
+Clock Cycle: 81
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4599,7 +4566,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 83
+Clock Cycle: 82
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4647,7 +4614,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 84
+Clock Cycle: 83
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4695,7 +4662,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 85
+Clock Cycle: 84
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -4703,7 +4670,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$9  	$18 	$0  	3    
 	Load2	false	-1              fld 	$20 	$18 	$0  	3    
-	BU1   	true 	-1              bne 	$0  	$12 	$ZERO	0    
+	BU1   	true 	1               bne 	$0  	$12 	$ZERO	0    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$12 	$8  	$0  	3    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -4742,15 +4709,19 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 86
- PC: -1 ================================================
+Clock Cycle: 85
+ PC: 36 ================================================
 Fetch Queue
+	92: fadd F23, F23, F21
+	96: fsub F23, F23, F21
+	100: addi X2, X2, -8
+	104: bne X1, X0, 36
 Instruction (Decode) Queue
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$9  	$18 	$0  	3    
 	Load2	false	-1              fld 	$20 	$18 	$0  	3    
-	BU1   	true 	1               bne 	$0  	$12 	$ZERO	0    
+	BU1   	false	-1              bne 	$0  	$12 	$ZERO	0    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$12 	$8  	$0  	3    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -4767,7 +4738,7 @@ Reservation Station
 Reorder Buffer
 	HEAD:	1	TAIL:	1
 	ROB  BUSY  DEST  VALUE OP
-	0    true        0     bne 
+	0    false       92    bne 
 	1    true  F22   0     fadd
 	2    true        0     fsd 
 	3    false X4    0     addi
@@ -4789,14 +4760,18 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 0
 	F23 -> $30 = 3
-Clock Cycle: 87
- PC: 36 ================================================
+Clock Cycle: 86
+ PC: 52 ================================================
 Fetch Queue
-	92: fadd F23, F23, F21
-	96: fsub F23, F23, F21
-	100: addi X2, X2, -8
-	104: bne X1, X0, 36
+	36: fadd F10, F1, F2
+	40: fsub F11, F10, F3
+	44: fmul F12, F11, F4
+	48: fmul F13, F2, F3
 Instruction (Decode) Queue
+	fadd $13, $30, $4
+	fsub $14, $13, $4
+	addi $28, $31, -8
+	bne  $18, $ZERO, 36
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$9  	$18 	$0  	3    
@@ -4825,7 +4800,7 @@ Reorder Buffer
 Register Mapping
 	X0 -> $ZERO = 0
 	X1 -> $18 = 8
-	X2 -> $31 = 116
+	X2 -> $28 = 0
 	X4 -> $12 = 6
 	F1 -> $0 = 1
 	F2 -> $1 = 2
@@ -4839,19 +4814,22 @@ Register Mapping
 	F20 -> $10 = 300
 	F21 -> $4 = 1
 	F22 -> $11 = 0
-	F23 -> $30 = 3
-Clock Cycle: 88
- PC: 52 ================================================
+	F23 -> $14 = 16
+Clock Cycle: 87
+ PC: 68 ================================================
 Fetch Queue
-	36: fadd F10, F1, F2
-	40: fsub F11, F10, F3
-	44: fmul F12, F11, F4
-	48: fmul F13, F2, F3
+	52: fdiv F14, F4, F2
+	56: addi X1, X1, -8
+	60: addi X4, X0, 24
+	64: fld F22, 0(X2)
 Instruction (Decode) Queue
-	fadd $13, $30, $4
 	fsub $14, $13, $4
 	addi $28, $31, -8
 	bne  $18, $ZERO, 36
+	fadd $27, $0, $1
+	fsub $26, $27, $2
+	fmul $20, $26, $3
+	fmul $19, $1, $2
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$9  	$18 	$0  	3    
@@ -4862,7 +4840,7 @@ Reservation Station
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
 	INT3	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT4	false	-1              nop 	$0  	$0  	$0  	-1   
-	FPadd1	false	-1              fadd	$11 	$10 	$29 	1    
+	FPadd1	true 	3               fadd	$13 	$30 	$4  	1    
 	FPadd2	false	-1              fsub	$7  	$6  	$2  	0    
 	FPadd3	false	-1              nop 	$0  	$0  	$0  	-1   
 	FPmult1	false	-1              fmul	$10 	$9  	$4  	0    
@@ -4871,10 +4849,10 @@ Reservation Station
 	Store1	true 	1               fsd 	$0  	$31 	$11 	2    
 	Store2	false	-1              nop 	$0  	$0  	$0  	-1   
 Reorder Buffer
-	HEAD:	2	TAIL:	1
+	HEAD:	2	TAIL:	2
 	ROB  BUSY  DEST  VALUE OP
 	0    false       92    bne 
-	1    false F22   905   fadd
+	1    true  F23   0     fadd
 	2    true        0     fsd 
 	3    false X4    0     addi
 Register Mapping
@@ -4882,61 +4860,6 @@ Register Mapping
 	X1 -> $18 = 8
 	X2 -> $28 = 0
 	X4 -> $12 = 6
-	F1 -> $0 = 1
-	F2 -> $1 = 2
-	F3 -> $2 = 3
-	F4 -> $3 = 4
-	F10 -> $6 = 3
-	F11 -> $7 = 0
-	F12 -> $17 = 0
-	F13 -> $16 = 6
-	F14 -> $15 = 2
-	F20 -> $10 = 300
-	F21 -> $4 = 1
-	F22 -> $11 = 905
-	F23 -> $14 = 16
-Clock Cycle: 89
- PC: 68 ================================================
-Fetch Queue
-	52: fdiv F14, F4, F2
-	56: addi X1, X1, -8
-	60: addi X4, X0, 24
-	64: fld F22, 0(X2)
-Instruction (Decode) Queue
-	fadd $27, $0, $1
-	fsub $26, $27, $2
-	fmul $20, $26, $3
-	fmul $19, $1, $2
-Reservation Station
-	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
-	Load1	false	-1              fld 	$9  	$18 	$0  	3    
-	Load2	false	-1              fld 	$20 	$18 	$0  	3    
-	BU1   	true 	1               bne 	$0  	$18 	$ZERO	0    
-	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
-	INT1	true 	1               addi	$28 	$31 	$0  	3    
-	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
-	INT3	false	-1              nop 	$0  	$0  	$0  	-1   
-	INT4	false	-1              nop 	$0  	$0  	$0  	-1   
-	FPadd1	true 	3               fadd	$13 	$30 	$4  	1    
-	FPadd2	true 	-1              fsub	$14 	$13 	$4  	2    
-	FPadd3	false	-1              nop 	$0  	$0  	$0  	-1   
-	FPmult1	false	-1              fmul	$10 	$9  	$4  	0    
-	FPmult2	false	-1              fmul	$16 	$1  	$2  	2    
-	FPDiv1	false	-1              fdiv	$15 	$3  	$1  	3    
-	Store1	false	-1              fsd 	$0  	$31 	$11 	2    
-	Store2	false	-1              nop 	$0  	$0  	$0  	-1   
-Reorder Buffer
-	HEAD:	1	TAIL:	1
-	ROB  BUSY  DEST  VALUE OP
-	0    true        0     bne 
-	1    true  F23   0     fadd
-	2    true  F23   0     fsub
-	3    true  X2    0     addi
-Register Mapping
-	X0 -> $ZERO = 0
-	X1 -> $18 = 8
-	X2 -> $28 = 0
-	X4 -> $12 = 0
 	F1 -> $0 = 1
 	F2 -> $1 = 2
 	F3 -> $2 = 3
@@ -4950,7 +4873,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $11 = 905
 	F23 -> $14 = 16
-Clock Cycle: 90
+Clock Cycle: 88
  PC: 84 ================================================
 Fetch Queue
 	68: fld F20, 0(X1)
@@ -4970,9 +4893,9 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$9  	$18 	$0  	3    
 	Load2	false	-1              fld 	$20 	$18 	$0  	3    
-	BU1   	false	-1              bne 	$0  	$18 	$ZERO	0    
+	BU1   	true 	1               bne 	$0  	$18 	$ZERO	0    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
-	INT1	false	-1              addi	$28 	$31 	$0  	3    
+	INT1	true 	1               addi	$28 	$31 	$0  	3    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
 	INT3	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT4	false	-1              nop 	$0  	$0  	$0  	-1   
@@ -4987,10 +4910,10 @@ Reservation Station
 Reorder Buffer
 	HEAD:	1	TAIL:	1
 	ROB  BUSY  DEST  VALUE OP
-	0    false       36    bne 
+	0    true        0     bne 
 	1    true  F23   0     fadd
 	2    true  F23   0     fsub
-	3    false X2    108   addi
+	3    true  X2    0     addi
 Register Mapping
 	X0 -> $ZERO = 0
 	X1 -> $22 = 300
@@ -5009,7 +4932,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $25 = 305
 	F23 -> $14 = 16
-Clock Cycle: 91
+Clock Cycle: 89
  PC: 68 ================================================
 Fetch Queue
 	84: addi X4, X4, -8
@@ -5070,7 +4993,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $9 = 300
 	F23 -> $14 = 16
-Clock Cycle: 92
+Clock Cycle: 90
  PC: 84 ================================================
 Fetch Queue
 	68: fld F20, 0(X1)
@@ -5134,7 +5057,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $9 = 300
 	F23 -> $14 = 16
-Clock Cycle: 93
+Clock Cycle: 91
  PC: 68 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -5200,7 +5123,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $9 = 300
 	F23 -> $14 = 16
-Clock Cycle: 94
+Clock Cycle: 92
  PC: 68 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -5266,7 +5189,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $9 = 300
 	F23 -> $14 = 16
-Clock Cycle: 95
+Clock Cycle: 93
  PC: 84 ================================================
 Fetch Queue
 	68: fld F20, 0(X1)
@@ -5333,7 +5256,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $13 = 4
 	F23 -> $14 = 3
-Clock Cycle: 96
+Clock Cycle: 94
  PC: 88 ================================================
 Fetch Queue
 	72: fmul F20, F20, F21
@@ -5400,7 +5323,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $13 = 4
 	F23 -> $14 = 3
-Clock Cycle: 97
+Clock Cycle: 95
  PC: 88 ================================================
 Fetch Queue
 	72: fmul F20, F20, F21
@@ -5467,7 +5390,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $13 = 4
 	F23 -> $14 = 3
-Clock Cycle: 98
+Clock Cycle: 96
  PC: 88 ================================================
 Fetch Queue
 	72: fmul F20, F20, F21
@@ -5534,7 +5457,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $13 = 4
 	F23 -> $14 = 3
-Clock Cycle: 99
+Clock Cycle: 97
  PC: -1 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -5601,7 +5524,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $13 = 4
 	F23 -> $14 = 3
-Clock Cycle: 100
+Clock Cycle: 98
  PC: -1 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -5668,7 +5591,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $13 = 4
 	F23 -> $14 = 3
-Clock Cycle: 101
+Clock Cycle: 99
  PC: -1 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -5735,7 +5658,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $13 = 4
 	F23 -> $14 = 3
-Clock Cycle: 102
+Clock Cycle: 100
  PC: -1 ================================================
 Fetch Queue
 	76: fadd F22, F20, F22
@@ -5802,7 +5725,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $13 = 4
 	F23 -> $14 = 3
-Clock Cycle: 103
+Clock Cycle: 101
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -5865,7 +5788,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 104
+Clock Cycle: 102
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -5926,7 +5849,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 105
+Clock Cycle: 103
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -5986,7 +5909,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 106
+Clock Cycle: 104
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6046,7 +5969,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 107
+Clock Cycle: 105
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6106,7 +6029,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 108
+Clock Cycle: 106
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6166,7 +6089,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 109
+Clock Cycle: 107
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6186,7 +6109,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$25 	$28 	$0  	0    
 	Load2	false	-1              fld 	$23 	$22 	$0  	1    
-	BU1   	true 	-1              bne 	$0  	$29 	$ZERO	2    
+	BU1   	true 	1               bne 	$0  	$29 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$29 	$24 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -6225,7 +6148,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 110
+Clock Cycle: 108
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6245,7 +6168,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$25 	$28 	$0  	0    
 	Load2	false	-1              fld 	$23 	$22 	$0  	1    
-	BU1   	true 	1               bne 	$0  	$29 	$ZERO	2    
+	BU1   	false	-1              bne 	$0  	$29 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$29 	$24 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -6264,7 +6187,7 @@ Reorder Buffer
 	ROB  BUSY  DEST  VALUE OP
 	0    true        0     fsd 
 	1    false X4    16    addi
-	2    true        0     bne 
+	2    false       68    bne 
 	3    true  F22   0     fadd
 Register Mapping
 	X0 -> $ZERO = 0
@@ -6284,7 +6207,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 111
+Clock Cycle: 109
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6343,7 +6266,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 112
+Clock Cycle: 110
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6401,7 +6324,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 113
+Clock Cycle: 111
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6456,7 +6379,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 114
+Clock Cycle: 112
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6510,7 +6433,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 115
+Clock Cycle: 113
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6564,7 +6487,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 116
+Clock Cycle: 114
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6618,7 +6541,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 117
+Clock Cycle: 115
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6672,7 +6595,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 118
+Clock Cycle: 116
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6686,7 +6609,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$8  	$22 	$0  	3    
 	Load2	false	-1              fld 	$23 	$22 	$0  	1    
-	BU1   	true 	-1              bne 	$0  	$31 	$ZERO	0    
+	BU1   	true 	1               bne 	$0  	$31 	$ZERO	0    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$31 	$29 	$0  	3    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -6725,7 +6648,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 119
+Clock Cycle: 117
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6739,7 +6662,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$8  	$22 	$0  	3    
 	Load2	false	-1              fld 	$23 	$22 	$0  	1    
-	BU1   	true 	1               bne 	$0  	$31 	$ZERO	0    
+	BU1   	false	-1              bne 	$0  	$31 	$ZERO	0    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$31 	$29 	$0  	3    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -6756,7 +6679,7 @@ Reservation Station
 Reorder Buffer
 	HEAD:	1	TAIL:	1
 	ROB  BUSY  DEST  VALUE OP
-	0    true        0     bne 
+	0    false       68    bne 
 	1    true  F22   0     fadd
 	2    true        0     fsd 
 	3    false X4    8     addi
@@ -6778,7 +6701,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 120
+Clock Cycle: 118
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6831,7 +6754,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 121
+Clock Cycle: 119
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6883,7 +6806,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 122
+Clock Cycle: 120
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6932,7 +6855,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 123
+Clock Cycle: 121
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -6980,7 +6903,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 124
+Clock Cycle: 122
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7028,7 +6951,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 125
+Clock Cycle: 123
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7076,7 +6999,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 126
+Clock Cycle: 124
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7124,7 +7047,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 127
+Clock Cycle: 125
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7132,7 +7055,7 @@ Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$6  	$22 	$0  	1    
 	Load2	false	-1              fld 	$23 	$22 	$0  	1    
-	BU1   	true 	-1              bne 	$0  	$16 	$ZERO	2    
+	BU1   	true 	1               bne 	$0  	$16 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$16 	$31 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -7171,15 +7094,19 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 128
+Clock Cycle: 126
  PC: -1 ================================================
 Fetch Queue
+	92: fadd F23, F23, F21
+	96: fsub F23, F23, F21
+	100: addi X2, X2, -8
+	104: bne X1, X0, 36
 Instruction (Decode) Queue
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$6  	$22 	$0  	1    
 	Load2	false	-1              fld 	$23 	$22 	$0  	1    
-	BU1   	true 	1               bne 	$0  	$16 	$ZERO	2    
+	BU1   	false	-1              bne 	$0  	$16 	$ZERO	2    
 	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT1	false	-1              addi	$16 	$31 	$0  	1    
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
@@ -7198,7 +7125,7 @@ Reorder Buffer
 	ROB  BUSY  DEST  VALUE OP
 	0    true        0     fsd 
 	1    false X4    0     addi
-	2    true        0     bne 
+	2    false       92    bne 
 	3    true  F22   0     fadd
 Register Mapping
 	X0 -> $ZERO = 0
@@ -7218,14 +7145,18 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 0
 	F23 -> $14 = 3
-Clock Cycle: 129
- PC: -1 ================================================
+Clock Cycle: 127
+ PC: 124 ================================================
 Fetch Queue
-	92: fadd F23, F23, F21
-	96: fsub F23, F23, F21
-	100: addi X2, X2, -8
-	104: bne X1, X0, 36
+	108: fsd F10, 136(X0)
+	112: fsd F11, 140(X0)
+	116: fsd F12, 144(X0)
+	120: fsd F13, 148(X0)
 Instruction (Decode) Queue
+	fadd $15, $14, $4
+	fsub $18, $15, $4
+	addi $12, $28, -8
+	bne  $22, $ZERO, 36
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$6  	$22 	$0  	1    
@@ -7254,7 +7185,7 @@ Reorder Buffer
 Register Mapping
 	X0 -> $ZERO = 0
 	X1 -> $22 = 0
-	X2 -> $28 = 108
+	X2 -> $12 = 0
 	X4 -> $16 = 6
 	F1 -> $0 = 1
 	F2 -> $1 = 2
@@ -7268,19 +7199,22 @@ Register Mapping
 	F20 -> $7 = 400
 	F21 -> $4 = 1
 	F22 -> $17 = 0
-	F23 -> $14 = 3
-Clock Cycle: 130
- PC: 124 ================================================
+	F23 -> $18 = 8
+Clock Cycle: 128
+ PC: 140 ================================================
 Fetch Queue
-	108: fsd F10, 136(X0)
-	112: fsd F11, 140(X0)
-	116: fsd F12, 144(X0)
-	120: fsd F13, 148(X0)
+	124: fsd F14, 152(X0)
+	128: fsd F20, 156(X0)
+	132: fsd F21, 160(X0)
+	136: fsd F22, 164(X0)
 Instruction (Decode) Queue
-	fadd $15, $14, $4
 	fsub $18, $15, $4
 	addi $12, $28, -8
 	bne  $22, $ZERO, 36
+	fsd  $27, 136($ZERO)
+	fsd  $26, 140($ZERO)
+	fsd  $20, 144($ZERO)
+	fsd  $19, 148($ZERO)
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$6  	$22 	$0  	1    
@@ -7291,7 +7225,7 @@ Reservation Station
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
 	INT3	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT4	false	-1              nop 	$0  	$0  	$0  	-1   
-	FPadd1	false	-1              fadd	$17 	$7  	$13 	3    
+	FPadd1	true 	3               fadd	$15 	$14 	$4  	3    
 	FPadd2	false	-1              fsub	$26 	$27 	$2  	2    
 	FPadd3	false	-1              nop 	$0  	$0  	$0  	-1   
 	FPmult1	false	-1              fmul	$7  	$6  	$4  	2    
@@ -7300,12 +7234,12 @@ Reservation Station
 	Store1	true 	1               fsd 	$0  	$28 	$17 	0    
 	Store2	false	-1              nop 	$0  	$0  	$0  	-1   
 Reorder Buffer
-	HEAD:	0	TAIL:	3
+	HEAD:	0	TAIL:	0
 	ROB  BUSY  DEST  VALUE OP
 	0    true        0     fsd 
 	1    false X4    0     addi
 	2    false       92    bne 
-	3    false F22   1203  fadd
+	3    true  F23   0     fadd
 Register Mapping
 	X0 -> $ZERO = 0
 	X1 -> $22 = 0
@@ -7324,18 +7258,19 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 8
-Clock Cycle: 131
- PC: 140 ================================================
+Clock Cycle: 129
+ PC: 144 ================================================
 Fetch Queue
-	124: fsd F14, 152(X0)
-	128: fsd F20, 156(X0)
-	132: fsd F21, 160(X0)
-	136: fsd F22, 164(X0)
+	140: fsd F23, 168(X0)
 Instruction (Decode) Queue
 	fsd  $27, 136($ZERO)
 	fsd  $26, 140($ZERO)
 	fsd  $20, 144($ZERO)
 	fsd  $19, 148($ZERO)
+	fsd  $21, 152($ZERO)
+	fsd  $7, 156($ZERO)
+	fsd  $4, 160($ZERO)
+	fsd  $17, 164($ZERO)
 Reservation Station
 	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
 	Load1	false	-1              fld 	$6  	$22 	$0  	1    
@@ -7346,7 +7281,7 @@ Reservation Station
 	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
 	INT3	false	-1              nop 	$0  	$0  	$0  	-1   
 	INT4	false	-1              nop 	$0  	$0  	$0  	-1   
-	FPadd1	true 	3               fadd	$15 	$14 	$4  	3    
+	FPadd1	true 	2               fadd	$15 	$14 	$4  	3    
 	FPadd2	true 	-1              fsub	$18 	$15 	$4  	0    
 	FPadd3	false	-1              nop 	$0  	$0  	$0  	-1   
 	FPmult1	false	-1              fmul	$7  	$6  	$4  	2    
@@ -7379,63 +7314,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 8
-Clock Cycle: 132
- PC: 144 ================================================
-Fetch Queue
-	140: fsd F23, 168(X0)
-Instruction (Decode) Queue
-	fsd  $27, 136($ZERO)
-	fsd  $26, 140($ZERO)
-	fsd  $20, 144($ZERO)
-	fsd  $19, 148($ZERO)
-	fsd  $21, 152($ZERO)
-	fsd  $7, 156($ZERO)
-	fsd  $4, 160($ZERO)
-	fsd  $17, 164($ZERO)
-Reservation Station
-	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
-	Load1	false	-1              fld 	$6  	$22 	$0  	1    
-	Load2	false	-1              fld 	$23 	$22 	$0  	1    
-	BU1   	false	-1              bne 	$0  	$22 	$ZERO	2    
-	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
-	INT1	false	-1              addi	$12 	$28 	$0  	1    
-	INT2	false	-1              addi	$7  	$ZERO	$0  	3    
-	INT3	false	-1              nop 	$0  	$0  	$0  	-1   
-	INT4	false	-1              nop 	$0  	$0  	$0  	-1   
-	FPadd1	true 	2               fadd	$15 	$14 	$4  	3    
-	FPadd2	true 	-1              fsub	$18 	$15 	$4  	0    
-	FPadd3	false	-1              nop 	$0  	$0  	$0  	-1   
-	FPmult1	false	-1              fmul	$7  	$6  	$4  	2    
-	FPmult2	false	-1              fmul	$19 	$1  	$2  	0    
-	FPDiv1	false	-1              fdiv	$21 	$3  	$1  	1    
-	Store1	false	-1              fsd 	$0  	$28 	$17 	0    
-	Store2	false	-1              nop 	$0  	$0  	$0  	-1   
-Reorder Buffer
-	HEAD:	3	TAIL:	3
-	ROB  BUSY  DEST  VALUE OP
-	0    true  F23   0     fsub
-	1    false X2    100   addi
-	2    false       108   bne 
-	3    true  F23   0     fadd
-Register Mapping
-	X0 -> $ZERO = 0
-	X1 -> $22 = 0
-	X2 -> $12 = 0
-	X4 -> $16 = 0
-	F1 -> $0 = 1
-	F2 -> $1 = 2
-	F3 -> $2 = 3
-	F4 -> $3 = 4
-	F10 -> $27 = 3
-	F11 -> $26 = 0
-	F12 -> $20 = 0
-	F13 -> $19 = 6
-	F14 -> $21 = 2
-	F20 -> $7 = 400
-	F21 -> $4 = 1
-	F22 -> $17 = 1203
-	F23 -> $18 = 8
-Clock Cycle: 133
+Clock Cycle: 130
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7491,7 +7370,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 8
-Clock Cycle: 134
+Clock Cycle: 131
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7546,7 +7425,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 8
-Clock Cycle: 135
+Clock Cycle: 132
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7601,7 +7480,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 8
-Clock Cycle: 136
+Clock Cycle: 133
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7656,7 +7535,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 8
-Clock Cycle: 137
+Clock Cycle: 134
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7709,7 +7588,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 3
-Clock Cycle: 138
+Clock Cycle: 135
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7761,7 +7640,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 3
-Clock Cycle: 139
+Clock Cycle: 136
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7812,7 +7691,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 3
-Clock Cycle: 140
+Clock Cycle: 137
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7862,7 +7741,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 3
-Clock Cycle: 141
+Clock Cycle: 138
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7911,7 +7790,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 3
-Clock Cycle: 142
+Clock Cycle: 139
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -7959,7 +7838,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 3
-Clock Cycle: 143
+Clock Cycle: 140
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -8006,7 +7885,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 3
-Clock Cycle: 144
+Clock Cycle: 141
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -8053,7 +7932,7 @@ Register Mapping
 	F21 -> $4 = 1
 	F22 -> $17 = 1203
 	F23 -> $18 = 3
-Clock Cycle: 145
+Clock Cycle: 142
  PC: 144 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -8101,6 +7980,6 @@ Register Mapping
 	F22 -> $17 = 1203
 	F23 -> $18 = 3
 Simulation complete!
-Total CCs: 145
+Total CCs: 142
 RS Stalls: 10
-ROB Stalls: 107
+ROB Stalls: 112

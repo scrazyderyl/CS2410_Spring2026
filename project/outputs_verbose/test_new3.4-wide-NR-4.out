@@ -222,7 +222,7 @@ Reservation Station
 	INT2	false	-1              addi	$1  	$ZERO	$0  	1    
 	INT3	true 	1               addi	$2  	$ZERO	$0  	2    
 	INT4	true 	-1              addi	$3  	$ZERO	$0  	3    
-	FPadd1	true 	-1              fadd	$5  	$4  	$4  	1    
+	FPadd1	true 	3               fadd	$5  	$4  	$4  	1    
 	FPadd2	false	-1              nop 	$0  	$0  	$0  	-1   
 	FPadd3	false	-1              nop 	$0  	$0  	$0  	-1   
 	FPmult1	false	-1              nop 	$0  	$0  	$0  	-1   
@@ -271,8 +271,8 @@ Reservation Station
 	INT2	false	-1              addi	$1  	$ZERO	$0  	1    
 	INT3	false	-1              addi	$2  	$ZERO	$0  	2    
 	INT4	true 	1               addi	$3  	$ZERO	$0  	3    
-	FPadd1	true 	3               fadd	$5  	$4  	$4  	1    
-	FPadd2	true 	-1              fadd	$6  	$4  	$4  	2    
+	FPadd1	true 	2               fadd	$5  	$4  	$4  	1    
+	FPadd2	true 	3               fadd	$6  	$4  	$4  	2    
 	FPadd3	false	-1              nop 	$0  	$0  	$0  	-1   
 	FPmult1	false	-1              nop 	$0  	$0  	$0  	-1   
 	FPmult2	false	-1              nop 	$0  	$0  	$0  	-1   
@@ -298,53 +298,6 @@ Register Mapping
 	F3 -> $10 = 0
 	F4 -> $9 = 0
 Clock Cycle: 7
- PC: -1 ================================================
-Fetch Queue
-Instruction (Decode) Queue
-	fadd $9, $8, $4
-	fmul $10, $7, $4
-	fsd  $9, 0($0)
-	add  $11, $0, $3
-	addi $12, $2, 1
-	slt  $13, $12, $1
-	bne  $13, $ZERO, 36
-Reservation Station
-	Type	Busy	Remaining CC	Op    	Dest	Src1	Src2	ROB Index
-	Load1	false	-1              fld 	$4  	$0  	$0  	0    
-	Load2	false	-1              nop 	$0  	$0  	$0  	-1   
-	BU1   	false	-1              nop 	$0  	$0  	$0  	-1   
-	BU2   	false	-1              nop 	$0  	$0  	$0  	-1   
-	INT1	false	-1              addi	$0  	$ZERO	$0  	0    
-	INT2	false	-1              addi	$1  	$ZERO	$0  	1    
-	INT3	false	-1              addi	$2  	$ZERO	$0  	2    
-	INT4	false	-1              addi	$3  	$ZERO	$0  	3    
-	FPadd1	true 	2               fadd	$5  	$4  	$4  	1    
-	FPadd2	true 	3               fadd	$6  	$4  	$4  	2    
-	FPadd3	true 	-1              fadd	$8  	$4  	$4  	0    
-	FPmult1	true 	-1              fmul	$7  	$6  	$4  	3    
-	FPmult2	false	-1              nop 	$0  	$0  	$0  	-1   
-	FPDiv1	false	-1              nop 	$0  	$0  	$0  	-1   
-	Store1	false	-1              nop 	$0  	$0  	$0  	-1   
-	Store2	false	-1              nop 	$0  	$0  	$0  	-1   
-Reorder Buffer
-	HEAD:	1	TAIL:	1
-	ROB  BUSY  DEST  VALUE OP
-	0    true  F4    0     fadd
-	1    true  F2    0     fadd
-	2    true  F3    0     fadd
-	3    true  F3    0     fmul
-Register Mapping
-	X0 -> $ZERO = 0
-	X1 -> $11 = 0
-	X2 -> $1 = 5
-	X3 -> $12 = 0
-	X4 -> $3 = 4
-	X5 -> $13 = 0
-	F1 -> $4 = 0
-	F2 -> $5 = 0
-	F3 -> $10 = 0
-	F4 -> $9 = 0
-Clock Cycle: 8
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -391,7 +344,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 9
+Clock Cycle: 8
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -437,7 +390,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 10
+Clock Cycle: 9
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -482,7 +435,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 11
+Clock Cycle: 10
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -527,7 +480,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 12
+Clock Cycle: 11
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -572,7 +525,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 13
+Clock Cycle: 12
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -617,7 +570,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 14
+Clock Cycle: 13
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -659,7 +612,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 15
+Clock Cycle: 14
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -701,7 +654,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 16
+Clock Cycle: 15
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -743,7 +696,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 17
+Clock Cycle: 16
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -785,7 +738,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 18
+Clock Cycle: 17
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -825,7 +778,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 19
+Clock Cycle: 18
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -865,7 +818,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 20
+Clock Cycle: 19
  PC: 52 ================================================
 Fetch Queue
 	36: fadd F4, F4, F1
@@ -909,7 +862,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $10 = 0
 	F4 -> $9 = 0
-Clock Cycle: 21
+Clock Cycle: 20
  PC: 36 ================================================
 Fetch Queue
 	52: addi X3, X3, 1
@@ -956,7 +909,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $15 = 0
 	F4 -> $14 = 0
-Clock Cycle: 22
+Clock Cycle: 21
  PC: 52 ================================================
 Fetch Queue
 	36: fadd F4, F4, F1
@@ -1003,7 +956,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $15 = 0
 	F4 -> $14 = 0
-Clock Cycle: 23
+Clock Cycle: 22
  PC: 36 ================================================
 Fetch Queue
 	52: addi X3, X3, 1
@@ -1053,7 +1006,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $20 = 0
 	F4 -> $19 = 0
-Clock Cycle: 24
+Clock Cycle: 23
  PC: 52 ================================================
 Fetch Queue
 	36: fadd F4, F4, F1
@@ -1107,7 +1060,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $20 = 0
 	F4 -> $19 = 0
-Clock Cycle: 25
+Clock Cycle: 24
  PC: 36 ================================================
 Fetch Queue
 	52: addi X3, X3, 1
@@ -1163,7 +1116,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $25 = 0
 	F4 -> $24 = 0
-Clock Cycle: 26
+Clock Cycle: 25
  PC: 52 ================================================
 Fetch Queue
 	36: fadd F4, F4, F1
@@ -1219,7 +1172,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $25 = 0
 	F4 -> $24 = 0
-Clock Cycle: 27
+Clock Cycle: 26
  PC: -1 ================================================
 Fetch Queue
 	52: addi X3, X3, 1
@@ -1277,7 +1230,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 28
+Clock Cycle: 27
  PC: -1 ================================================
 Fetch Queue
 	60: bne X5, X0, 36
@@ -1334,7 +1287,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 29
+Clock Cycle: 28
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1390,7 +1343,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 30
+Clock Cycle: 29
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1442,7 +1395,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 31
+Clock Cycle: 30
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1493,7 +1446,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 32
+Clock Cycle: 31
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1543,7 +1496,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 33
+Clock Cycle: 32
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1592,7 +1545,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 34
+Clock Cycle: 33
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1637,7 +1590,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 35
+Clock Cycle: 34
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1681,7 +1634,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 36
+Clock Cycle: 35
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1724,7 +1677,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 37
+Clock Cycle: 36
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1766,7 +1719,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 38
+Clock Cycle: 37
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1806,7 +1759,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 39
+Clock Cycle: 38
  PC: -1 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1846,7 +1799,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 40
+Clock Cycle: 39
  PC: 80 ================================================
 Fetch Queue
 	64: fadd F2, F2, F4
@@ -1890,7 +1843,7 @@ Register Mapping
 	F2 -> $5 = 0
 	F3 -> $30 = 0
 	F4 -> $29 = 0
-Clock Cycle: 41
+Clock Cycle: 40
  PC: 80 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1934,7 +1887,7 @@ Register Mapping
 	F2 -> $7 = 0
 	F3 -> $0 = 100
 	F4 -> $29 = 0
-Clock Cycle: 42
+Clock Cycle: 41
  PC: 80 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -1974,7 +1927,7 @@ Register Mapping
 	F2 -> $7 = 0
 	F3 -> $0 = 100
 	F4 -> $29 = 0
-Clock Cycle: 43
+Clock Cycle: 42
  PC: 80 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -2014,7 +1967,7 @@ Register Mapping
 	F2 -> $7 = 0
 	F3 -> $0 = 100
 	F4 -> $29 = 0
-Clock Cycle: 44
+Clock Cycle: 43
  PC: 80 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -2054,7 +2007,7 @@ Register Mapping
 	F2 -> $7 = 0
 	F3 -> $0 = 100
 	F4 -> $29 = 0
-Clock Cycle: 45
+Clock Cycle: 44
  PC: 80 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -2094,7 +2047,7 @@ Register Mapping
 	F2 -> $7 = 0
 	F3 -> $0 = 100
 	F4 -> $29 = 0
-Clock Cycle: 46
+Clock Cycle: 45
  PC: 80 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -2134,7 +2087,7 @@ Register Mapping
 	F2 -> $7 = 0
 	F3 -> $0 = 0
 	F4 -> $29 = 0
-Clock Cycle: 47
+Clock Cycle: 46
  PC: 80 ================================================
 Fetch Queue
 Instruction (Decode) Queue
@@ -2175,6 +2128,6 @@ Register Mapping
 	F3 -> $0 = 0
 	F4 -> $29 = 0
 Simulation complete!
-Total CCs: 47
-RS Stalls: 2
-ROB Stalls: 26
+Total CCs: 46
+RS Stalls: 1
+ROB Stalls: 25
