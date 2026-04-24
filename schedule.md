@@ -87,20 +87,30 @@ CS 2410 Computer Architecture
 
 * Class 1: Write back vs write through caches
 
-* Class 2: Split vs. unified caches / Private vs. shared caches / Prefetching
+* Class 2: Private vs. shared caches / Prefetching
 
 ## WEEK 14 (Week of 13 APR)
 
-* Class 1: Virtual Memory / TLBs / Cache Coherence
+* Class 1: Virtual Memory / TLBs
 
-* Class 2: SIMD / GPU architecture
+* Class 2: SIMD architecture
 
 ## WEEK 15 (Week of 20 APR)
 
-* Class 1: GPU programming and performance
+* Class 1: GPU architecture
 
-* Class 2: Review for Midterm 2
+* Class 2: GPU programming and performance
 
 ## WEEK 16 (Week of 27 APR)
 
-* Final Exam: TBD
+* Class 1: Multiprocessors and Cache Coherence
+
+* Class 2: Midterm 2 on GradeScope
+  * Steps:
+    1. Do TopHat attendance at start of class.  If no attendance, grade will not be counted.
+    2. Click on assignment "Midterm 2" on GradeScope (will appear at start of class).
+    3. Click on the "Start Assignment" button.  There will be a count down timer on the top right once you start.
+    4. Finish and submit the exam within 75 minutes.  You can submit multiple times.
+  * Exam is open book (Lecture slides, notes, textbook, homework).  All materials have to be on paper.
+  * You should have only GradeScope on your laptop screen at all times.
+    * No internet access.  No generative AI.
