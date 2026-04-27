@@ -1,6 +1,9 @@
 - [CS 2410 - Computer Architecture](#cs-2410---computer-architecture)
 - [Introduction](#introduction)
   * [Description](#description)
+    + [Simulated Architecture](#simulated-architecture)
+    + [Project Language](#project-language)
+    + [Project Submission](#project-submission)
 - [Building and Running](#building-and-running)
   * [Environment Setup](#environment-setup)
   * [Directory Structure and Makefile Script](#directory-structure-and-makefile-script)
@@ -12,7 +15,8 @@
 # CS 2410 - Computer Architecture
 Spring Semester 2026 - Project
 
-* DUE: April 29 (Wednesday), 2026 11:59 PM 
+* Project Discussion DUE: April 29 (Wednesday), 2026 11:59 PM 
+* Project Source DUE: May 3 (Sunday), 2026 11:59 PM 
 
 Please accept the Project on **GitHub Classroom** using this link: https://classroom.github.com/a/Nsi2q5Zc
 
@@ -25,7 +29,121 @@ It is created in **private** mode by default --- please keep it that way.
 
 ## Description
 
-Please refer to the [Project.pdf](Project.pdf) file for detailed instructions.
+This is a single-person project.  You are allowed and encouraged to discuss the
+project with your classmates, but no sharing of the project source code and
+report. Please list your discussion peers, if any, in your report submission.
+One benefit of a dynamically scheduled processor is its ability to tolerate
+changes in latency or issue capability in out of order speculative processors.
+
+The purpose of this project is to evaluate this effect of different
+architecture parameters on a CPU design by simulating a modified (and
+simplified) version of the PowerPc 604 and 620 architectures. We will assume a
+32-bit architecture that executes a subset of the RISC V ISA which consists of
+the following 10 instructions: fld, fsd, add, addi, slt, fadd, fsub, fmul,
+fdiv, bne. See Appendix A in the textbook for instructions' syntax and
+semantics.
+
+Your simulator should take an input file as a command line input. This input
+file, for example, prog.dat, will contain a RISC V assembly language program
+(code segment). Each line in the input file is a RISC V instruction from the
+aforementioned 10 instructions. Your simulator should read this input file,
+recognize the instructions, recognize the different fields of the instructions,
+and simulate their execution on the architecture described below in this
+handout. Your will have to implement the functional+timing simulator.
+
+Please read the following description of the simulated architecture carefully
+before you start constructing your simulator.
+
+### Simulated Architecture
+
+The simulated architecture is a speculative, multi-issue, out of order CPU where:
+
+a. The fetch unit fetches up to NF=4 instructions every cycle (i.e., issue
+width is 4).
+
+b. A 2-bit dynamic branch predictor (initialized to predict weakly taken(t))
+with 16-entry branch target buffer (BTB) is used. It hashes the address of a
+branch, L, to an entry in the BTB using bits 7-4 of L.  The simulator is
+simplified by not simulating mispredicted instructions (if it were to do so,
+complex features like maintaining CPU checkpoints on every branch and restoring
+them on a misprediction, and flushing mispredicted instructions would have to
+be implemented).  Instead, on a branch mispredict, the simulator simply stalls
+the fetch until the culprit branch is resolved in the EX stage, so that no
+mispredicted instructions enter the pipeline.
+
+c. The decode unit decodes (in a separate cycle) the instructions fetched by
+the fetch unit and stores the decoded instructions in an instruction queue
+which can hold up to NI=16 instructions.
+
+d. Up to NW=4 instructions can be dispatched every clock cycle to reservation
+stations. The architecture has the following functional units with the shown
+latencies and number of reservation stations.
+
+| Unit      | Latency (cycles) for operation         | Reservation stations           | Instructions executing on the unit |
+|-----------|----------------------------------------|--------------------------------|------------------------------------|
+| INT       | 1 (integer and logic operations)       | 4                              | add, addi, slt                     |
+| Load/Store| 1 for address calculation              | 2 load buffer + 2 store buffer | fld, fsd                           |
+| FPadd     | 3 (pipelined FP add)                   | 3                              | fadd, fsub                         |
+| FPmult    | 4 (non-pipelined FP multiply)          | 2                              | fmul                               |
+| FPdiv     | 6 (non-pipelined divide)               | 1                              | fdiv                               |
+| BU        | 1 (condition and target evaluation)    | 2                              | bne                                |
+
+e. Up to NB=4 results can be written back in the WB stage.  This depends on the
+width of the Common Data Busses (CDB) that forwards the results to the
+reservation stations, the physical register file, and the ROB.  All
+instructions except branch instructions produce a result, including store
+instructions.  Store instructions produce a store value that needs to be
+written back to the store queue through the CDB.  
+
+f. A circular reorder buffer (ROB) with NR=16 entries is used and up to NC=4
+instructions can be committed from the top of the ROB in one cycle.
+
+g. You need to perform register renaming to eliminate the false dependences in
+the decode stage. Assuming we have a total of 32 physical registers (p0, p1,
+p2, …p31). You will need to implement a mapping table and a free list of the
+physical register as we discussed in class. Also, assuming that all of the
+physical registers can be used by either integer or floating point
+instructions.
+
+h. A dedicated/separate ALU is used for the effective address calculation in
+the branch unit (BU) and simultaneously, a special hardware is used to evaluate
+the branch condition. Also, a dedicated/separate ALU is used for the effective
+address calculation in the load/store unit. You will also need to implement
+forwarding in your simulation design.
+
+The simulator should be parameterized so that one can experiment with different
+values of NF, NI, NW, NR, NB, and NC (by reading a configuration file). To
+simplify the simulation, we will assume that the instruction cache line
+contains NF instructions and that the entire program fits in the instruction
+cache (i.e., it always takes one cycle to read a cache line). Also, the data
+cache (single ported) is very large so that writing or reading a word into the
+data cache always takes one cycle (i.e., eliminating the cache effect in memory
+accesses).
+
+Your simulation should keep statistics about the number of execution cycles,
+the number of times computations has stalled because 1) the reservation
+stations of a given unit are occupied, 2) the reorder buffers are full. You
+should also keep track of the utilization of the CDB busses. This may help
+identify the bottlenecks of the architecture.
+
+You simulation should be both functional and timing correct. For functional, we
+check the register and memory contents. For timing, we check the execution
+cycles.
+
+### Project Language
+
+Please use C/C++ to implement your project. If you are not familiar with C/C++ and absolutely need to use another language talk to me as soon as possible.
+
+### Project Submission
+
+* "Project Discussion" submission on GradeScope (due 4/29 11:59 PM) - 18 points
+  * Answer performance comparison questions about various CPU configurations
+* "Project" submission on GradeScope (due 5/3 11:59 PM) - 82 points
+  * Submit project GitHub repository to autograder.  Can submit as many times as you want.
+  * Autograder score (1 point per test case diff) - 77 points
+  * "Report.pdf" added to the root of the repository - 5 points
+    * Include a figure with detailed text to describe the module design of your code.
+    * Mark and list the key data structures used in your code.
 
 # Building and Running
 
@@ -84,9 +202,18 @@ Here is an overview of the directory structure:
 * Makefile : The build script for the Make tool.
 * configs/ : Directory where processor configuration files are.
 * **diffs/** : Directory where **differences** between outputs/ and outputs_solution/ are stored.
-* outputs/ : Directory where outputs after running five_stage are stored.
-* outputs_solution/ : Directory where outputs produced by five_stage_solution are stored.
+* outputs/ : Directory where outputs after running simare stored.
+* outputs_solution/ : Directory where outputs produced by sim are stored.
+* outputs_verbose/ : Directory where the detailed simulation state for each cycle for the solution simulator is stored.
+* outputs_xlsx/ : Directory where your .xlsx event timeline spreadsheets after running sim are stored, if you run 'make xlsx'.
+* outputs_xlsx_solution/ : Directory where the solution .xlsx event timeline spreadsheets are stored.
 * programs/ : Directory where RISC-V assembly programs used to test the simulator are stored.
+
+If you are unsure about expected behavior, I suggest that you read the solution
+timeline under outputs_xlsx_solution/ first, and if you need more understanding
+of what happened at a particular cycle in the timeline, read the cycle-by-cycle
+log under the outputs_verbose/ folder, and look into the cycle in question in
+detail.
 
 In order to build the project and run the simulations, you only need to do 'make' to invoke the 'Makefile' script:
 
@@ -140,6 +267,12 @@ If you wish to remove all files generated from your build, invoke the "clean" ta
 make clean
 ```
 
+Optionally, if you implement XLSX timeline logging of your own, your .xlsx files are generated using the 'xlsx' target:
+
+```
+make xlsx
+```
+
 ## Debugging
 
 Here are some suggestions for debugging your simulator.
@@ -181,3 +314,4 @@ You will benefit from having logging functions that output internal state of
 the CPU so that you can view what is happening at each cycle.  Writing these
 logging functions is a part of writing a good simulator.  Ideally, you can
 enable logging by passing a command line flag.
+
