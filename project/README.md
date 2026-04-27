@@ -93,7 +93,12 @@ width of the Common Data Busses (CDB) that forwards the results to the
 reservation stations, the physical register file, and the ROB.  All
 instructions except branch instructions produce a result, including store
 instructions.  Store instructions produce a store value that needs to be
-written back to the store queue through the CDB.  
+written back to the store queue through the CDB.  When there is contention on
+the CDB, write backs are prioritized in the following order: Load, INT, FPadd,
+FPmult, FPdiv, Store.  The priority is loosely based on which instruction type
+is likely to be on the critical path of execution: loads produce values that
+computation needs to proceed so they are prioritized and stores consume values
+that are drained to memory so they are rarely on the critical path.
 
 f. A circular reorder buffer (ROB) with NR=16 entries is used and up to NC=4
 instructions can be committed from the top of the ROB in one cycle.
