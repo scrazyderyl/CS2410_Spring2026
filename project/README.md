@@ -88,6 +88,13 @@ latencies and number of reservation stations.
 | FPdiv     | 6 (non-pipelined divide)               | 1                              | fdiv                               |
 | BU        | 1 (condition and target evaluation)    | 2                              | bne                                |
 
+During dispatch, you may encounter a stall because 1) the reservation stations
+of a given unit are occupied, and 2) the reorder buffers are full.  The former
+is called an "RS Stall" and the latter an "ROB Stall".  Your simulator should
+keep track of both statistics to help identify performance bottlenecks in the
+CPU architecture.  When a stall is due to both, it is categorized as an "RS
+Stall".
+
 e. Up to NB=4 results can be written back in the WB stage.  This depends on the
 width of the Common Data Busses (CDB) that forwards the results to the
 reservation stations, the physical register file, and the ROB.  All
@@ -124,12 +131,6 @@ cache (i.e., it always takes one cycle to read a cache line). Also, the data
 cache (single ported) is very large so that writing or reading a word into the
 data cache always takes one cycle (i.e., eliminating the cache effect in memory
 accesses).
-
-Your simulation should keep statistics about the number of execution cycles,
-the number of times computations has stalled because 1) the reservation
-stations of a given unit are occupied, 2) the reorder buffers are full. You
-should also keep track of the utilization of the CDB busses. This may help
-identify the bottlenecks of the architecture.
 
 You simulation should be both functional and timing correct. For functional, we
 check the register and memory contents. For timing, we check the execution
