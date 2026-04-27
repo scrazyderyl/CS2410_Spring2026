@@ -715,4 +715,4 @@ Register Mapping
 Simulation complete!
 Total CCs: 19
 RS Stalls: 1
-ROB Stalls: 5
+ROB Stalls: 4
