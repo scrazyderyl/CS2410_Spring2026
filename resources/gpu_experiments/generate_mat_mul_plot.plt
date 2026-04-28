@@ -14,7 +14,7 @@ set xtics border in scale 0,0 nomirror rotate by -45  autojustify
 set xtics  norangelimit  font ",8"
 set xtics   ()
 set ytics border in scale 0,0 mirror norotate  autojustify
-set ytics  norangelimit autofreq  font ",8"
+set ytics  norangelimit autofreq font ",8"
 set ztics border in scale 0,0 nomirror norotate  autojustify
 set cbtics border in scale 0,0 mirror norotate  autojustify
 set rtics axis in scale 0,0 nomirror norotate  autojustify
@@ -38,7 +38,7 @@ lm = 0.12
 rm = 0.95
 gap = 0.03
 size = 0.75
-kk = 0.9 # relative height of bottom plot
+kk = 0.7 # relative height of bottom plot
 
 set multiplot
 set border 1+2+8
@@ -53,26 +53,25 @@ set xlabel "Thread block sizes"
 set ylabel "Total Time (seconds)" 
 set key top left invert noreverse
 
-set yrange [0:25]
-plot newhistogram "CPU", inputFile using "Memcpy.1":xtic(1) notitle lc rgb "yellow", '' u "Compute.1" notitle lc rgb "blue", \
-newhistogram "GPU", '' u "Memcpy.2":xtic(1) notitle lc rgb "yellow", '' u "Compute.2" notitle lc rgb "blue", \
-newhistogram "GPU w/ shared memory", '' u "Memcpy.3":xtic(1) t "Memory Copy" lc rgb "yellow", '' u "Compute.3" t "Compute" lc rgb "blue"
+set yrange [0:2]
+plot newhistogram "CPU", inputFile u "Compute.1":xtic(1) notitle lc rgb "blue", '' u "Memcpy.1" notitle lc rgb "orange", \
+newhistogram "GPU", '' u "Compute.2":xtic(1) notitle lc rgb "blue", '' u "Memcpy.2" notitle lc rgb "orange", \
+newhistogram "GPU w/ shared memory", '' u "Compute.3":xtic(1) notitle lc rgb "blue", '' u "Memcpy.3" notitle lc rgb "orange"
 
 unset xtics
 unset xlabel
 unset ylabel
-set ytics  norangelimit 50 font ",8"
+set ytics norangelimit autofreq font ",8"
 set border 2+4+8
 set bmargin at screen bm + size * kk + gap
 set tmargin at screen bm + size + gap
 
 set title "Execution time of mat-mat multiply on CPU and GPU"
 
-
-set yrange [30:155]
-plot newhistogram '', inputFile using "Memcpy.1":xtic(1) notitle lc rgb "yellow", '' u "Compute.1" notitle lc rgb "blue", \
-newhistogram '', '' u "Memcpy.2":xtic(1) notitle lc rgb "yellow", '' u "Compute.2" notitle lc rgb "blue", \
-newhistogram '', '' u "Memcpy.3":xtic(1) notitle lc rgb "yellow", '' u "Compute.3" notitle lc rgb "blue"
+set yrange [10:15]
+plot newhistogram '', inputFile u "Compute.1":xtic(1) notitle lc rgb "blue", '' u "Memcpy.1" notitle lc rgb "orange", \
+newhistogram '', '' u "Compute.2":xtic(1) notitle lc rgb "blue", '' u "Memcpy.2" notitle lc rgb "orange", \
+newhistogram '', '' u "Compute.3":xtic(1) notitle lc rgb "blue", '' u "Memcpy.3" notitle lc rgb "orange"
 
 unset multiplot
 unset out
