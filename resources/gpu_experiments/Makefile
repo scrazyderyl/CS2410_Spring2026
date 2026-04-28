@@ -4,7 +4,7 @@ GNUPLOT = gnuplot
 CC = gcc
 COPT = 
 NVCC = nvcc
-NVPROF = nvprof -m flop_count_sp,achieved_occupancy,sm_efficiency,warp_execution_efficiency,global_hit_rate,tex_cache_hit_rate,l2_tex_read_hit_rate,dram_read_throughput,dram_write_throughput
+NVPROF = nvprof -m flop_count_sp,achieved_occupancy,eligible_warps_per_cycle,sm_efficiency,warp_execution_efficiency,global_hit_rate,tex_cache_hit_rate,l2_tex_read_hit_rate,dram_read_throughput,dram_write_throughput
 NVCOPT = -arch=sm_60 -Xptxas -dlcm=ca
 
 MATVEC_DIMENSION_SIZE = 8192
@@ -17,9 +17,11 @@ MATMUL_DIMENSION_SIZE = 1024
 MATMUL_BLOCK_SIZES = 1 2 4 8 16 32 
 MATMUL_DATA := outputs/mat_mul_gpu.1.1.perf $(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), outputs/mat_mul_gpu.$(policy).$(size).perf))
 MATMUL_PROFILE := $(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), outputs/mat_mul_gpu.$(policy).$(size).prof))
-MATMUL_OUTPUTS := $(foreach policy,1 2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), outputs/mat_mul_gpu.$(policy).$(size).out))
 MATMUL_PLOTS := MatMulTime.pdf MatMulMemoryProfile.2.pdf MatMulMemoryProfile.3.pdf MatMulUtilizationProfile.2.pdf MatMulUtilizationProfile.3.pdf
+
+MATMUL_OUTPUTS := $(foreach policy,1 2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), outputs/mat_mul_gpu.$(policy).$(size).out))
 MATMUL_DIFFS := $(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), diffs/mat_mul_gpu.$(policy).$(size).diff))
+
 PLOTS := $(MATVEC_PLOTS) $(MATMUL_PLOTS)
 
 .PRECIOUS: MatVecProfile.%.dat MatMulProfile.%.dat

@@ -75,7 +75,7 @@ def main():
   files.sort(key=lambda k: int(k.split('.')[2], 0) )
   sizes = [ f.split('.')[2] for f in files ]
 
-  metrics = ["global_hit_rate", "l2_tex_read_hit_rate", "dram_read_throughput", "flop_count_sp", "gflops_per_second", "achieved_occupancy", "sm_efficiency", "warp_execution_efficiency"]
+  metrics = ["global_hit_rate", "l2_tex_read_hit_rate", "dram_read_throughput", "flop_count_sp", "gflops_per_second", "achieved_occupancy", "sm_efficiency", "warp_execution_efficiency", "eligible_warps_per_cycle"]
 
   f = open(fileName,"w")
   f.write("%15s " % "BlockSizes")
