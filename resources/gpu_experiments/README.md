@@ -26,15 +26,15 @@ Policy 1 - the CPU, Policy 2 - the GPU, and Policy 3 - the GPU using shared memo
 
 # Other scripts and directories
 Makefile : The build script for the Make tool.
-generate_plot.py : Script to extract performance numbers from the outputs and store in tabular format. (under construction)
-generate_mat_mul_plot.plt : GNUPlot script to convert the data table to a PDF plot. (under construction)
+\*.py : Scripts to extract performance numbers from the outputs and store in tabular format with .dat extension.
+\*.plt : GNUPlot scripts to convert the .dat files into PDF plots with .pdf extension.
 diffs/ : Directory where diffs between CPU and GPU outputs are stored.
 outputs/ : Directory where outputs after running the program are stored.
 ```
 
 In order to build the project and run the experiments, you only need to do 'make' to invoke the 'Makefile' script:
 
-If successful, it will produce the binaries: devicequery and mat\_mul\_gpu.
+If successful, it will produce the binaries: devicequery, mat\_vec\_gpu, and mat\_mul\_gpu.
 Devicequery is just a short program that outputs device characteristics of your
 GPU (not needed immediately, but may need for the performance measurement
 part yet to be released).  Mat\_mul\_gpu is your matrix multiplication program.
