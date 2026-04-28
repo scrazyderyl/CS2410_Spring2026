@@ -26,10 +26,12 @@ Policy 1 - the CPU, Policy 2 - the GPU, and Policy 3 - the GPU using shared memo
 
 # Other scripts and directories
 Makefile : The build script for the Make tool.
-\*.py : Scripts to extract performance numbers from the outputs and store in tabular format with .dat extension.
-\*.plt : GNUPlot scripts to convert the .dat files into PDF plots with .pdf extension.
+\*.py : Scripts to extract performance numbers from the outputs and store in tabular format under data/.
+\*.plt : GNUPlot scripts to convert the tabular format data files into PDF plots under plots/.
 diffs/ : Directory where diffs between CPU and GPU outputs are stored.
 outputs/ : Directory where outputs after running the program are stored.
+plots/ : Directory where PDF plots are stored.
+data/ : Directory where tabular data from whch the plots are derived are stored.
 ```
 
 In order to build the project and run the experiments, you only need to do 'make' to invoke the 'Makefile' script:
