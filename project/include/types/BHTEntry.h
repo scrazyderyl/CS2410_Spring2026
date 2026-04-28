@@ -1,0 +1,10 @@
+#ifndef COMPONENTS_TYPES_BHTENTRY_H
+#define COMPONENTS_TYPES_BHTENTRY_H
+
+struct BHTEntry
+{
+    BHTEntry();
+    ~BHTEntry();
+};
+
+#endif // COMPONENTS_TYPES_BHTENTRY_H

@@ -36,3 +36,6 @@ sim
 # Simulator output files
 outputs/*
 diffs/*
+
+# Build folders
+build/

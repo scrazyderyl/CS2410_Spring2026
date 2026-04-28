@@ -1,0 +1,10 @@
+#ifndef COMPONENTS_TYPES_BTBENTRY_H
+#define COMPONENTS_TYPES_BTBENTRY_H
+
+struct BTBEntry
+{
+    BTBEntry();
+    ~BTBEntry();
+};
+
+#endif // COMPONENTS_TYPES_BTBENTRY_H
