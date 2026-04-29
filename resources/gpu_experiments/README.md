@@ -206,7 +206,9 @@ Invoking the 'plots' target will generate a list of plots under the plots/ folde
 make plots
 ```
 
-It also generates .dat files under the data/ folder from which the plots are generated.  Please refer to these files when answering the discussion questions on GradeScope.  A brief description of each plot follows.
+It also generates .dat files under the data/ folder from which the plots are generated.  The plots show experiments run with mat_vec_gpu.cu (plots named MatVec\*.pdf) and mat_mul_gpu.cu (plots named MatMul\*.pdf).  For mat_vec_gpu, the experiments were run with a matrix of size 8K X 8K and a vector of size 8K for the matrix-vector multiplication.  For mat_mul_gpu, the the experiments were run with two matrices of size 1K X 1K for the matrix-matrix multiplication.
+
+Please refer to these files when answering the discussion questions on GradeScope.  A brief description of each plot follows.
 
 ### MatVecTime.pdf / MatMulTime.pdf
 
