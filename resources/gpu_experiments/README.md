@@ -1,3 +1,19 @@
+- [Introduction](#introduction)
+  * [Description](#description)
+- [Building and Running](#building-and-running)
+  * [Environment Setup](#environment-setup)
+  * [Directory Structure and Makefile Script](#directory-structure-and-makefile-script)
+- [Your Tasks](#your-tasks)
+  * [Task 1: Complete the scaffolding code to invoke the GPU](#task-1--complete-the-scaffolding-code-to-invoke-the-gpu)
+  * [Task 2: Implement the naive GPU matrix multiply (mm_gpu)](#task-2--implement-the-naive-gpu-matrix-multiply--mm-gpu-)
+  * [Task 3: Implement the optimized GPU matrix multiply (mm_gpu_shared)](#task-3--implement-the-optimized-gpu-matrix-multiply--mm-gpu-shared-)
+  * [Task 4: Generate performance profile plots and analyze](#task-4--generate-performance-profile-plots-and-analyze)
+    + [MatVecTime.pdf / MatMulTime.pdf](#matvectimepdf---matmultimepdf)
+    + [MatVecUtilizationProfile.\*.pdf / MatMulUtilizationProfile.\*.pdf](#matvecutilizationprofile--pdf---matmulutilizationprofile--pdf)
+    + [MatVecMemoryProfile.\*.pdf / MatMulMemoryProfile.\*.pdf](#matvecmemoryprofile--pdf---matmulmemoryprofile--pdf)
+  * [Submission](#submission)
+- [Resources](#resources)
+
 # Introduction
 
 ## Description
