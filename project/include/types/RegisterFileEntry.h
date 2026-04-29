@@ -1,0 +1,9 @@
+#ifndef COMPONENTS_TYPES_REGISTERFILEENTRY_H
+#define COMPONENTS_TYPES_REGISTERFILEENTRY_H
+
+struct RegisterFileEntry
+{
+    double value;
+};
+
+#endif // COMPONENTS_TYPES_REGISTERFILEENTRY_H

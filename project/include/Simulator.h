@@ -8,10 +8,15 @@
 #include <map>
 #include <sys/types.h>
 #include <vector>
+#include <string>
 
 #include "Config.h"
 #include "json.hpp"
 using namespace nlohmann::literals;
+
+#include "types/ArchitecturalRegister.h"
+#include "types/RegisterFileEntry.h"
+#include "types/Instruction.h"
 
 #ifndef SIMULATOR_H
 #define SIMULATOR_H
@@ -24,26 +29,6 @@ enum DebugArg
 {
 	DEBUG_DCACHE,
 	DEBUG_REGISTERS
-};
-
-struct ArchitecturalRegister
-{
-	enum
-	{
-		X,
-		F
-	} type;
-	int32_t num;
-
-	bool operator<(const ArchitecturalRegister& o) const
-	{
-		return (type < o.type) || (type == o.type && num < o.num);
-	}
-};
-
-struct RegisterFileEntry
-{
-	double value;
 };
 
 class Simulator
@@ -67,6 +52,11 @@ public:
 	 */
 	RegisterFileEntry registerFile[NUM_PHYS_REG_INCLUDING_X0];
 	std::map<ArchitecturalRegister, int> registerMapTable;
+
+	/**
+	 * @brief Instruction cache
+	 */
+	std::vector<Instruction> programInstructions;
 
 	// *PUBLIC --------------------
 	/**
