@@ -231,8 +231,8 @@ These are bar and line plots that display various memory access metrics for Poli
 
 * Share Memory : 64 KB, ~24 cycles access time
 * L1 Cache : 24 KB, ~80 cycles access time
-* L2 Cache : 4 MB, ~200~300 cycles access time
-* DRAM : ~400~500 cycles access time
+* L2 Cache : 4 MB, ~200 - 300 cycles access time
+* DRAM : ~400 - 500 cycles access time
 
 Here are explanations for each key in the legend:
 
