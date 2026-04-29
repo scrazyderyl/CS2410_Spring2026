@@ -22,7 +22,13 @@ def getMetric(reportRoot, prefix, policy, size, metric):
       ret = cols[-1].replace("%","").replace("GB/s", "")
       if ret.find("MB/s") != -1:
         ret = ret.replace("MB/s", "")
-        ret = float(ret) / 1000
+        ret = float(ret) / 1024
+      elif ret.find("KB/s") != -1:
+        ret = ret.replace("KB/s", "")
+        ret = float(ret) / 1024 / 1024
+      elif ret.find("B/s") != -1:
+        ret = ret.replace("B/s", "")
+        ret = float(ret) / 1024 / 1024 / 1024
       break
     if len(l)==0:
       break
@@ -108,11 +114,16 @@ def main():
     dram_bytes = l1_miss_bytes * (1 - l2_hit_rate)
 
     total_bytes = shared_bytes + gld_bytes
-
-    pct_shared = 100 * shared_bytes / total_bytes
-    pct_l1     = 100 * l1_hit_bytes / total_bytes
-    pct_l2     = 100 * l2_hit_bytes / total_bytes
-    pct_dram   = 100 * dram_bytes / total_bytes
+    if total_bytes > 0:
+      pct_shared = 100 * shared_bytes / total_bytes
+      pct_l1 = 100 * l1_hit_bytes / total_bytes
+      pct_l2 = 100 * l2_hit_bytes / total_bytes
+      pct_dram = 100 * dram_bytes / total_bytes
+    else:
+      pct_shared = 0.0
+      pct_l1 = 0.0
+      pct_l2 = 0.0
+      pct_dram = 0.0
 
     for metric in metrics:
       if metric == "gflops_per_second":
