@@ -40,6 +40,6 @@ if (!exists("outputFile")) filename='TotalTime.pdf'
 set output outputFile
 plot newhistogram "CPU", inputFile u "Compute.1" notitle lc rgb "blue", '' using "Memcpy.1":xtic(1) notitle lc rgb "orange", \
 newhistogram "GPU", '' u "Compute.2" t "Compute" lc rgb "blue", '' u "Memcpy.2":xtic(1) t "Memory Copy" lc rgb "orange", \
-newhistogram "GPU w/ shared memory", '' u "Compute.3" t "Compute" lc rgb "blue", '' u "Memcpy.3":xtic(1) t "Memory Copy" lc rgb "orange"
+newhistogram "GPU w/ shared memory", '' u "Compute.3" notitle lc rgb "blue", '' u "Memcpy.3":xtic(1) notitle lc rgb "orange"
 unset out
 
