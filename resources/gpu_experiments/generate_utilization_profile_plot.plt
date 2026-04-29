@@ -4,7 +4,7 @@ set style line 1 lt rgb "red" lw 20 ps 5
 set style line 2 lt rgb "blue" lw 20 ps 5
 set style line 3 lt rgb "green" lw 20 ps 5
 set style line 4 lt rgb "orange" lw 20 ps 5
-set style line 5 lt rgb "purple" lw 20 ps 5
+set style line 5 lt rgb "purple" lw 30 ps 7
 set title "Utilization profile"
 set xlabel "Thread block sizes" 
 set ylabel "Utilization (%)"

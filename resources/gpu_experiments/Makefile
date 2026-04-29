@@ -4,7 +4,7 @@ GNUPLOT = gnuplot
 CC = gcc
 COPT = 
 NVCC = nvcc
-NVPROF = nvprof -m flop_count_sp,achieved_occupancy,eligible_warps_per_cycle,sm_efficiency,warp_execution_efficiency,global_hit_rate,tex_cache_hit_rate,l2_tex_read_hit_rate,dram_read_throughput,dram_write_throughput
+NVPROF = nvprof -m flop_count_sp,achieved_occupancy,eligible_warps_per_cycle,sm_efficiency,warp_execution_efficiency,global_hit_rate,tex_cache_hit_rate,l2_tex_read_hit_rate,dram_read_throughput,dram_write_throughput,shared_load_transactions,gld_transactions
 NVCOPT = -arch=sm_60 -Xptxas -dlcm=ca
 
 MATVEC_DIMENSION_SIZE = 8192
