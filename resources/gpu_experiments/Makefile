@@ -4,59 +4,61 @@ GNUPLOT = gnuplot
 CC = gcc
 COPT = 
 NVCC = nvcc
-NVPROF = nvprof -m flop_count_sp,achieved_occupancy,sm_efficiency,warp_execution_efficiency,global_hit_rate,tex_cache_hit_rate,l2_tex_read_hit_rate,dram_read_throughput,dram_write_throughput
+NVPROF = nvprof -m flop_count_sp,achieved_occupancy,eligible_warps_per_cycle,sm_efficiency,warp_execution_efficiency,global_hit_rate,tex_cache_hit_rate,l2_tex_read_hit_rate,dram_read_throughput,dram_write_throughput,shared_load_transactions,gld_transactions
 NVCOPT = -arch=sm_60 -Xptxas -dlcm=ca
 
 MATVEC_DIMENSION_SIZE = 8192
 MATVEC_BLOCK_SIZES = 1 2 4 8 16 32 64 128 256 512 1024
 MATVEC_DATA := outputs/mat_vec_gpu.1.1.perf $(foreach policy,2 3,$(foreach size, $(MATVEC_BLOCK_SIZES), outputs/mat_vec_gpu.$(policy).$(size).perf))
 MATVEC_PROFILE := $(foreach policy,2 3,$(foreach size, $(MATVEC_BLOCK_SIZES), outputs/mat_vec_gpu.$(policy).$(size).prof))
-MATVEC_PLOTS := MatVecTime.pdf  MatVecMemoryProfile.2.pdf MatVecMemoryProfile.3.pdf MatVecUtilizationProfile.2.pdf MatVecUtilizationProfile.3.pdf
+MATVEC_PLOTS := plots/MatVecTime.pdf plots/MatVecMemoryProfile.2.pdf plots/MatVecMemoryProfile.3.pdf plots/MatVecUtilizationProfile.2.pdf plots/MatVecUtilizationProfile.3.pdf
 
 MATMUL_DIMENSION_SIZE = 1024
 MATMUL_BLOCK_SIZES = 1 2 4 8 16 32 
 MATMUL_DATA := outputs/mat_mul_gpu.1.1.perf $(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), outputs/mat_mul_gpu.$(policy).$(size).perf))
 MATMUL_PROFILE := $(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), outputs/mat_mul_gpu.$(policy).$(size).prof))
+MATMUL_PLOTS := plots/MatMulTime.pdf plots/MatMulMemoryProfile.2.pdf plots/MatMulMemoryProfile.3.pdf plots/MatMulUtilizationProfile.2.pdf plots/MatMulUtilizationProfile.3.pdf
+
 MATMUL_OUTPUTS := $(foreach policy,1 2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), outputs/mat_mul_gpu.$(policy).$(size).out))
-MATMUL_PLOTS := MatMulTime.pdf MatMulMemoryProfile.2.pdf MatMulMemoryProfile.3.pdf MatMulUtilizationProfile.2.pdf MatMulUtilizationProfile.3.pdf
 MATMUL_DIFFS := $(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), diffs/mat_mul_gpu.$(policy).$(size).diff))
+
 PLOTS := $(MATVEC_PLOTS) $(MATMUL_PLOTS)
 
-.PRECIOUS: MatVecProfile.%.dat MatMulProfile.%.dat
+.PRECIOUS: data/MatVecProfile.%.dat data/MatMulProfile.%.dat
 
 all: build diffs
 build: $(TARGETS)
 diffs: $(MATMUL_DIFFS)
 plots: $(MATVEC_DATA) $(MATVEC_PROFILE) $(MATMUL_DATA) $(MATMUL_PROFILE) $(PLOTS)
 
-MatVecTime.pdf: MatVecTime.dat generate_mat_vec_plot.plt
+plots/MatVecTime.pdf: data/MatVecTime.dat generate_mat_vec_plot.plt
 	$(GNUPLOT) -e "inputFile='$<'" -e "outputFile='$@'" generate_mat_vec_plot.plt
 
-MatVecTime.dat: $(MATVEC_DATA) generate_timing_data.py
+data/MatVecTime.dat: $(MATVEC_DATA) generate_timing_data.py
 	python generate_timing_data.py -i outputs -p mat_vec_gpu -o $@
 
-MatVecMemoryProfile.%.pdf: MatVecProfile.%.dat generate_memory_profile_plot.plt
+plots/MatVecMemoryProfile.%.pdf: data/MatVecProfile.%.dat generate_memory_profile_plot.plt
 	$(GNUPLOT) -e "inputFile='$<'" -e "outputFile='$@'" generate_memory_profile_plot.plt
 
-MatVecUtilizationProfile.%.pdf: MatVecProfile.%.dat generate_utilization_profile_plot.plt
+plots/MatVecUtilizationProfile.%.pdf: data/MatVecProfile.%.dat generate_utilization_profile_plot.plt
 	$(GNUPLOT) -e "inputFile='$<'" -e "outputFile='$@'" generate_utilization_profile_plot.plt
 
-MatVecProfile.%.dat: $(MATVEC_PROFILE) $(MATVEC_DATA) generate_profile_data.py
+data/MatVecProfile.%.dat: $(MATVEC_PROFILE) $(MATVEC_DATA) generate_profile_data.py
 	python generate_profile_data.py -i outputs -t mat_vec_gpu -p $* -o $@
 
-MatMulTime.pdf: MatMulTime.dat generate_mat_mul_plot.plt
+plots/MatMulTime.pdf: data/MatMulTime.dat generate_mat_mul_plot.plt
 	$(GNUPLOT) -e "inputFile='$<'" -e "outputFile='$@'" generate_mat_mul_plot.plt
 
-MatMulTime.dat: $(MATMUL_DATA) generate_timing_data.py
+data/MatMulTime.dat: $(MATMUL_DATA) generate_timing_data.py
 	python generate_timing_data.py -i outputs -p mat_mul_gpu -o $@
 
-MatMulMemoryProfile.%.pdf: MatMulProfile.%.dat generate_memory_profile_plot.plt
+plots/MatMulMemoryProfile.%.pdf: data/MatMulProfile.%.dat generate_memory_profile_plot.plt
 	$(GNUPLOT) -e "inputFile='$<'" -e "outputFile='$@'" generate_memory_profile_plot.plt
 
-MatMulUtilizationProfile.%.pdf: MatMulProfile.%.dat generate_utilization_profile_plot.plt
+plots/MatMulUtilizationProfile.%.pdf: data/MatMulProfile.%.dat generate_utilization_profile_plot.plt
 	$(GNUPLOT) -e "inputFile='$<'" -e "outputFile='$@'" generate_utilization_profile_plot.plt
 
-MatMulProfile.%.dat: $(MATMUL_PROFILE) $(MATMUL_DATA) generate_profile_data.py
+data/MatMulProfile.%.dat: $(MATMUL_PROFILE) $(MATMUL_DATA) generate_profile_data.py
 	python generate_profile_data.py -i outputs -t mat_mul_gpu -p $* -o $@
 
 %: %.c
@@ -98,4 +100,4 @@ endef
 $(foreach policy,2 3,$(foreach size, $(MATMUL_BLOCK_SIZES), $(eval $(call matmul_rules,$(policy),$(size)))))
 
 clean:
-	rm -f $(TARGETS) $(PLOTS) $(MATVEC_DATA) $(MATVEC_PROFILE) $(MATMUL_DATA) $(MATMUL_PROFILE) $(PLOTS) $(MATMUL_OUTPUTS) $(MATMUL_DIFFS) *.dat
+	rm -f $(TARGETS) $(PLOTS) $(MATVEC_DATA) $(MATVEC_PROFILE) $(MATMUL_DATA) $(MATMUL_PROFILE) $(PLOTS) $(MATMUL_OUTPUTS) $(MATMUL_DIFFS) data/*.dat

@@ -1,3 +1,19 @@
+- [Introduction](#introduction)
+  * [Description](#description)
+- [Building and Running](#building-and-running)
+  * [Environment Setup](#environment-setup)
+  * [Directory Structure and Makefile Script](#directory-structure-and-makefile-script)
+- [Your Tasks](#your-tasks)
+  * [Task 1: Complete the scaffolding code to invoke the GPU](#task-1-complete-the-scaffolding-code-to-invoke-the-gpu)
+  * [Task 2: Implement the naive GPU matrix multiply (mm_gpu)](#task-2-implement-the-naive-gpu-matrix-multiply-mm_gpu)
+  * [Task 3: Implement the optimized GPU matrix multiply (mm_gpu_shared)](#task-3-implement-the-optimized-gpu-matrix-multiply-mm_gpu_shared)
+  * [Task 4: Generate performance profile plots and analyze](#task-4-generate-performance-profile-plots-and-analyze)
+    + [MatVecTime.pdf / MatMulTime.pdf](#matvectimepdf--matmultimepdf)
+    + [MatVecUtilizationProfile.\*.pdf / MatMulUtilizationProfile.\*.pdf](#matvecutilizationprofilepdf--matmulutilizationprofilepdf)
+    + [MatVecMemoryProfile.\*.pdf / MatMulMemoryProfile.\*.pdf](#matvecmemoryprofilepdf--matmulmemoryprofilepdf)
+  * [Submission](#submission)
+- [Resources](#resources)
+
 # Introduction
 
 ## Description
@@ -26,18 +42,19 @@ Policy 1 - the CPU, Policy 2 - the GPU, and Policy 3 - the GPU using shared memo
 
 # Other scripts and directories
 Makefile : The build script for the Make tool.
-generate_plot.py : Script to extract performance numbers from the outputs and store in tabular format. (under construction)
-generate_mat_mul_plot.plt : GNUPlot script to convert the data table to a PDF plot. (under construction)
+\*.py : Scripts to extract performance numbers from the outputs and store in tabular format under data/.
+\*.plt : GNUPlot scripts to convert the tabular format data files into PDF plots under plots/.
 diffs/ : Directory where diffs between CPU and GPU outputs are stored.
 outputs/ : Directory where outputs after running the program are stored.
+plots/ : Directory where PDF plots are stored.
+data/ : Directory where tabular data from whch the plots are derived are stored.
 ```
 
 In order to build the project and run the experiments, you only need to do 'make' to invoke the 'Makefile' script:
 
-If successful, it will produce the binaries: devicequery and mat\_mul\_gpu.
+If successful, it will produce the binaries: devicequery, mat\_vec\_gpu, and mat\_mul\_gpu.
 Devicequery is just a short program that outputs device characteristics of your
-GPU (not needed immediately, but may need for the performance measurement
-part yet to be released).  Mat\_mul\_gpu is your matrix multiplication program.
+GPU (needed for the performance analysis task later).  Mat\_mul\_gpu is your matrix multiplication program.
 
 Make will also generate results of experiments using all combinations of the
 three policies and various thread block sizes.  The results are stored in the
@@ -181,12 +198,56 @@ Diff success!
 
 Then you've done a good job.  The diff files named mat_mul_gpu.3.*.diff are the result of diffing Policy 3 (mm_gpu_shared) against Policy 1 (mm_cpu).
 
+## Task 4: Generate performance profile plots and analyze
+
+Invoking the 'plots' target will generate a list of plots under the plots/ folder:
+
+```
+make plots
+```
+
+It also generates .dat files under the data/ folder from which the plots are generated.  The plots show experiments run with mat_vec_gpu.cu (plots named MatVec\*.pdf) and mat_mul_gpu.cu (plots named MatMul\*.pdf).  For mat_vec_gpu, the experiments were run with a matrix of size 8K X 8K and a vector of size 8K for the matrix-vector multiplication.  For mat_mul_gpu, the the experiments were run with two matrices of size 1K X 1K for the matrix-matrix multiplication.
+
+Please refer to these files when answering the discussion questions on GradeScope.  A brief description of each plot follows.
+
+### MatVecTime.pdf / MatMulTime.pdf
+
+This is a bar plot that compares execution times for Policy 1 (CPU), Policy 2 (GPU without shared memory tiling), and Policy 3 (GPU with shared memory tiling), for various thread block sizes.  Of course, for the CPU execution times, thread block size is irrelevant and the same bar for the same run is replicated (was just easier to do it this way in GNUPlot).  Here are explanations for each key in the legend:
+
+* Memory Copy : Time taken to copy data back and forth between host memory and device (GPU) memory.
+* Compute : Time taken to execute the GPU kernel that does the computation.
+
+### MatVecUtilizationProfile.\*.pdf / MatMulUtilizationProfile.\*.pdf
+
+These are line plots that display various utilization metrics for Policy 2 (GPU without shared memory tiling), and Policy 3 (GPU with shared memory tiling), for various thread block sizes.  Try runnining devicequery to discover device capabilities to fully understand these metrics.  One capability that is not listed in devicequery but is implied by the revision number and Tesla P100 model name is that it has **two warp schedulers** that can issue two warps per cycle.  Here are explanations for each key in the legend:
+
+* SM Utilization : What percentage of SMs have at least one thread block active within them on average.
+* Warp Utilization : What percentage of the 32-wide warp is doing useful work on average.
+* Warp Occupancy : What percentage of warp slots are occupied in each SM on average.  Compare against the 'Maximum threads per SM' returned by devicequery.  Divide that number by 32 and that is how many warp slots there are in the SM, with 100% occupancy meaning they are all filled.  Having a high occupancy helps with multithreading as we learned in class.
+* Ave. eligible warps per scheduler : How many warps are eligible to be issued per warp scheduler on average in the SM (100% being one warp).  Eligible means that the warp is not stalled or waiting for a memory access and is ready to be issued this cycle.  Caveat: it is an average number so the eligible warps could be concentrated in one of the two warp schedulers but it is a good indicator of warp utilization.
+* Throughput (GFLOPS) : Computation throughput in GFLOPS the GPU was able to achieve on the kernel.  Compare against 'Peak throughput (GFLOPS)' returned by devicequery.  Note that the peak GFLOPS (Giga Floating-point Operations per Second) is theoretical as in reality, no workload can achieve it.  Even if there are no bubbles in the timeline, there are always address calculating instructions, load/store instructions, and control flow instructions in the kernel that do not utilize the FP units in the SM in a given cycle, leaving them idle.  But, expert GPU programmers get close by using techniques we learned in class such as loop unrolling.
+
+### MatVecMemoryProfile.\*.pdf / MatMulMemoryProfile.\*.pdf
+
+These are bar and line plots that display various memory access metrics for Policy 2 (GPU without shared memory tiling), and Policy 3 (GPU with shared memory tiling), for various thread block sizes.  For reference, here is the memory hierarchy for each SM of the Tesla P100 GPU:
+
+* Share Memory : 64 KB, ~24 cycles access time
+* L1 Cache : 24 KB, ~80 cycles access time
+* L2 Cache : 4 MB, ~200 - 300 cycles access time
+* DRAM : ~400 - 500 cycles access time
+
+Here are explanations for each key in the legend:
+
+* Shared Memory : Percentage of memory accesses to the shared memory.
+* L1 Hit : Percentage of global memory accesses serviced by the L1 cache.
+* L2 Hit : Percentage of global memory accesses serviced by the L2 cache.
+* DRAM : Percentage of global memory accesses serviced by the global memory DRAM.
+* DRAM Transfer Rate (GB/s) : Average bandwidth consumption of the DRAM bus.  Compare against 'Global memory bandwidth (GB/s)' returned by devicequery.
+
 ## Submission
 
-Once you are done with all the tasks with the exception with Task 3, you can
-submit to the GradeScope "Homework 4 Part 2" link.  Since the GradeScope machines do
-not have GPUs it will not be autograded, and will be manually graded on
-thompson.cs.pitt.edu using the diff results.
+Once you are done, you can submit to the GradeScope "Homework 4 Part 2" link.  Since the GradeScope machines do
+not have GPUs it will not be autograded, and will be manually graded on thompson.cs.pitt.edu using the diff results.
 
 # Resources
 

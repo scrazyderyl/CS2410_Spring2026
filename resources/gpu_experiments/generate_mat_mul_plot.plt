@@ -33,7 +33,7 @@ if (!exists("inputFile")) filename='TotalTime.dat'
 if (!exists("outputFile")) filename='TotalTime.pdf'
 set output outputFile
 
-bm = 0.15
+bm = 0.22
 lm = 0.12
 rm = 0.95
 gap = 0.03
@@ -51,10 +51,10 @@ set tmargin at screen bm + size * kk
 
 set xlabel "Thread block sizes" 
 set ylabel "Total Time (seconds)" 
-set key top left invert noreverse
+set key bottom center outside horizontal
 
 set yrange [0:2]
-plot newhistogram "CPU", inputFile u "Compute.1":xtic(1) notitle lc rgb "blue", '' u "Memcpy.1" notitle lc rgb "orange", \
+plot newhistogram "CPU", inputFile u "Compute.1":xtic(1) t "Compute" lc rgb "blue", '' u "Memcpy.1" t "Memory Copy" lc rgb "orange", \
 newhistogram "GPU", '' u "Compute.2":xtic(1) notitle lc rgb "blue", '' u "Memcpy.2" notitle lc rgb "orange", \
 newhistogram "GPU w/ shared memory", '' u "Compute.3":xtic(1) notitle lc rgb "blue", '' u "Memcpy.3" notitle lc rgb "orange"
 

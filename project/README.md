@@ -95,7 +95,14 @@ keep track of both statistics to help identify performance bottlenecks in the
 CPU architecture.  When a stall is due to both, it is categorized as an "RS
 Stall".
 
-e. Up to NB=4 results can be written back in the WB stage.  This depends on the
+e. One instruction can issue and execute in each Functional Unit (FU), for a
+total of 6 instructions per cycle.  If there are more than one ready
+instruction in the reservation stations for the FU, then only one instruction
+can execute and others will suffer FU Stalls.  The reservation stations are
+scanned from first to last (e.g. INT1 ~ INT4) and the first instruction that is
+ready is issued.
+
+f. Up to NB=4 results can be written back in the WB stage.  This depends on the
 width of the Common Data Busses (CDB) that forwards the results to the
 reservation stations, the physical register file, and the ROB.  All
 instructions except branch instructions produce a result, including store
@@ -107,17 +114,17 @@ is likely to be on the critical path of execution: loads produce values that
 computation needs to proceed so they are prioritized and stores consume values
 that are drained to memory so they are rarely on the critical path.
 
-f. A circular reorder buffer (ROB) with NR=16 entries is used and up to NC=4
+g. A circular reorder buffer (ROB) with NR=16 entries is used and up to NC=4
 instructions can be committed from the top of the ROB in one cycle.
 
-g. You need to perform register renaming to eliminate the false dependences in
+h. You need to perform register renaming to eliminate the false dependences in
 the decode stage. Assuming we have a total of 32 physical registers (p0, p1,
 p2, …p31). You will need to implement a mapping table and a free list of the
 physical register as we discussed in class. Also, assuming that all of the
 physical registers can be used by either integer or floating point
 instructions.
 
-h. A dedicated/separate ALU is used for the effective address calculation in
+i. A dedicated/separate ALU is used for the effective address calculation in
 the branch unit (BU) and simultaneously, a special hardware is used to evaluate
 the branch condition. Also, a dedicated/separate ALU is used for the effective
 address calculation in the load/store unit. You will also need to implement
