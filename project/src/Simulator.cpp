@@ -241,10 +241,9 @@ void load_program(Simulator *sim, std::ifstream *program)
 
 		// Process op code
 		std::string opcodeStr = instruction.substr(0, spaceIndex);
-		uint8_t opcode = instructionOpcodes.at(opcodeStr);
+		uint8_t opcode = instToOpCode.at(opcodeStr);
 
 		Instruction inst;
-		inst.text = instruction;
 		inst.opcode = opcode;
 
 		std::string operandsStr = instruction.substr(spaceIndex + 1);

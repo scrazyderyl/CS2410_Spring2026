@@ -16,6 +16,11 @@ struct ArchitecturalRegister
     {
         return (type < o.type) || (type == o.type && num < o.num);
     }
+
+    std::string toString() const
+    {
+        return (type == X ? "X" : "F") + std::to_string(num);
+    }
 };
 
 #endif // COMPONENTS_TYPES_ARCHITECTURALREGISTER_H
