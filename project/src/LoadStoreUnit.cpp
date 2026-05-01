@@ -17,5 +17,7 @@ double LoadStoreUnit::calculateResult(const DecodedInstruction &inst)
     case 2: // fsd
         dataMemory[addr] = registerFile[inst.src2].value;
         return 0;
+    default:
+        return 0;
     }
 }

@@ -19,5 +19,7 @@ double IntegerUnit::calculateResult(const DecodedInstruction &inst)
         return v1 + inst.imm;
     case 5: // slt
         return static_cast<double>(static_cast<int>(v1) < static_cast<int>(v2));
+    default:
+        return 0;
     }
 }

@@ -16,5 +16,7 @@ double FPAddUnit::calculateResult(const DecodedInstruction &inst)
         return v1 + v2;
     case 7: // fsub
         return v1 - v2;
+    default:
+        return 0;
     }
 }
