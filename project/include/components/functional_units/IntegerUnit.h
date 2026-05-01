@@ -16,7 +16,7 @@ public:
     IntegerUnit(const std::vector<ReservationStation*> &rs, RegisterFileEntry *regFile);
 
 private:
-    virtual double calculateResult(DecodedInstruction &inst) override;
+    virtual double calculateResult(const DecodedInstruction &inst) override;
     RegisterFileEntry *registerFile;
 };
 

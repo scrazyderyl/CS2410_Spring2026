@@ -18,7 +18,7 @@ public:
 private:
     RegisterFileEntry *registerFile;
 
-    virtual double calculateResult(DecodedInstruction &inst) override;
+    virtual double calculateResult(const DecodedInstruction &inst) override;
 };
 
 #endif // COMPONENTS_FPADUNIT_H

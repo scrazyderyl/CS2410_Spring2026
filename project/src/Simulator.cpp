@@ -69,12 +69,11 @@ void parseLoadStoreInstruction(const std::string &operandsStr, Instruction &inst
 	// Offset
 	double offset = std::stod(addressStr.substr(0, parenIndex));
 	inst.imm = offset;
-	
+
 	// Base register
 	std::string baseRegStr = addressStr.substr(parenIndex + 1, addressStr.length() - parenIndex - 2);
 	trim(baseRegStr);
 	inst.src1 = parseRegister(baseRegStr);
-	
 }
 
 void parseBranchInstruction(const std::string &operandsStr, Instruction &inst, std::map<std::string, int> &labelAddresses)
@@ -250,19 +249,19 @@ void load_program(Simulator *sim, std::ifstream *program)
 		// Process operands based on instruction type
 		switch (opcode)
 		{
-			case 1: // fld
-			case 2: // fsd
-				parseLoadStoreInstruction(operandsStr, inst);
-				break;
-			case 4: // addi
-				parseITypeInstruction(operandsStr, inst);
-				break;
-			case 10: // bne
-				parseBranchInstruction(operandsStr, inst, labelAddresses);
-				break;
-			default: // others
-				parseRTypeInstruction(operandsStr, inst);
-				break;
+		case 1: // fld
+		case 2: // fsd
+			parseLoadStoreInstruction(operandsStr, inst);
+			break;
+		case 4: // addi
+			parseITypeInstruction(operandsStr, inst);
+			break;
+		case 10: // bne
+			parseBranchInstruction(operandsStr, inst, labelAddresses);
+			break;
+		default: // others
+			parseRTypeInstruction(operandsStr, inst);
+			break;
 		}
 
 		sim->programInstructions.push_back(inst);
@@ -272,6 +271,28 @@ void load_program(Simulator *sim, std::ifstream *program)
 Simulator::Simulator(std::ifstream *program, Config *c)
 {
 	configuration = c;
+
+	branchPredictor = BranchPredictor();
+
+	// Instantiate functional units and keep pointers in simulator
+	intUnit = new IntegerUnit({&intReservationStations[0], &intReservationStations[1], &intReservationStations[2], &intReservationStations[3]}, registerFile);
+	loadStoreUnit = new LoadStoreUnit({&loadReservationStations[0], &loadReservationStations[1]}, dataMemory, registerFile);
+	fpAddUnit = new FPAddUnit({&fpAddReservationStations[0], &fpAddReservationStations[1], &fpAddReservationStations[2]}, registerFile);
+	fpMultUnit = new FPMultUnit({&fpMultReservationStations[0], &fpMultReservationStations[1]}, registerFile);
+	fpDivUnit = new FPDivUnit({&fpDivReservationStations[0]}, registerFile);
+	branchUnit = new BranchUnit({&branchReservationStations[0], &branchReservationStations[1]}, &branchPredictor, registerFile);
+
+	instructionDispatcher.registerInstructionExecuter(0, nullptr);
+	instructionDispatcher.registerInstructionExecuter(1, loadStoreUnit);
+	instructionDispatcher.registerInstructionExecuter(2, loadStoreUnit);
+	instructionDispatcher.registerInstructionExecuter(3, intUnit);
+	instructionDispatcher.registerInstructionExecuter(4, intUnit);
+	instructionDispatcher.registerInstructionExecuter(5, intUnit);
+	instructionDispatcher.registerInstructionExecuter(6, fpAddUnit);
+	instructionDispatcher.registerInstructionExecuter(7, fpAddUnit);
+	instructionDispatcher.registerInstructionExecuter(8, fpMultUnit);
+	instructionDispatcher.registerInstructionExecuter(9, fpDivUnit);
+	instructionDispatcher.registerInstructionExecuter(10, branchUnit);
 
 	load_program(this, program);
 }
@@ -283,7 +304,7 @@ void Simulator::printStats()
 	std::cout << "ROB Stalls: " << rob_stalls << std::endl;
 };
 
-void Simulator::serializeJSON(std::ofstream* output)
+void Simulator::serializeJSON(std::ofstream *output)
 {
 	nlohmann::json j;
 	j["total_cycles"] = cc;

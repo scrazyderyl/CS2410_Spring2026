@@ -14,6 +14,16 @@
 #include "json.hpp"
 using namespace nlohmann::literals;
 
+#include "components/InstructionDispatcher.h"
+#include "components/BranchPredictor.h"
+#include "components/functional_units/IntegerUnit.h"
+#include "components/functional_units/LoadStoreUnit.h"
+#include "components/functional_units/FPAddUnit.h"
+#include "components/functional_units/FPMultUnit.h"
+#include "components/functional_units/FPDivUnit.h"
+#include "components/functional_units/BranchUnit.h"
+
+#include "types/ReservationStation.h"
 #include "types/ArchitecturalRegister.h"
 #include "types/RegisterFileEntry.h"
 #include "types/Instruction.h"
@@ -51,6 +61,11 @@ public:
 	double dataMemory[MAX_MEM_SIZE] = {0};
 
 	/**
+	 * @brief Instruction cache
+	 */
+	std::vector<Instruction> programInstructions;
+
+	/**
 	 * @brief Register File
 	 * @note This is a map of physical register number -> value
 	 * @note For bookkeeping, we also store the ROB number and whether the register is busy
@@ -58,10 +73,26 @@ public:
 	RegisterFileEntry registerFile[NUM_PHYS_REG_INCLUDING_X0];
 	std::map<ArchitecturalRegister, int> registerMapTable;
 
-	/**
-	 * @brief Instruction cache
-	 */
-	std::vector<Instruction> programInstructions;
+	// Reservation stations by type
+	// These are ordered by priority for pushing data to the CDB
+	ReservationStation loadReservationStations[2];
+	ReservationStation intReservationStations[4];
+	ReservationStation fpAddReservationStations[3];
+	ReservationStation fpMultReservationStations[2];
+	ReservationStation fpDivReservationStations[1];
+	ReservationStation storeReservationStations[2];
+	ReservationStation branchReservationStations[2];
+
+	// Functional units
+	IntegerUnit *intUnit;
+	LoadStoreUnit *loadStoreUnit;
+	FPAddUnit *fpAddUnit;
+	FPMultUnit *fpMultUnit;
+	FPDivUnit *fpDivUnit;
+	BranchUnit *branchUnit;
+
+	InstructionDispatcher instructionDispatcher;
+	BranchPredictor branchPredictor;
 
 	// *PUBLIC --------------------
 	/**
@@ -69,13 +100,13 @@ public:
 	 * @param program Pointer to ifstream object containing the program
 	 * @param c Configuration struct
 	 */
-	Simulator(std::ifstream* program, Config *c);
+	Simulator(std::ifstream *program, Config *c);
 
 	/**
 	 * @brief Debugging function
 	 * @param argc Number of arguments excluding argc
 	 * @param ... Variable arguments - see enum DebugArg
-	 * 
+	 *
 	 * @example this->dump(1, DEBUG_ALL);
 	 */
 	void dump(int argc...);
@@ -85,7 +116,7 @@ public:
 	 * @brief Serialize the simulator state to a JSON file
 	 * @param output Pointer to ofstream object where the serialized data is written
 	 */
-	void serializeJSON(std::ofstream* output);
+	void serializeJSON(std::ofstream *output);
 };
 
 #endif // SIMULATOR_H

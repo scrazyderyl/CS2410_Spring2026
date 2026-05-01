@@ -42,7 +42,7 @@ private:
     // Do the actual result calculation for the instruction
     // This method also does other operations associated with the instruction
     // Not all functional units return a result so they just return 0
-    virtual double calculateResult(DecodedInstruction &inst) {
+    virtual double calculateResult(const DecodedInstruction &inst) {
         return 0;
     }
 };

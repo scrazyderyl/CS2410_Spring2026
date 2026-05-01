@@ -7,10 +7,10 @@
 
 struct ReservationStation
 {
-    bool busy;
-    int cycles_left;
-    DecodedInstruction inst;
-    int ROBIndex;
+    bool busy = false;
+    int cycles_left = -1;
+    const DecodedInstruction *inst = nullptr;
+    int ROBIndex = -1;
 
     inline bool isReadyToExecute()
     {
@@ -31,7 +31,7 @@ struct ReservationStation
     {
         busy = true;
         cycles_left = -1;
-        inst = decodedInst;
+        inst = &decodedInst;
         ROBIndex = robIndex;
     }
 };

@@ -5,7 +5,7 @@ BranchUnit::BranchUnit(const std::vector<ReservationStation *> &rs, BranchPredic
 {
 }
 
-double BranchUnit::calculateResult(DecodedInstruction &inst)
+double BranchUnit::calculateResult(const DecodedInstruction &inst)
 {
     double v1 = registerFile[inst.src1].value;
     double v2 = registerFile[inst.src2].value;

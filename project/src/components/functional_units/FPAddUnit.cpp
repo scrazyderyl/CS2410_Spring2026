@@ -5,7 +5,7 @@ FPAddUnit::FPAddUnit(const std::vector<ReservationStation *> &rs, RegisterFileEn
 {
 }
 
-double FPAddUnit::calculateResult(DecodedInstruction &inst)
+double FPAddUnit::calculateResult(const DecodedInstruction &inst)
 {
     double v1 = registerFile[inst.src1].value;
     double v2 = registerFile[inst.src2].value;

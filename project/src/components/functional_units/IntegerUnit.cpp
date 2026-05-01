@@ -6,7 +6,7 @@ IntegerUnit::IntegerUnit(const std::vector<ReservationStation *> &rs, RegisterFi
 {
 }
 
-double IntegerUnit::calculateResult(DecodedInstruction &inst)
+double IntegerUnit::calculateResult(const DecodedInstruction &inst)
 {
     double v1 = registerFile[inst.src1].value;
     double v2 = registerFile[inst.src2].value;

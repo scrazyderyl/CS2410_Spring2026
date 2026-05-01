@@ -5,7 +5,7 @@ FPDivUnit::FPDivUnit(const std::vector<ReservationStation *> &rs, RegisterFileEn
 {
 }
 
-double FPDivUnit::calculateResult(DecodedInstruction &inst)
+double FPDivUnit::calculateResult(const DecodedInstruction &inst)
 {
     double v2 = registerFile[inst.src2].value;
 

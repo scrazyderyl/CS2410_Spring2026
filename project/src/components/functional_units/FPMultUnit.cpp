@@ -5,7 +5,7 @@ FPMultUnit::FPMultUnit(const std::vector<ReservationStation *> &rs, RegisterFile
 {
 }
 
-double FPMultUnit::calculateResult(DecodedInstruction &inst)
+double FPMultUnit::calculateResult(const DecodedInstruction &inst)
 {
     double v1 = registerFile[inst.src1].value;
     double v2 = registerFile[inst.src2].value;

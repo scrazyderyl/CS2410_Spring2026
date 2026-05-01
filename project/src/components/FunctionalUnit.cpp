@@ -55,5 +55,5 @@ double FunctionalUnit::getResult(size_t rsIndex)
 
     rs->busy = false;
 
-    return calculateResult(rs->inst);
+    return calculateResult(*rs->inst);
 }

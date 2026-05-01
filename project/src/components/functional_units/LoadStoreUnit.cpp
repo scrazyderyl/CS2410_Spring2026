@@ -5,7 +5,7 @@ LoadStoreUnit::LoadStoreUnit(const std::vector<ReservationStation *> &rs, double
 {
 }
 
-double LoadStoreUnit::calculateResult(DecodedInstruction &inst)
+double LoadStoreUnit::calculateResult(const DecodedInstruction &inst)
 {
     double base = registerFile[inst.src1].value;
     int addr = (uint32_t)(base + inst.imm);
