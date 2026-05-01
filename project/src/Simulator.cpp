@@ -284,7 +284,7 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 	fpAddUnit = new FPAddUnit(registerFile);
 	fpMultUnit = new FPMultUnit(registerFile);
 	fpDivUnit = new FPDivUnit(registerFile);
-	branchUnit = new BranchUnit(&branchPredictor, registerFile);
+	branchUnit = new BranchUnit(registerFile);
 
 	instructionDispatcher.registerInstructionExecuter(0, nullptr);
 	instructionDispatcher.registerInstructionExecuter(1, loadStoreUnit);

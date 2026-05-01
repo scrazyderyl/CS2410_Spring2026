@@ -52,8 +52,7 @@ double LoadStoreUnit::calculateResult(const DecodedInstruction &inst)
     case 1: // fld
         return dataMemory[addr];
     case 2: // fsd
-        dataMemory[addr] = registerFile[inst.src2].value;
-        return 0;
+        return registerFile[inst.src2].value;
     default:
         return 0;
     }

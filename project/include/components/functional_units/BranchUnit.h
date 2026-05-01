@@ -2,7 +2,6 @@
 #define COMPONENTS_BRANCHUNIT_H
 
 #include "components/FunctionalUnit.h"
-#include "components/BranchPredictor.h"
 #include "types/DecodedInstruction.h"
 #include "types/RegisterFileEntry.h"
 
@@ -15,11 +14,9 @@ public:
     static constexpr int LATENCY = 1;
     static constexpr bool PIPELINED = true;
 
-    BranchUnit(BranchPredictor *bp, RegisterFileEntry *regFile);
+    BranchUnit(RegisterFileEntry *regFile);
 
 private:
-    BranchPredictor *predictor;
-
     RegisterFileEntry *registerFile;
 
     virtual double calculateResult(const DecodedInstruction &inst) override;
