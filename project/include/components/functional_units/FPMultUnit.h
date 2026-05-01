@@ -1,0 +1,24 @@
+#ifndef COMPONENTS_FPMULTUNIT_H
+#define COMPONENTS_FPMULTUNIT_H
+
+#include "components/FunctionalUnit.h"
+#include "types/DecodedInstruction.h"
+#include "types/RegisterFileEntry.h"
+
+#include <vector>
+
+class FPMultUnit : public FunctionalUnit
+{
+public:
+    static constexpr int LATENCY = 4;
+    static constexpr bool PIPELINED = false;
+
+    FPMultUnit(const std::vector<ReservationStation *> &rs, RegisterFileEntry *regFile);
+
+private:
+    RegisterFileEntry *registerFile;
+
+    virtual double calculateResult(DecodedInstruction &inst) override;
+};
+
+#endif // COMPONENTS_FPMULTUNIT_H

@@ -3,6 +3,7 @@
 
 #include <string>
 #include <cstdint>
+#include <map>
 
 #include <types/ArchitecturalRegister.h>
 
@@ -51,7 +52,7 @@ struct Instruction
             return "nop";
         case 1: // fld
         case 2: // fsd
-            return instStr + dest.toString() + ", " + std::to_string(imm) + "(" + src1.toString() + ")";
+            return instStr + dest.toString() + ", " + std::to_string((int)imm) + "(" + src1.toString() + ")";
         case 3: // add
         case 5: // slt
         case 6: // fadd
@@ -60,9 +61,9 @@ struct Instruction
         case 9: // fdiv
             return instStr + dest.toString() + ", " + src1.toString() + ", " + src2.toString();
         case 4: // addi
-            return instStr + dest.toString() + ", " + src1.toString() + ", " + std::to_string(imm);
+            return instStr + dest.toString() + ", " + src1.toString() + ", " + std::to_string((int)imm);
         case 10: // bne
-            return instStr + src1.toString() + ", " + src2.toString() + ", " + std::to_string(imm);
+            return instStr + src1.toString() + ", " + src2.toString() + ", " + std::to_string((int)imm);
         default:
             return "Invalid op code";
         }
