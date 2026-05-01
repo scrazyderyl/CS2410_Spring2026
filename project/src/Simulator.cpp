@@ -1,5 +1,4 @@
 #include "Simulator.h"
-#include "types/Instruction.h"
 
 #include <fstream>
 #include <iostream>
@@ -61,20 +60,20 @@ void parseLoadStoreInstruction(const std::string &operandsStr, Instruction &inst
 	// Source or destination register
 	std::string regStr = operandsStr.substr(0, commaIndex);
 	trim(regStr);
-	inst.rd = parseRegister(regStr);
+	inst.dest = parseRegister(regStr);
 
 	std::string addressStr = operandsStr.substr(commaIndex + 1);
 	trim(addressStr);
 	size_t parenIndex = addressStr.find('(');
 
 	// Offset
-	int offset = std::stoi(addressStr.substr(0, parenIndex));
-	inst.immediate = offset;
+	double offset = std::stod(addressStr.substr(0, parenIndex));
+	inst.imm = offset;
 	
 	// Base register
 	std::string baseRegStr = addressStr.substr(parenIndex + 1, addressStr.length() - parenIndex - 2);
 	trim(baseRegStr);
-	inst.rs = parseRegister(baseRegStr);
+	inst.src1 = parseRegister(baseRegStr);
 	
 }
 
@@ -86,17 +85,17 @@ void parseBranchInstruction(const std::string &operandsStr, Instruction &inst, s
 	// Register 1
 	std::string rsStr = operandsStr.substr(0, commaIndex);
 	trim(rsStr);
-	inst.rs = parseRegister(rsStr);
+	inst.src1 = parseRegister(rsStr);
 
 	// Register 2
 	std::string rtStr = operandsStr.substr(commaIndex + 1, secondCommaIndex - commaIndex - 1);
 	trim(rtStr);
-	inst.rt = parseRegister(rtStr);
+	inst.src2 = parseRegister(rtStr);
 
 	// Label
 	std::string labelStr = operandsStr.substr(secondCommaIndex + 1);
 	trim(labelStr);
-	inst.immediate = labelAddresses[labelStr];
+	inst.imm = labelAddresses[labelStr];
 }
 
 void parseITypeInstruction(const std::string &operandsStr, Instruction &inst)
@@ -107,17 +106,17 @@ void parseITypeInstruction(const std::string &operandsStr, Instruction &inst)
 	// Destination register
 	std::string rdStr = operandsStr.substr(0, commaIndex);
 	trim(rdStr);
-	inst.rd = parseRegister(rdStr);
+	inst.dest = parseRegister(rdStr);
 
 	// Source register
 	std::string rsStr = operandsStr.substr(commaIndex + 1, secondCommaIndex - commaIndex - 1);
 	trim(rsStr);
-	inst.rs = parseRegister(rsStr);
+	inst.src1 = parseRegister(rsStr);
 
 	// Immediate
 	std::string immStr = operandsStr.substr(secondCommaIndex + 1);
 	trim(immStr);
-	inst.immediate = std::stoi(immStr);
+	inst.imm = std::stod(immStr);
 }
 
 void parseRTypeInstruction(const std::string &operandsStr, Instruction &inst)
@@ -128,17 +127,17 @@ void parseRTypeInstruction(const std::string &operandsStr, Instruction &inst)
 	// Destination register
 	std::string rdStr = operandsStr.substr(0, commaIndex);
 	trim(rdStr);
-	inst.rd = parseRegister(rdStr);
+	inst.dest = parseRegister(rdStr);
 
 	// Source register 1
 	std::string rsStr = operandsStr.substr(commaIndex + 1, secondCommaIndex - commaIndex - 1);
 	trim(rsStr);
-	inst.rs = parseRegister(rsStr);
+	inst.src1 = parseRegister(rsStr);
 
 	// Source register 2
 	std::string rtStr = operandsStr.substr(secondCommaIndex + 1);
 	trim(rtStr);
-	inst.rt = parseRegister(rtStr);
+	inst.src2 = parseRegister(rtStr);
 }
 
 void load_program(Simulator *sim, std::ifstream *program)
@@ -244,7 +243,7 @@ void load_program(Simulator *sim, std::ifstream *program)
 		uint8_t opcode = instToOpCode.at(opcodeStr);
 
 		Instruction inst;
-		inst.opcode = opcode;
+		inst.op = opcode;
 
 		std::string operandsStr = instruction.substr(spaceIndex + 1);
 

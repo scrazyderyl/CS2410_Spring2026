@@ -2,6 +2,7 @@
 #define TYPES_INSTRUCTION_H
 
 #include <string>
+#include <cstdint>
 
 #include <types/ArchitecturalRegister.h>
 
@@ -33,35 +34,35 @@ inline const std::map<uint8_t, std::string> opCodeToInst = {
 
 struct Instruction
 {
-    uint8_t opcode;
-    ArchitecturalRegister rd;
-    ArchitecturalRegister rs;
-    ArchitecturalRegister rt;
-    int32_t immediate;
+    uint8_t op;
+    ArchitecturalRegister dest;
+    ArchitecturalRegister src1;
+    ArchitecturalRegister src2;
+    double imm;
 
     // Represent as string
     std::string toString() const
     {
-        std::string instStr = opCodeToInst.at(opcode) + " ";
+        std::string instStr = opCodeToInst.at(op) + " ";
         
-        switch (opcode)
+        switch (op)
         {
         case 0: // nop
             return "nop";
         case 1: // fld
         case 2: // fsd
-            return instStr + rd.toString() + ", " + std::to_string(immediate) + "(" + rs.toString() + ")";
+            return instStr + dest.toString() + ", " + std::to_string(imm) + "(" + src1.toString() + ")";
         case 3: // add
         case 5: // slt
         case 6: // fadd
         case 7: // fsub
         case 8: // fmul
         case 9: // fdiv
-            return instStr + rd.toString() + ", " + rs.toString() + ", " + rt.toString();
+            return instStr + dest.toString() + ", " + src1.toString() + ", " + src2.toString();
         case 4: // addi
-            return instStr + rd.toString() + ", " + rs.toString() + ", " + std::to_string(immediate);
+            return instStr + dest.toString() + ", " + src1.toString() + ", " + std::to_string(imm);
         case 10: // bne
-            return instStr + rs.toString() + ", " + rt.toString() + ", " + std::to_string(immediate);
+            return instStr + src1.toString() + ", " + src2.toString() + ", " + std::to_string(imm);
         default:
             return "Invalid op code";
         }
