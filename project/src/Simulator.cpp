@@ -278,17 +278,17 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 
 void Simulator::printStats()
 {
-	std::cout << "Total CCs: " << "0" << std::endl;
-	std::cout << "RS Stalls: " << "0" << std::endl;
-	std::cout << "ROB Stalls: " << "0" << std::endl;
+	std::cout << "Total CCs: " << cc << std::endl;
+	std::cout << "RS Stalls: " << rs_stalls << std::endl;
+	std::cout << "ROB Stalls: " << rob_stalls << std::endl;
 };
 
 void Simulator::serializeJSON(std::ofstream* output)
 {
 	nlohmann::json j;
-	j["total_cycles"] = 0;
-	j["rs_stalls"] = 0;
-	j["rob_stalls"] = 0;
+	j["total_cycles"] = cc;
+	j["rs_stalls"] = rs_stalls;
+	j["rob_stalls"] = rob_stalls;
 	for (int i = 0; i < MAX_MEM_SIZE; i++)
 	{
 		j["data_memory"][i] = dataMemory[i];

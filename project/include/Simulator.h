@@ -39,6 +39,11 @@ public:
 	 */
 	Config *configuration;
 
+	// Statistics
+	int cc = 0;
+	int rs_stalls = 0;
+	int rob_stalls = 0;
+
 	/**
 	 * @brief Data Memory ($D Cache)
 	 * On startup, all values are initialized to 0
