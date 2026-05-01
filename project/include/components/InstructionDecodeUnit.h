@@ -8,6 +8,7 @@ class InstructionDecodeUnit
 {
 public:
     InstructionDecodeUnit();
+    ~InstructionDecodeUnit();
 };
 
 #endif // COMPONENTS_INSTRUCTIONDECODEUNIT_H

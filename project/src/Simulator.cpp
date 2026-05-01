@@ -273,14 +273,18 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 	configuration = c;
 
 	branchPredictor = BranchPredictor();
+	instructionDecodeUnit = InstructionDecodeUnit();
+	instructionDispatcher = InstructionDispatcher();
+	reorderBuffer = ReorderBuffer();
+	cdb = CommonDataBus();
 
 	// Instantiate functional units and keep pointers in simulator
-	intUnit = new IntegerUnit({&intReservationStations[0], &intReservationStations[1], &intReservationStations[2], &intReservationStations[3]}, registerFile);
-	loadStoreUnit = new LoadStoreUnit({&loadReservationStations[0], &loadReservationStations[1]}, dataMemory, registerFile);
-	fpAddUnit = new FPAddUnit({&fpAddReservationStations[0], &fpAddReservationStations[1], &fpAddReservationStations[2]}, registerFile);
-	fpMultUnit = new FPMultUnit({&fpMultReservationStations[0], &fpMultReservationStations[1]}, registerFile);
-	fpDivUnit = new FPDivUnit({&fpDivReservationStations[0]}, registerFile);
-	branchUnit = new BranchUnit({&branchReservationStations[0], &branchReservationStations[1]}, &branchPredictor, registerFile);
+	intUnit = new IntegerUnit(registerFile);
+	loadStoreUnit = new LoadStoreUnit(dataMemory, registerFile);
+	fpAddUnit = new FPAddUnit(registerFile);
+	fpMultUnit = new FPMultUnit(registerFile);
+	fpDivUnit = new FPDivUnit(registerFile);
+	branchUnit = new BranchUnit(&branchPredictor, registerFile);
 
 	instructionDispatcher.registerInstructionExecuter(0, nullptr);
 	instructionDispatcher.registerInstructionExecuter(1, loadStoreUnit);
@@ -295,6 +299,16 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 	instructionDispatcher.registerInstructionExecuter(10, branchUnit);
 
 	load_program(this, program);
+}
+
+Simulator::~Simulator()
+{
+	delete intUnit;
+	delete loadStoreUnit;
+	delete fpAddUnit;
+	delete fpMultUnit;
+	delete fpDivUnit;
+	delete branchUnit;
 }
 
 void Simulator::printStats()

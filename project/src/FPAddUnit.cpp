@@ -1,7 +1,7 @@
 #include "components/functional_units/FPAddUnit.h"
 
-FPAddUnit::FPAddUnit(const std::vector<ReservationStation *> &rs, RegisterFileEntry *regFile)
-    : FunctionalUnit(rs, PIPELINED, LATENCY), registerFile(regFile)
+FPAddUnit::FPAddUnit(RegisterFileEntry *regFile)
+    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), registerFile(regFile)
 {
 }
 

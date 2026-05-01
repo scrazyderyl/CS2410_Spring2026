@@ -10,10 +10,11 @@
 class FPMultUnit : public FunctionalUnit
 {
 public:
+    static constexpr int NUM_RS = 2;
     static constexpr int LATENCY = 4;
     static constexpr bool PIPELINED = false;
 
-    FPMultUnit(const std::vector<ReservationStation *> &rs, RegisterFileEntry *regFile);
+    FPMultUnit(RegisterFileEntry *regFile);
 
 private:
     RegisterFileEntry *registerFile;

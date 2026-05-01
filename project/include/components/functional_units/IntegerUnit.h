@@ -10,10 +10,11 @@
 class IntegerUnit : public FunctionalUnit
 {
 public:
+    static constexpr int NUM_RS = 4;
     static constexpr int LATENCY = 1;
     static constexpr bool PIPELINED = true;
 
-    IntegerUnit(const std::vector<ReservationStation*> &rs, RegisterFileEntry *regFile);
+    IntegerUnit(RegisterFileEntry *regFile);
 
 private:
     virtual double calculateResult(const DecodedInstruction &inst) override;

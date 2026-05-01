@@ -11,10 +11,11 @@
 class BranchUnit : public FunctionalUnit
 {
 public:
+    static constexpr int NUM_RS = 2;
     static constexpr int LATENCY = 1;
     static constexpr bool PIPELINED = true;
 
-    BranchUnit(const std::vector<ReservationStation*> &rs, BranchPredictor *bp, RegisterFileEntry *regFile);
+    BranchUnit(BranchPredictor *bp, RegisterFileEntry *regFile);
 
 private:
     BranchPredictor *predictor;

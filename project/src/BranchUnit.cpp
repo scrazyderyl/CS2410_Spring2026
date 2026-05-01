@@ -1,7 +1,7 @@
 #include "components/functional_units/BranchUnit.h"
 
-BranchUnit::BranchUnit(const std::vector<ReservationStation *> &rs, BranchPredictor *bp, RegisterFileEntry *regFile)
-    : FunctionalUnit(rs, PIPELINED, LATENCY), predictor(bp), registerFile(regFile)
+BranchUnit::BranchUnit(BranchPredictor *bp, RegisterFileEntry *regFile)
+    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), predictor(bp), registerFile(regFile)
 {
 }
 

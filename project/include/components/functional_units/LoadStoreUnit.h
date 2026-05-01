@@ -10,10 +10,11 @@
 class LoadStoreUnit : public FunctionalUnit
 {
 public:
+    static constexpr int NUM_RS = 2;
     static constexpr int LATENCY = 1;
     static constexpr bool PIPELINED = true;
 
-    LoadStoreUnit(const std::vector<ReservationStation*> &rs, double *dataMemoryPtr, RegisterFileEntry *regFile);
+    LoadStoreUnit(double *dataMemoryPtr, RegisterFileEntry *regFile);
 
 private:
     double *dataMemory;

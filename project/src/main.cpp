@@ -89,57 +89,9 @@ int main(int argc, char *argv[])
 	XLSXEventLogger *xlsx_logger = NULL;
 	if (excel_file_name != NULL)
 		xlsx_logger = new XLSXEventLogger(excel_file_name);
-	
 
-	// Run the simulator until completion
-	
-	/* TODO: Replace the hardcoded state with the actual simulation loop that executes
-	 *       instructions until the program icomplete.
-	 *       The loop should look something like this:
-	 *       while (simulation not complete) {
-	 *           // Simulate fetch, decode, execute, and commit stages, updating the simulator state accordingly.
-	 *       }
-	 */
-	if (xlsx_logger)
-	{
-		xlsx_logger->startCycle();
-		xlsx_logger->logFetchedInstruction(1, 0, "addi X1, X0, 24");
-		xlsx_logger->markStage(1, "IF");
-		xlsx_logger->startCycle();
-		xlsx_logger->markStage(1, "ID");
-		xlsx_logger->startCycle();
-		xlsx_logger->markStage(1, "IS/EX");
-		xlsx_logger->startCycle();
-		xlsx_logger->markStage(1, "WB/CT");
-	}
-
-	// For testing purposes, I've hardcoded the state of the CPU after executing prog-noloop.dat.
-	// Data memory values stored by the program
-	sim->dataMemory[0] = 111;
-	sim->dataMemory[8] = 14;
-	sim->dataMemory[16] = 5;
-	sim->dataMemory[24] = 10;
-	sim->dataMemory[100] = 2;
-	sim->dataMemory[108] = 27;
-	sim->dataMemory[116] = 3;
-	sim->dataMemory[124] = 128;
-	sim->dataMemory[200] = 12;
-	// Architectural registers mapped to physical registers
-	sim->registerMapTable[ArchitecturalRegister{ArchitecturalRegister::X, 1}] = 7;
-	sim->registerFile[7].value = 16;
-	sim->registerMapTable[ArchitecturalRegister{ArchitecturalRegister::X, 2}] = 8;
-	sim->registerFile[8].value = 116;
-	sim->registerMapTable[ArchitecturalRegister{ArchitecturalRegister::F, 0}] = 6;
-	sim->registerFile[6].value = 128;
-	sim->registerMapTable[ArchitecturalRegister{ArchitecturalRegister::F, 2}] = 2;
-	sim->registerFile[2].value = 12;
-	sim->registerMapTable[ArchitecturalRegister{ArchitecturalRegister::F, 4}] = 5;
-	sim->registerFile[5].value = 8;
-	// Physical registers that were used but are not currently mapped to any architectural register
-	sim->registerFile[0].value = 24;
-	sim->registerFile[1].value = 124;
-	sim->registerFile[3].value = 10;
-	sim->registerFile[4].value = 120;
+	// Run the simulator
+// sim->run_until_completion();
 
 	// Print out simulation results and statistics
 	std::cout << "Simulation complete!" << std::endl;

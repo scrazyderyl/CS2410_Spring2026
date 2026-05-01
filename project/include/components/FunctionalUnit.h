@@ -9,21 +9,22 @@
 class FunctionalUnit
 {
 public:
-    std::vector<ReservationStation*> reservationStations;
+    std::vector<ReservationStation> reservationStations;
     bool pipelined;
     int latency;
 
-    FunctionalUnit(const std::vector<ReservationStation*> &rs, int latency, bool pipelined = true) : reservationStations(rs), pipelined(pipelined), latency(latency) {}
+    FunctionalUnit(size_t numReservationStations, int latency, bool pipelined = true) : reservationStations(numReservationStations), pipelined(pipelined), latency(latency) {}
+    virtual ~FunctionalUnit() = default;
 
     // Try to reserve a decoded instruction
     // By default, this method can reserve any reservation station that is not busy
     // Can be overriden for functional units with different reservation stations for different instructions
     virtual bool reserve(const DecodedInstruction &inst, size_t ROBIndex) {
-        for (auto rs : reservationStations)
+        for (auto &rs : reservationStations)
         {
-            if (!rs->busy)
+            if (!rs.busy)
             {
-                rs->reserveInstruction(inst, ROBIndex);
+                rs.reserveInstruction(inst, ROBIndex);
                 return true;
             }
         }
@@ -41,10 +42,7 @@ public:
 private:
     // Do the actual result calculation for the instruction
     // This method also does other operations associated with the instruction
-    // Not all functional units return a result so they just return 0
-    virtual double calculateResult(const DecodedInstruction &inst) {
-        return 0;
-    }
+    virtual double calculateResult(const DecodedInstruction &inst) = 0;
 };
 
 #endif // COMPONENTS_FUNCTIONALUNIT_H

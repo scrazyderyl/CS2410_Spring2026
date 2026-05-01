@@ -1,7 +1,7 @@
 #include "components/functional_units/LoadStoreUnit.h"
 
-LoadStoreUnit::LoadStoreUnit(const std::vector<ReservationStation *> &rs, double *dataMemoryPtr, RegisterFileEntry *regFile)
-    : FunctionalUnit(rs, PIPELINED, LATENCY), dataMemory(dataMemoryPtr), registerFile(regFile)
+LoadStoreUnit::LoadStoreUnit(double *dataMemoryPtr, RegisterFileEntry *regFile)
+    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), dataMemory(dataMemoryPtr), registerFile(regFile)
 {
 }
 

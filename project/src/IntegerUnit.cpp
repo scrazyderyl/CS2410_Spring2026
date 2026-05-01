@@ -1,8 +1,8 @@
 #include "components/functional_units/IntegerUnit.h"
 #include "types/RegisterFileEntry.h"
 
-IntegerUnit::IntegerUnit(const std::vector<ReservationStation *> &rs, RegisterFileEntry *regFile)
-    : FunctionalUnit(rs, PIPELINED, LATENCY), registerFile(regFile)
+IntegerUnit::IntegerUnit(RegisterFileEntry *regFile)
+    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), registerFile(regFile)
 {
 }
 

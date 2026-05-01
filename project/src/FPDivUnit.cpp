@@ -1,7 +1,7 @@
 #include "components/functional_units/FPDivUnit.h"
 
-FPDivUnit::FPDivUnit(const std::vector<ReservationStation *> &rs, RegisterFileEntry *regFile)
-    : FunctionalUnit(rs, PIPELINED, LATENCY), registerFile(regFile)
+FPDivUnit::FPDivUnit(RegisterFileEntry *regFile)
+    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), registerFile(regFile)
 {
 }
 

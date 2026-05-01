@@ -10,10 +10,11 @@
 class FPAddUnit : public FunctionalUnit
 {
 public:
+    static constexpr int NUM_RS = 3;
     static constexpr int LATENCY = 3;
     static constexpr bool PIPELINED = true;
 
-    FPAddUnit(const std::vector<ReservationStation *> &rs, RegisterFileEntry *regFile);
+    FPAddUnit(RegisterFileEntry *regFile);
 
 private:
     RegisterFileEntry *registerFile;

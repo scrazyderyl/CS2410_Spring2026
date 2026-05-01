@@ -10,10 +10,11 @@
 class FPDivUnit : public FunctionalUnit
 {
 public:
+    static constexpr int NUM_RS = 1;
     static constexpr int LATENCY = 6;
     static constexpr bool PIPELINED = false;
 
-    FPDivUnit(const std::vector<ReservationStation*> &rs, RegisterFileEntry *regFile);
+    FPDivUnit(RegisterFileEntry *regFile);
 
 private:
     virtual double calculateResult(const DecodedInstruction &inst) override;

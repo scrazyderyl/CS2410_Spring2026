@@ -1,7 +1,7 @@
 #include "components/functional_units/FPMultUnit.h"
 
-FPMultUnit::FPMultUnit(const std::vector<ReservationStation *> &rs, RegisterFileEntry *regFile)
-    : FunctionalUnit(rs, PIPELINED, LATENCY), registerFile(regFile)
+FPMultUnit::FPMultUnit(RegisterFileEntry *regFile)
+    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), registerFile(regFile)
 {
 }
 

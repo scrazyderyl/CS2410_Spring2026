@@ -14,8 +14,12 @@
 #include "json.hpp"
 using namespace nlohmann::literals;
 
+#include "components/InstructionDecodeUnit.h"
 #include "components/InstructionDispatcher.h"
+#include "components/ReorderBuffer.h"
 #include "components/BranchPredictor.h"
+#include "components/CommonDataBus.h"
+
 #include "components/functional_units/IntegerUnit.h"
 #include "components/functional_units/LoadStoreUnit.h"
 #include "components/functional_units/FPAddUnit.h"
@@ -73,15 +77,11 @@ public:
 	RegisterFileEntry registerFile[NUM_PHYS_REG_INCLUDING_X0];
 	std::map<ArchitecturalRegister, int> registerMapTable;
 
-	// Reservation stations by type
-	// These are ordered by priority for pushing data to the CDB
-	ReservationStation loadReservationStations[2];
-	ReservationStation intReservationStations[4];
-	ReservationStation fpAddReservationStations[3];
-	ReservationStation fpMultReservationStations[2];
-	ReservationStation fpDivReservationStations[1];
-	ReservationStation storeReservationStations[2];
-	ReservationStation branchReservationStations[2];
+	BranchPredictor branchPredictor;
+	InstructionDecodeUnit instructionDecodeUnit;
+	InstructionDispatcher instructionDispatcher;
+	ReorderBuffer reorderBuffer;
+	CommonDataBus cdb;
 
 	// Functional units
 	IntegerUnit *intUnit;
@@ -91,9 +91,6 @@ public:
 	FPDivUnit *fpDivUnit;
 	BranchUnit *branchUnit;
 
-	InstructionDispatcher instructionDispatcher;
-	BranchPredictor branchPredictor;
-
 	// *PUBLIC --------------------
 	/**
 	 * @brief Constructor for Simulator that uses custom configuration
@@ -101,6 +98,12 @@ public:
 	 * @param c Configuration struct
 	 */
 	Simulator(std::ifstream *program, Config *c);
+	~Simulator();
+
+	/**
+	 * @brief Runs the simulator until the program is complete
+	 */
+	void run_until_completion();
 
 	/**
 	 * @brief Debugging function
