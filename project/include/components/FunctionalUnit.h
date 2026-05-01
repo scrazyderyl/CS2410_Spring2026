@@ -1,12 +1,12 @@
-#ifndef COMPONENTS_EXECUTIONUNIT_H
-#define COMPONENTS_EXECUTIONUNIT_H
+#ifndef COMPONENTS_FUNCTIONALUNIT_H
+#define COMPONENTS_FUNCTIONALUNIT_H
 
 #include "types/DecodedInstruction.h"
 #include "types/ReservationStation.h"
 
 #include <vector>
 
-class ExecutionUnit
+class FunctionalUnit
 {
 public:
     std::vector<ReservationStation*> reservationStations;
@@ -22,4 +22,4 @@ public:
     virtual double getResult(size_t rsIndex) = 0;
 };
 
-#endif // COMPONENTS_EXECUTIONUNIT_H
+#endif // COMPONENTS_FUNCTIONALUNIT_H

@@ -1,5 +1,5 @@
-#include "components/ExecutionUnit.h"
+#include "components/FunctionalUnit.h"
 
-ExecutionUnit::ExecutionUnit() {}
+FunctionalUnit::FunctionalUnit() {}
 
-ExecutionUnit::~ExecutionUnit() {}
+FunctionalUnit::~FunctionalUnit() {}
