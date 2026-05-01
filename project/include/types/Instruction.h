@@ -1,5 +1,5 @@
-#ifndef COMPONENTS_TYPES_INSTRUCTION_H
-#define COMPONENTS_TYPES_INSTRUCTION_H
+#ifndef TYPES_INSTRUCTION_H
+#define TYPES_INSTRUCTION_H
 
 #include <string>
 
@@ -68,4 +68,4 @@ struct Instruction
     }
 };
 
-#endif // COMPONENTS_TYPES_INSTRUCTION_H
+#endif // TYPES_INSTRUCTION_H

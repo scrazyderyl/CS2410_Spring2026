@@ -1,5 +1,5 @@
-#ifndef COMPONENTS_TYPES_BTBENTRY_H
-#define COMPONENTS_TYPES_BTBENTRY_H
+#ifndef TYPES_BTBENTRY_H
+#define TYPES_BTBENTRY_H
 
 struct BTBEntry
 {
@@ -7,4 +7,4 @@ struct BTBEntry
     ~BTBEntry();
 };
 
-#endif // COMPONENTS_TYPES_BTBENTRY_H
+#endif // TYPES_BTBENTRY_H

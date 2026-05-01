@@ -1,5 +1,5 @@
-#ifndef COMPONENTS_TYPES_BHTENTRY_H
-#define COMPONENTS_TYPES_BHTENTRY_H
+#ifndef TYPES_BHTENTRY_H
+#define TYPES_BHTENTRY_H
 
 struct BHTEntry
 {
@@ -7,4 +7,4 @@ struct BHTEntry
     ~BHTEntry();
 };
 
-#endif // COMPONENTS_TYPES_BHTENTRY_H
+#endif // TYPES_BHTENTRY_H
