@@ -91,7 +91,7 @@ int main(int argc, char *argv[])
 		xlsx_logger = new XLSXEventLogger(excel_file_name);
 
 	// Run the simulator
-// sim->run_until_completion();
+	sim->runUntilCompletion();
 
 	// Print out simulation results and statistics
 	std::cout << "Simulation complete!" << std::endl;

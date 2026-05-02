@@ -4,11 +4,17 @@
 #include "types/DecodedInstruction.h"
 #include "components/FunctionalUnit.h"
 
+class Simulator;
+
 class InstructionDecodeUnit
 {
 public:
-    InstructionDecodeUnit();
-    ~InstructionDecodeUnit();
+    InstructionDecodeUnit(Simulator &sim);
+
+    void decode();
+
+private:
+    Simulator &simulator;
 };
 
 #endif // COMPONENTS_INSTRUCTIONDECODEUNIT_H

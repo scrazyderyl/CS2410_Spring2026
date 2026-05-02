@@ -273,10 +273,11 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 	configuration = c;
 
 	branchPredictor = BranchPredictor();
-	instructionDecodeUnit = InstructionDecodeUnit();
-	instructionDispatcher = InstructionDispatcher();
-	reorderBuffer = ReorderBuffer();
-	cdb = CommonDataBus();
+	instructionFetchUnit = new InstructionFetchUnit(*this);
+	instructionDecodeUnit = new InstructionDecodeUnit(*this);
+	instructionDispatcher = new InstructionDispatcher(*this);
+	reorderBuffer = new ReorderBuffer(*this);
+	cdb = new CommonDataBus(*this);
 
 	// Instantiate functional units and keep pointers in simulator
 	intUnit = new IntegerUnit(registerFile);
@@ -286,29 +287,113 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 	fpDivUnit = new FPDivUnit(registerFile);
 	branchUnit = new BranchUnit(registerFile);
 
-	instructionDispatcher.registerInstructionExecuter(0, nullptr);
-	instructionDispatcher.registerInstructionExecuter(1, loadStoreUnit);
-	instructionDispatcher.registerInstructionExecuter(2, loadStoreUnit);
-	instructionDispatcher.registerInstructionExecuter(3, intUnit);
-	instructionDispatcher.registerInstructionExecuter(4, intUnit);
-	instructionDispatcher.registerInstructionExecuter(5, intUnit);
-	instructionDispatcher.registerInstructionExecuter(6, fpAddUnit);
-	instructionDispatcher.registerInstructionExecuter(7, fpAddUnit);
-	instructionDispatcher.registerInstructionExecuter(8, fpMultUnit);
-	instructionDispatcher.registerInstructionExecuter(9, fpDivUnit);
-	instructionDispatcher.registerInstructionExecuter(10, branchUnit);
+	instructionDispatcher->registerInstructionExecuter(0, nullptr);
+	instructionDispatcher->registerInstructionExecuter(1, loadStoreUnit);
+	instructionDispatcher->registerInstructionExecuter(2, loadStoreUnit);
+	instructionDispatcher->registerInstructionExecuter(3, intUnit);
+	instructionDispatcher->registerInstructionExecuter(4, intUnit);
+	instructionDispatcher->registerInstructionExecuter(5, intUnit);
+	instructionDispatcher->registerInstructionExecuter(6, fpAddUnit);
+	instructionDispatcher->registerInstructionExecuter(7, fpAddUnit);
+	instructionDispatcher->registerInstructionExecuter(8, fpMultUnit);
+	instructionDispatcher->registerInstructionExecuter(9, fpDivUnit);
+	instructionDispatcher->registerInstructionExecuter(10, branchUnit);
 
 	load_program(this, program);
 }
 
 Simulator::~Simulator()
 {
+	delete instructionFetchUnit;
+	delete instructionDecodeUnit;
+	delete instructionDispatcher;
+	delete reorderBuffer;
+	delete cdb;
+
 	delete intUnit;
 	delete loadStoreUnit;
 	delete fpAddUnit;
 	delete fpMultUnit;
 	delete fpDivUnit;
 	delete branchUnit;
+}
+
+void Simulator::runUntilCompletion()
+{
+	while (runOneCycle())
+	{
+		// Can put debug code here if needed
+	}
+}
+
+bool Simulator::runOneCycle()
+{
+	// Commit stage: Commit up to NC instructions from the ROB
+	// TODO: Implement commit stage
+	commitStage();
+
+	// Execute stage: Execute one instruction from each functional unit
+	// TODO: Implement execute stage
+	executeStage();
+
+	// Write back stage: Write results to CDB (up to NB results)
+	// (writeback happens after execute to simulate falling-edge writeback)
+	writeBackStage();
+	
+	// Dispatch stage: Dispatch up to NW instructions from instruction queue to reservation stations
+	// TODO: Implement dispatch stage
+	dispatchStage();
+	
+	// Decode stage: Decode fetched instructions and store in instruction queue
+	// TODO: Implement decode stage
+	decodeStage();
+	
+	// Fetch stage: Fetch up to NF instructions from instruction cache (last, so new instructions don't execute this cycle)
+	// TODO: Implement fetch stage
+	fetchStage();
+	
+	// Increment cycle counter
+	cc++;
+	
+	// Check if program is complete
+	// TODO: Implement program completion check
+	// For now, return false (program complete) to avoid infinite loop
+	return false;
+}
+
+void Simulator::commitStage()
+{
+	reorderBuffer->commit();
+}
+
+void Simulator::executeStage()
+{
+	intUnit->execute();
+	loadStoreUnit->execute();
+	fpAddUnit->execute();
+	fpMultUnit->execute();
+	fpDivUnit->execute();
+	branchUnit->execute();
+}
+
+void Simulator::writeBackStage()
+{
+	cdb->writeBack();
+}
+
+void Simulator::dispatchStage()
+{
+	instructionDispatcher->dispatch();
+}
+
+void Simulator::decodeStage()
+{
+	instructionDecodeUnit->decode();
+}
+
+void Simulator::fetchStage()
+{
+	instructionFetchUnit->fetch();
 }
 
 void Simulator::printStats()

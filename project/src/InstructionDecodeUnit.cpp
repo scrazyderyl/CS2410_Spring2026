@@ -1,5 +1,9 @@
 #include "components/InstructionDecodeUnit.h"
+#include "Simulator.h"
 
-InstructionDecodeUnit::InstructionDecodeUnit() {}
+InstructionDecodeUnit::InstructionDecodeUnit(Simulator &sim) : simulator(sim) {}
 
-InstructionDecodeUnit::~InstructionDecodeUnit() {}
+void InstructionDecodeUnit::decode()
+{
+    
+}

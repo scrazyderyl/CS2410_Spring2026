@@ -16,10 +16,10 @@ using namespace nlohmann::literals;
 
 #include "components/InstructionDecodeUnit.h"
 #include "components/InstructionDispatcher.h"
+#include "components/InstructionFetchUnit.h"
 #include "components/ReorderBuffer.h"
 #include "components/BranchPredictor.h"
 #include "components/CommonDataBus.h"
-
 #include "components/functional_units/IntegerUnit.h"
 #include "components/functional_units/LoadStoreUnit.h"
 #include "components/functional_units/FPAddUnit.h"
@@ -78,10 +78,11 @@ public:
 	std::map<ArchitecturalRegister, int> registerMapTable;
 
 	BranchPredictor branchPredictor;
-	InstructionDecodeUnit instructionDecodeUnit;
-	InstructionDispatcher instructionDispatcher;
-	ReorderBuffer reorderBuffer;
-	CommonDataBus cdb;
+	InstructionFetchUnit *instructionFetchUnit;
+	InstructionDecodeUnit *instructionDecodeUnit;
+	InstructionDispatcher *instructionDispatcher;
+	ReorderBuffer *reorderBuffer;
+	CommonDataBus *cdb;
 
 	// Functional units
 	IntegerUnit *intUnit;
@@ -103,7 +104,13 @@ public:
 	/**
 	 * @brief Runs the simulator until the program is complete
 	 */
-	void run_until_completion();
+	void runUntilCompletion();
+
+	/**
+	 * @brief Runs one cycle of the simulator
+	 * @return true if the program is still running, false if the program is done
+	 */
+	bool runOneCycle();
 
 	/**
 	 * @brief Debugging function
@@ -120,6 +127,13 @@ public:
 	 * @param output Pointer to ofstream object where the serialized data is written
 	 */
 	void serializeJSON(std::ofstream *output);
+	
+	void fetchStage();
+	void decodeStage();
+	void dispatchStage();
+	void executeStage();
+	void writeBackStage();
+	void commitStage();
 };
 
 #endif // SIMULATOR_H

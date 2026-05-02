@@ -5,7 +5,6 @@ class BranchPredictor
 {
 public:
     BranchPredictor();
-    ~BranchPredictor();
 };
 
 #endif // COMPONENTS_BRANCHPREDICTOR_H

@@ -1,5 +1,9 @@
 #include "components/ReorderBuffer.h"
+#include "Simulator.h"
 
-ReorderBuffer::ReorderBuffer() {}
+ReorderBuffer::ReorderBuffer(Simulator &sim) : simulator(sim) {}
 
-ReorderBuffer::~ReorderBuffer() {}
+void ReorderBuffer::commit()
+{
+    
+}

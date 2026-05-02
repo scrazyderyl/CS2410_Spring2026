@@ -9,6 +9,7 @@ struct ROBEntry
 {
     // Could also include result value and instruction info for debugging but not necessary for execution
     bool busy; // Technically this is also unnecessary since no flushing happens
+    bool done;
     ArchitecturalRegister dest;
 };
 
