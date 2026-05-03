@@ -48,9 +48,14 @@ std::vector<Instruction> InstructionFetchUnit::fetch()
 	return fetchQueue;
 }
 
-const std::vector<Instruction> &InstructionFetchUnit::getFetchQueue() const
+const std::vector<Instruction> &InstructionFetchUnit::getFetchQueue()
 {
 	return fetchQueue;
+}
+
+bool InstructionFetchUnit::isQueueEmpty()
+{
+	return fetchQueue.empty();
 }
 
 void InstructionFetchUnit::consumeFetchQueue(std::size_t count)

@@ -59,6 +59,11 @@ void ReorderBuffer::setResult(int index, double result)
     buffer[index].done = true;
 }
 
+bool ReorderBuffer::isEmpty()
+{
+    return head == tail;
+}
+
 void ReorderBuffer::commit()
 {
     int commitCount = 0;

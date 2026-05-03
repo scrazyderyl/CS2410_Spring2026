@@ -22,6 +22,8 @@ public:
 
     void commit();
 
+    bool isEmpty();
+
 private:
     Simulator &sim;
     std::vector<ROBEntry> buffer;

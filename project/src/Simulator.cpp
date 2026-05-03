@@ -99,7 +99,7 @@ void parseStoreInstruction(const std::string &operandsStr, Instruction &inst)
 	std::string baseRegStr = addressStr.substr(parenIndex + 1, addressStr.length() - parenIndex - 2);
 	trim(baseRegStr);
 	inst.src1 = parseRegister(baseRegStr);
-	
+
 	inst.src1 = ZERO_REG;
 }
 
@@ -351,11 +351,10 @@ bool Simulator::runOneCycle()
 	dispatch();
 	decodeStage();
 	fetchStage();
-	
+
 	cc++;
-	
-	// Check if program is complete
-	return false;
+
+	return !isProgramComplete();
 }
 
 void Simulator::commitStage()
@@ -375,20 +374,20 @@ void Simulator::executeStage()
 
 void Simulator::writeBackStage()
 {
-    // Handle branches
-    for (size_t i = 0; i < branchUnit.reservationStations.size(); i++)
-    {
-        ReservationStation &rs = branchUnit.reservationStations[i];
+	// Handle branches
+	for (size_t i = 0; i < branchUnit.reservationStations.size(); i++)
+	{
+		ReservationStation &rs = branchUnit.reservationStations[i];
 
-        if (rs.isDone())
-        {
-            branchUnit.getResult(i);
+		if (rs.isDone())
+		{
+			branchUnit.getResult(i);
 
-            // As mentioned in the notes for the branch predictor,
-            // the branch predictor doesn't need to be updated with the branch outcome
-            // This just notifies the fetch unit that the misprediction has been resolved
-        }
-    }
+			// As mentioned in the notes for the branch predictor,
+			// the branch predictor doesn't need to be updated with the branch outcome
+			// This just notifies the fetch unit that the misprediction has been resolved
+		}
+	}
 
 	// Handle reservation stations that need to push to the CDB
 	CommonDataBus::writeBack(*this);
@@ -407,6 +406,49 @@ void Simulator::decodeStage()
 void Simulator::fetchStage()
 {
 	instructionFetchUnit.fetch();
+}
+
+bool Simulator::isProgramComplete()
+{
+	// Check fetch queue is empty
+	if (!instructionFetchUnit.getFetchQueue().empty())
+	{
+		return false;
+	}
+
+	// Check instruction queue is empty
+	if (!instructionQueue.empty())
+	{
+		return false;
+	}
+
+	// Check all reservation stations are empty
+	auto isUnitEmpty = [](const FunctionalUnit &unit) -> bool
+	{
+		for (const ReservationStation &rs : unit.reservationStations)
+		{
+			if (rs.busy)
+			{
+				return false;
+			}
+		}
+
+		return true;
+	};
+
+	if (!isUnitEmpty(intUnit) || !isUnitEmpty(loadStoreUnit) ||
+		!isUnitEmpty(fpAddUnit) || !isUnitEmpty(fpMultUnit) ||
+		!isUnitEmpty(fpDivUnit) || !isUnitEmpty(branchUnit))
+	{
+		return false;
+	}
+
+	// Check reorder buffer is empty
+	if (!reorderBuffer.isEmpty()) {
+		return false;
+	}
+
+	return true;
 }
 
 void Simulator::printStats()

@@ -141,6 +141,8 @@ public:
 	void executeStage();
 	void writeBackStage();
 	void commitStage();
+
+	bool isProgramComplete();
 };
 
 #endif // SIMULATOR_H

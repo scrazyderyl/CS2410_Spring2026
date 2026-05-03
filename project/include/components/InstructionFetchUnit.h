@@ -14,10 +14,12 @@ public:
 
     std::vector<Instruction> fetch();
 
-    const std::vector<Instruction> &getFetchQueue() const;
+    const std::vector<Instruction> &getFetchQueue();
     void consumeFetchQueue(std::size_t count);
 
     void setFetchEnabled(bool enabled);
+
+    bool isQueueEmpty();
 
 private:
     Simulator &sim;
