@@ -57,7 +57,7 @@ public:
 	Config *configuration;
 
 	// Statistics
-	int cc = 0;
+	int cc = 1;
 	int rs_stalls = 0;
 	int rob_stalls = 0;
 
