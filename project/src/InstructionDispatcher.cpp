@@ -33,7 +33,7 @@ void InstructionDispatcher::dispatch()
         }
 
         // Check if there is space in the ROB
-        int robIndex = sim.reorderBuffer.add(inst.archDest, inst.dest);
+        int robIndex = sim.reorderBuffer.add(inst.archDest, inst.dest, inst.oldPhysRegIndex);
 
         if (robIndex == -1)
         {

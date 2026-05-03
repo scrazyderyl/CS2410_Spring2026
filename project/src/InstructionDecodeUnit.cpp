@@ -89,6 +89,18 @@ void InstructionDecodeUnit::decode()
 		decoded.op = inst.op;
 		decoded.src1 = static_cast<uint8_t>(resolveSourceRegister(inst.src1));
 		decoded.src2 = static_cast<uint8_t>(resolveSourceRegister(inst.src2));
+		
+		// Save the old physical register index for the destination register and free it when the instruction commits
+		if (!(inst.dest.type == ArchitecturalRegister::X && inst.dest.num == 0))
+		{
+			auto existingDest = sim.registerMapTable.find(inst.dest);
+
+			if (existingDest != sim.registerMapTable.end())
+			{
+				decoded.oldPhysRegIndex = existingDest->second;
+			}
+		}
+
 		decoded.dest = static_cast<uint8_t>(renameDestinationRegister(inst.dest));
 		decoded.imm = causedMisprediction ? Instruction::MISPREDICTION_SENTINEL : inst.imm;
 		decoded.archDest = inst.dest;

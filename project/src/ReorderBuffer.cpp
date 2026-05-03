@@ -6,7 +6,7 @@ ReorderBuffer::ReorderBuffer(Simulator &sim) : sim(sim)
     buffer.resize(sim.configuration->NR);
 }
 
-int ReorderBuffer::add(ArchitecturalRegister dest, int physRegIndex)
+int ReorderBuffer::add(ArchitecturalRegister dest, int physRegIndex, int oldPhysRegIndex)
 {
     // Check if ROB is full
     if (count == sim.configuration->NR)
@@ -20,6 +20,7 @@ int ReorderBuffer::add(ArchitecturalRegister dest, int physRegIndex)
     ROBEntry newEntry = {
         .dest = dest,
         .physRegIndex = physRegIndex,
+        .oldPhysRegIndex = oldPhysRegIndex,
         .result = 0.0,
         .done = false
     };
@@ -78,7 +79,11 @@ void ReorderBuffer::commit()
         if (entry.dest.type != ArchitecturalRegister::X || entry.dest.num != 0)
         {
             sim.architecturalRegisterFile.setValue(entry.dest, entry.result);
-            sim.freePhysicalRegisters.push(entry.physRegIndex);
+
+            if (entry.oldPhysRegIndex >= 0 && entry.oldPhysRegIndex != NUM_PHYS_REG)
+            {
+                sim.freePhysicalRegisters.push(entry.oldPhysRegIndex);
+            }
         }
 
         // Update head
