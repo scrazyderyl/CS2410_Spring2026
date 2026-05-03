@@ -80,7 +80,7 @@ void InstructionDecodeUnit::decode()
 
 		// If the last instruction in the fetch queue is a branch and the fetch unit is paused
 		// then this instruction caused a branch misprediction
-		bool causedMisprediction = inst.op == 10 && i == fetchQueue.size() - 1 && !sim.instructionFetchUnit.isFetchEnabled();
+		bool causedMisprediction = inst.op == Instruction::BNE && i == fetchQueue.size() - 1 && !sim.instructionFetchUnit.isFetchEnabled();
 
 		// Register references that are not applicable should already be set X0
 		DecodedInstruction decoded = {

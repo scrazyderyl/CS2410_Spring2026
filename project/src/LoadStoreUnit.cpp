@@ -1,4 +1,5 @@
 #include "components/functional_units/LoadStoreUnit.h"
+#include "types/Instruction.h"
 
 LoadStoreUnit::LoadStoreUnit(double *dataMemoryPtr)
     : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), dataMemory(dataMemoryPtr)
@@ -9,7 +10,7 @@ ReservationStation* LoadStoreUnit::getAvailableRS(const DecodedInstruction &inst
 {
     switch (inst.op)
     {
-    case 1: // fld
+    case Instruction::FLD:
         for (size_t i = 0; i < NUM_LOAD_RS; i++)
         {
             ReservationStation &rs = reservationStations[i];
@@ -21,7 +22,7 @@ ReservationStation* LoadStoreUnit::getAvailableRS(const DecodedInstruction &inst
         }
 
         break;
-    case 2: // fsd
+    case Instruction::FSD:
         for (size_t i = NUM_LOAD_RS; i < NUM_RS; i++)
         {
             ReservationStation &rs = reservationStations[i];
@@ -47,9 +48,9 @@ double LoadStoreUnit::calculateResult(const ReservationStation &rs)
 
     switch (rs.inst->op)
     {
-    case 1: // fld
+    case Instruction::FLD:
         return dataMemory[addr];
-    case 2: // fsd
+    case Instruction::FSD:
         return rs.src2_value;
     default:
         return 0;

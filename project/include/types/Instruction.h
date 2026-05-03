@@ -35,6 +35,21 @@ inline const std::map<uint8_t, std::string> opCodeToInst = {
 
 struct Instruction
 {
+    enum
+    {
+        NOP = 0,
+        FLD = 1,
+        FSD = 2,
+        ADD = 3,
+        ADDI = 4,
+        SLT = 5,
+        FADD = 6,
+        FSUB = 7,
+        FMUL = 8,
+        FDIV = 9,
+        BNE = 10
+    } opcode;
+
     static constexpr double MISPREDICTION_SENTINEL = 2410.0;
 
     uint8_t op;

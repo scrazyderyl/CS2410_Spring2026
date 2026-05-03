@@ -65,10 +65,7 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
 
         switch (inst.op)
         {
-        case 0: // nop
-            break;
-
-        case 1: // fld
+        case Instruction::FLD:
         {
             double baseAddress = registerFile.getValue(inst.src1);
             int addr = static_cast<int>(baseAddress + inst.imm);
@@ -76,7 +73,7 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
             break;
         }
 
-        case 2: // fsd
+        case Instruction::FSD:
         {
             double baseAddress = registerFile.getValue(inst.src1);
             int addr = static_cast<int>(baseAddress + inst.imm);
@@ -84,7 +81,7 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
             break;
         }
 
-        case 3: // add
+        case Instruction::ADD:
         {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
@@ -92,14 +89,14 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
             break;
         }
 
-        case 4: // addi
+        case Instruction::ADDI:
         {
             double val1 = registerFile.getValue(inst.src1);
             registerFile.setValue(inst.dest, val1 + inst.imm);
             break;
         }
 
-        case 5: // slt
+        case Instruction::SLT:
         {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
@@ -107,7 +104,7 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
             break;
         }
 
-        case 6: // fadd
+        case Instruction::FADD:
         {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
@@ -115,7 +112,7 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
             break;
         }
 
-        case 7: // fsub
+        case Instruction::FSUB:
         {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
@@ -123,7 +120,7 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
             break;
         }
 
-        case 8: // fmul
+        case Instruction::FMUL:
         {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
@@ -131,7 +128,7 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
             break;
         }
 
-        case 9: // fdiv
+        case Instruction::FDIV:
         {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
@@ -139,7 +136,7 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
             break;
         }
 
-        case 10: // bne
+        case Instruction::BNE:
         {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);

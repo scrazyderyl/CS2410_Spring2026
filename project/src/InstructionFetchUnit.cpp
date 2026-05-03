@@ -17,7 +17,7 @@ std::vector<Instruction> InstructionFetchUnit::fetch()
 		fetchQueue.push_back(instruction);
 
 		// Handling for branches
-		if (instruction.op == 10)
+		if (instruction.op == Instruction::BNE)
 		{
 			// If the branch has not been seen before, consider it mispredicted
 			if (sim.branchPredictor.getTargetAddress(nextFetchPC) == -1) {
