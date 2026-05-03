@@ -7,7 +7,7 @@ void FunctionalUnit::execute()
     if (pipelined)
     {
         // See if there's an reservation station that had already started executing
-        for (auto &rs : reservationStations)
+        for (ReservationStation &rs : reservationStations)
         {
             if (rs.isExecuting())
             {
@@ -17,7 +17,7 @@ void FunctionalUnit::execute()
         }
 
         // Otherwise find a reservation station that is ready to start executing
-        for (auto &rs : reservationStations)
+        for (ReservationStation &rs : reservationStations)
         {
             if (rs.busy)
             {
@@ -29,7 +29,7 @@ void FunctionalUnit::execute()
     else
     {
         // Start executing up to 1 instruction that is ready to execute
-        for (auto &rs : reservationStations)
+        for (ReservationStation &rs : reservationStations)
         {
             if (rs.isReadyToExecute())
             {
@@ -39,7 +39,7 @@ void FunctionalUnit::execute()
         }
 
         // Decrement cycles for currently executing instructions (including any that were just started)
-        for (auto &rs : reservationStations)
+        for (ReservationStation &rs : reservationStations)
         {
             if (rs.isExecuting())
             {
@@ -51,7 +51,7 @@ void FunctionalUnit::execute()
 
 double FunctionalUnit::getResult(size_t rsIndex)
 {
-    auto &rs = reservationStations[rsIndex];
+    ReservationStation &rs = reservationStations[rsIndex];
 
     rs.busy = false;
 

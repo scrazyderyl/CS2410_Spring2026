@@ -12,7 +12,7 @@ bool LoadStoreUnit::reserve(const DecodedInstruction &inst, size_t ROBIndex)
     case 1: // fld
         for (size_t i = 0; i < NUM_LOAD_RS; i++)
         {
-            auto &rs = reservationStations[i];
+            ReservationStation &rs = reservationStations[i];
 
             if (!rs.busy)
             {
@@ -25,7 +25,7 @@ bool LoadStoreUnit::reserve(const DecodedInstruction &inst, size_t ROBIndex)
     case 2: // fsd
         for (size_t i = NUM_LOAD_RS; i < NUM_RS; i++)
         {
-            auto &rs = reservationStations[i];
+            ReservationStation &rs = reservationStations[i];
 
             if (!rs.busy)
             {

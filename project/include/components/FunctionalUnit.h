@@ -20,7 +20,7 @@ public:
     // By default, this method can reserve any reservation station that is not busy
     // Can be overriden for functional units with different reservation stations for different instructions
     virtual bool reserve(const DecodedInstruction &inst, size_t ROBIndex) {
-        for (auto &rs : reservationStations)
+        for (ReservationStation &rs : reservationStations)
         {
             if (!rs.busy)
             {
