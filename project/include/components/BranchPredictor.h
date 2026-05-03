@@ -5,6 +5,7 @@
 #include <map>
 #include <types/BHTEntry.h>
 #include <types/BTBEntry.h>
+#include <types/ArchitecturalRegisterFile.h>
 #include <types/Instruction.h>
 
 // Since the fetcher is checking against the actual outcome, the branch predictor isn't really needed by the simulator
@@ -14,8 +15,6 @@ class BranchPredictor
 {
 public:
     static const int BTB_SIZE = 16;
-    static const int NUM_X_REGS = 9;
-    static const int NUM_F_REGS = 24;
     static const int BTB_INDEX_SHIFT = 4;
 
     BranchPredictor(const std::vector<Instruction> &programInstructions, const double *initialMemory);
@@ -24,7 +23,8 @@ public:
     // I guess if you really wanted you could run the actual simulator and record the outcomes but this is much faster to run
     static std::vector<bool> simulateBranches(const std::vector<Instruction> &programInstructions, const double *initialMemory);
 
-    bool isMispredicted(int branchAddress, bool prediction);
+    // This should only be called once for every bne instruction
+    bool isMispredicted(bool prediction);
 
     bool predict(int branchAddress);
 

@@ -2,6 +2,7 @@
 #define TYPES_ARCHITECTURALREGISTER_H
 
 #include <cstdint>
+#include <string>
 
 struct ArchitecturalRegister
 {

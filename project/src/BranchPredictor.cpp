@@ -35,8 +35,7 @@ void BranchPredictor::update(int branchAddress, bool taken)
     btb[index].targetAddress = branchAddress;
 }
 
-// This should only be called once for every bne instruction
-bool BranchPredictor::isMispredicted(int branchAddress, bool prediction)
+bool BranchPredictor::isMispredicted(bool prediction)
 {
     bool actualOutcome = branchOutcomes[branchesEncountered];
     branchesEncountered++;
@@ -47,30 +46,11 @@ bool BranchPredictor::isMispredicted(int branchAddress, bool prediction)
 std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instruction> &programInstructions, const double *initialMemory)
 {
     std::vector<bool> outcomes;
-
-    double xRegisters[NUM_X_REGS] = {0};
-    double fRegisters[NUM_F_REGS] = {0};
-
-    auto getValue = [&](const ArchitecturalRegister &reg) -> double
-    {
-        return reg.type == ArchitecturalRegister::X ? xRegisters[reg.num] : fRegisters[reg.num];
-    };
-
-    auto setValue = [&](const ArchitecturalRegister &reg, double value)
-    {
-        if (reg.type == ArchitecturalRegister::X)
-        {
-            xRegisters[reg.num] = value;
-        }
-        else
-        {
-            fRegisters[reg.num] = value;
-        }
-    };
+    ArchitecturalRegisterFile registerFile;
 
     int instIndex = 0;
 
-    while (instIndex < programInstructions.size())
+    while (instIndex < static_cast<int>(programInstructions.size()))
     {
         const Instruction &inst = programInstructions[instIndex];
 
@@ -81,8 +61,9 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
 
         case 1: // fld
         {
-            int addr = static_cast<int>(getValue(inst.src1) + inst.imm);
-            setValue(inst.dest, initialMemory[addr]);
+            double val1 = registerFile.getValue(inst.src1);
+            int addr = static_cast<int>(val1 + inst.imm);
+            registerFile.setValue(inst.dest, initialMemory[addr]);
             break;
         }
 
@@ -91,39 +72,52 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
             break;
 
         case 3: // add
-            setValue(inst.dest, getValue(inst.src1) + getValue(inst.src2));
+            double val1 = registerFile.getValue(inst.src1);
+            double val2 = registerFile.getValue(inst.src2);
+            registerFile.setValue(inst.dest, val1 + val2);
             break;
 
         case 4: // addi
-            setValue(inst.dest, getValue(inst.src1) + inst.imm);
+            double val1 = registerFile.getValue(inst.src1);
+            registerFile.setValue(inst.dest, val1 + inst.imm);
             break;
 
         case 5: // slt
-            setValue(inst.dest, getValue(inst.src1) < getValue(inst.src2) ? 1.0 : 0.0);
+            double val1 = registerFile.getValue(inst.src1);
+            double val2 = registerFile.getValue(inst.src2);
+            registerFile.setValue(inst.dest, val1 < val2 ? 1.0 : 0.0);
             break;
 
         case 6: // fadd
-            setValue(inst.dest, getValue(inst.src1) + getValue(inst.src2));
+            double val1 = registerFile.getValue(inst.src1);
+            double val2 = registerFile.getValue(inst.src2);
+            registerFile.setValue(inst.dest, val1 + val2);
             break;
 
         case 7: // fsub
-            setValue(inst.dest, getValue(inst.src1) - getValue(inst.src2));
+            double val1 = registerFile.getValue(inst.src1);
+            double val2 = registerFile.getValue(inst.src2);
+            registerFile.setValue(inst.dest, val1 - val2);
             break;
 
         case 8: // fmul
-            setValue(inst.dest, getValue(inst.src1) * getValue(inst.src2));
+            double val1 = registerFile.getValue(inst.src1);
+            double val2 = registerFile.getValue(inst.src2);
+            registerFile.setValue(inst.dest, val1 * val2);
             break;
 
         case 9: // fdiv
-            setValue(inst.dest, getValue(inst.src1) / getValue(inst.src2));
+            double val1 = registerFile.getValue(inst.src1);
+            double val2 = registerFile.getValue(inst.src2);
+            registerFile.setValue(inst.dest, val1 / val2);
             break;
 
         case 10: // bne
         {
-            bool taken = getValue(inst.src1) != getValue(inst.src2);
+            double val1 = registerFile.getValue(inst.src1);
+            double val2 = registerFile.getValue(inst.src2);
+            bool taken = val1 != val2;
 
-            // Record the result of the branch instruction
-            int branchAddr = instIndex * 4;
             outcomes.push_back(taken);
 
             if (taken)
