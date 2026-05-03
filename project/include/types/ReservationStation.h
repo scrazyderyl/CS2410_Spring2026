@@ -10,7 +10,7 @@ struct ReservationStation
 {
     bool busy = false;
     int cycles_left = -1;
-    const DecodedInstruction *inst = nullptr;
+    DecodedInstruction inst;
     int ROBIndex = -1;
 
     // Store received source values so that physical registers can be recycled on instruction commit
@@ -38,7 +38,7 @@ struct ReservationStation
     {
         busy = true;
         cycles_left = -1;
-        inst = &decodedInst;
+        inst = decodedInst;
         ROBIndex = robIndex;
     }
 

@@ -19,12 +19,12 @@ void CommonDataBus::writeBack(Simulator &sim)
                     continue;
                 }
 
-                if (rs.inst->src1 == reg)
+                if (rs.inst.src1 == reg)
                 {
                     rs.setSource1Value(value);
                 }
 
-                if (rs.inst->src2 == reg)
+                if (rs.inst.src2 == reg)
                 {
                     rs.setSource2Value(value);
                 }
@@ -50,17 +50,17 @@ void CommonDataBus::writeBack(Simulator &sim)
                 continue;
             }
 
-            const DecodedInstruction *inst = rs.inst;
+            const DecodedInstruction &inst = rs.inst;
             double result = unit.getResult(i);
 
             // Send result to ROB
             sim.reorderBuffer.setResult(rs.ROBIndex, result);
 
             // Forward to any waiting reservation stations
-            forwardToListeners(inst->dest, result);
+            forwardToListeners(inst.dest, result);
 
             // Update other CDB listeners as needed for the instruction
-            applyResult(*inst, result);
+            applyResult(inst, result);
             
             --slots;
 

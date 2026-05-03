@@ -10,7 +10,7 @@ double FPAddUnit::calculateResult(const ReservationStation &rs)
     double v1 = rs.src1_value;
     double v2 = rs.src2_value;
 
-    switch (rs.inst->op)
+    switch (rs.inst.op)
     {
     case 6: // fadd
         return v1 + v2;

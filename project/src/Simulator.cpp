@@ -376,10 +376,10 @@ void Simulator::writeBackStage()
 		{
 			// Update branch predictor with the result of the branch
 			bool branchResult = branchUnit.getResult(i) == 1.0;
-			branchPredictor.update(rs.inst->address, branchResult);
+			branchPredictor.update(rs.inst.address, branchResult);
 
 			// Renable fetching if this was the instruction that caused a branch misprediction
-			if (rs.inst->imm == Instruction::MISPREDICTION_SENTINEL) {
+			if (rs.inst.imm == Instruction::MISPREDICTION_SENTINEL) {
 				instructionFetchUnit.setFetchEnabled(true);
 			}
 			

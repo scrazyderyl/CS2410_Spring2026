@@ -44,9 +44,9 @@ ReservationStation* LoadStoreUnit::getAvailableRS(const DecodedInstruction &inst
 double LoadStoreUnit::calculateResult(const ReservationStation &rs)
 {
     double base = rs.src1_value;
-    int addr = (uint32_t)(base + rs.inst->imm);
+    int addr = (uint32_t)(base + rs.inst.imm);
 
-    switch (rs.inst->op)
+    switch (rs.inst.op)
     {
     case Instruction::FLD:
         return dataMemory[addr];
