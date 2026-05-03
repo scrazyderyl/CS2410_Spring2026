@@ -6,13 +6,13 @@ void CommonDataBus::writeBack(Simulator &sim)
     int slots = sim.configuration->NB;
 
     // Handle branches
-    for (size_t i = 0; i < sim.branchUnit->reservationStations.size(); i++)
+    for (size_t i = 0; i < sim.branchUnit.reservationStations.size(); i++)
     {
-        ReservationStation &rs = sim.branchUnit->reservationStations[i];
+        ReservationStation &rs = sim.branchUnit.reservationStations[i];
 
         if (rs.isDone())
         {
-            sim.branchUnit->getResult(i);
+            sim.branchUnit.getResult(i);
 
             // As mentioned in the notes for the branch predictor,
             // the branch predictor doesn't need to be updated with the branch outcome
@@ -46,42 +46,42 @@ void CommonDataBus::writeBack(Simulator &sim)
     };
 
     // 1) Loads
-    if (writeBackRange(*sim.loadStoreUnit, 0, LoadStoreUnit::NUM_LOAD_RS, [&](const DecodedInstruction &inst, double value)
+    if (writeBackRange(sim.loadStoreUnit, 0, LoadStoreUnit::NUM_LOAD_RS, [&](const DecodedInstruction &inst, double value)
                        { sim.registerFile[inst.dest].value = value; }))
     {
         return;
     }
 
     // 2) Integer unit
-    if (writeBackRange(*sim.intUnit, 0, sim.intUnit->reservationStations.size(), [&](const DecodedInstruction &inst, double value)
+    if (writeBackRange(sim.intUnit, 0, sim.intUnit.reservationStations.size(), [&](const DecodedInstruction &inst, double value)
                        { sim.registerFile[inst.dest].value = value; }))
     {
         return;
     }
 
     // 3) FP add
-    if (writeBackRange(*sim.fpAddUnit, 0, sim.fpAddUnit->reservationStations.size(), [&](const DecodedInstruction &inst, double value)
+    if (writeBackRange(sim.fpAddUnit, 0, sim.fpAddUnit.reservationStations.size(), [&](const DecodedInstruction &inst, double value)
                        { sim.registerFile[inst.dest].value = value; }))
     {
         return;
     }
 
     // 4) FP mult
-    if (writeBackRange(*sim.fpMultUnit, 0, sim.fpMultUnit->reservationStations.size(), [&](const DecodedInstruction &inst, double value)
+    if (writeBackRange(sim.fpMultUnit, 0, sim.fpMultUnit.reservationStations.size(), [&](const DecodedInstruction &inst, double value)
                        { sim.registerFile[inst.dest].value = value; }))
     {
         return;
     }
 
     // 5) FP div
-    if (writeBackRange(*sim.fpDivUnit, 0, sim.fpDivUnit->reservationStations.size(), [&](const DecodedInstruction &inst, double value)
+    if (writeBackRange(sim.fpDivUnit, 0, sim.fpDivUnit.reservationStations.size(), [&](const DecodedInstruction &inst, double value)
                        { sim.registerFile[inst.dest].value = value; }))
     {
         return;
     }
 
     // 6) Stores
-    writeBackRange(*sim.loadStoreUnit, LoadStoreUnit::NUM_LOAD_RS, LoadStoreUnit::NUM_RS, [&](const DecodedInstruction &inst, double value)
+    writeBackRange(sim.loadStoreUnit, LoadStoreUnit::NUM_LOAD_RS, LoadStoreUnit::NUM_RS, [&](const DecodedInstruction &inst, double value)
                    {
         double base = sim.registerFile[inst.src1].value;
         uint32_t addr = static_cast<uint32_t>(base + inst.imm);

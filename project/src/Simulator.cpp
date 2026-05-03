@@ -269,53 +269,32 @@ void load_program(Simulator *sim, std::ifstream *program)
 }
 
 Simulator::Simulator(std::ifstream *program, Config *c)
+	: configuration(c),
+	  branchPredictor(programInstructions, dataMemory),
+	  instructionFetchUnit(*this),
+	  instructionDecodeUnit(*this),
+	  instructionDispatcher(*this),
+	  reorderBuffer(*this),
+	  intUnit(registerFile),
+	  loadStoreUnit(dataMemory, registerFile),
+	  fpAddUnit(registerFile),
+	  fpMultUnit(registerFile),
+	  fpDivUnit(registerFile),
+	  branchUnit(registerFile)
 {
-	configuration = c;
-
-	instructionFetchUnit = new InstructionFetchUnit(*this);
-	instructionDecodeUnit = new InstructionDecodeUnit(*this);
-	instructionDispatcher = new InstructionDispatcher(*this);
-	reorderBuffer = new ReorderBuffer(*this);
-
-	// Instantiate functional units and keep pointers in simulator
-	intUnit = new IntegerUnit(registerFile);
-	loadStoreUnit = new LoadStoreUnit(dataMemory, registerFile);
-	fpAddUnit = new FPAddUnit(registerFile);
-	fpMultUnit = new FPMultUnit(registerFile);
-	fpDivUnit = new FPDivUnit(registerFile);
-	branchUnit = new BranchUnit(registerFile);
-
-	instructionDispatcher->registerInstructionExecuter(0, nullptr);
-	instructionDispatcher->registerInstructionExecuter(1, loadStoreUnit);
-	instructionDispatcher->registerInstructionExecuter(2, loadStoreUnit);
-	instructionDispatcher->registerInstructionExecuter(3, intUnit);
-	instructionDispatcher->registerInstructionExecuter(4, intUnit);
-	instructionDispatcher->registerInstructionExecuter(5, intUnit);
-	instructionDispatcher->registerInstructionExecuter(6, fpAddUnit);
-	instructionDispatcher->registerInstructionExecuter(7, fpAddUnit);
-	instructionDispatcher->registerInstructionExecuter(8, fpMultUnit);
-	instructionDispatcher->registerInstructionExecuter(9, fpDivUnit);
-	instructionDispatcher->registerInstructionExecuter(10, branchUnit);
+	instructionDispatcher.registerInstructionExecuter(0, nullptr);
+	instructionDispatcher.registerInstructionExecuter(1, &loadStoreUnit);
+	instructionDispatcher.registerInstructionExecuter(2, &loadStoreUnit);
+	instructionDispatcher.registerInstructionExecuter(3, &intUnit);
+	instructionDispatcher.registerInstructionExecuter(4, &intUnit);
+	instructionDispatcher.registerInstructionExecuter(5, &intUnit);
+	instructionDispatcher.registerInstructionExecuter(6, &fpAddUnit);
+	instructionDispatcher.registerInstructionExecuter(7, &fpAddUnit);
+	instructionDispatcher.registerInstructionExecuter(8, &fpMultUnit);
+	instructionDispatcher.registerInstructionExecuter(9, &fpDivUnit);
+	instructionDispatcher.registerInstructionExecuter(10, &branchUnit);
 
 	load_program(this, program);
-
-	branchPredictor = new BranchPredictor(programInstructions, dataMemory);
-}
-
-Simulator::~Simulator()
-{
-	delete branchPredictor;
-	delete instructionFetchUnit;
-	delete instructionDecodeUnit;
-	delete instructionDispatcher;
-	delete reorderBuffer;
-
-	delete intUnit;
-	delete loadStoreUnit;
-	delete fpAddUnit;
-	delete fpMultUnit;
-	delete fpDivUnit;
-	delete branchUnit;
 }
 
 void Simulator::runUntilCompletion()
@@ -363,17 +342,17 @@ bool Simulator::runOneCycle()
 
 void Simulator::commitStage()
 {
-	reorderBuffer->commit();
+	reorderBuffer.commit();
 }
 
 void Simulator::executeStage()
 {
-	intUnit->execute();
-	loadStoreUnit->execute();
-	fpAddUnit->execute();
-	fpMultUnit->execute();
-	fpDivUnit->execute();
-	branchUnit->execute();
+	intUnit.execute();
+	loadStoreUnit.execute();
+	fpAddUnit.execute();
+	fpMultUnit.execute();
+	fpDivUnit.execute();
+	branchUnit.execute();
 }
 
 void Simulator::writeBackStage()
@@ -383,17 +362,17 @@ void Simulator::writeBackStage()
 
 void Simulator::dispatchStage()
 {
-	instructionDispatcher->dispatch();
+	instructionDispatcher.dispatch();
 }
 
 void Simulator::decodeStage()
 {
-	instructionDecodeUnit->decode();
+	instructionDecodeUnit.decode();
 }
 
 void Simulator::fetchStage()
 {
-	instructionFetchUnit->fetch();
+	instructionFetchUnit.fetch();
 }
 
 void Simulator::printStats()

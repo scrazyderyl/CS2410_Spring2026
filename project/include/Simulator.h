@@ -68,28 +68,30 @@ public:
 	 * @brief Instruction cache
 	 */
 	std::vector<Instruction> programInstructions;
+	
+	ArchitecturalRegisterFile architecturalRegisterFile;
 
 	/**
 	 * @brief Register File
 	 * @note This is a map of physical register number -> value
 	 * @note For bookkeeping, we also store the ROB number and whether the register is busy
 	 */
-	RegisterFileEntry registerFile[NUM_PHYS_REG_INCLUDING_X0];
+	RegisterFileEntry registerFile[NUM_PHYS_REG_INCLUDING_X0] = {};
 	std::map<ArchitecturalRegister, int> registerMapTable;
 
-	BranchPredictor *branchPredictor;
-	InstructionFetchUnit *instructionFetchUnit;
-	InstructionDecodeUnit *instructionDecodeUnit;
-	InstructionDispatcher *instructionDispatcher;
-	ReorderBuffer *reorderBuffer;
+	BranchPredictor branchPredictor;
+	InstructionFetchUnit instructionFetchUnit;
+	InstructionDecodeUnit instructionDecodeUnit;
+	InstructionDispatcher instructionDispatcher;
+	ReorderBuffer reorderBuffer;
 
 	// Functional units
-	IntegerUnit *intUnit;
-	LoadStoreUnit *loadStoreUnit;
-	FPAddUnit *fpAddUnit;
-	FPMultUnit *fpMultUnit;
-	FPDivUnit *fpDivUnit;
-	BranchUnit *branchUnit;
+	IntegerUnit intUnit;
+	LoadStoreUnit loadStoreUnit;
+	FPAddUnit fpAddUnit;
+	FPMultUnit fpMultUnit;
+	FPDivUnit fpDivUnit;
+	BranchUnit branchUnit;
 
 	// *PUBLIC --------------------
 	/**
@@ -98,7 +100,6 @@ public:
 	 * @param c Configuration struct
 	 */
 	Simulator(std::ifstream *program, Config *c);
-	~Simulator();
 
 	/**
 	 * @brief Runs the simulator until the program is complete
