@@ -7,6 +7,38 @@ void CommonDataBus::writeBack(Simulator &sim)
 
     // Priority: Load, INT, FPadd, FPmult, FPdiv, Store
     // Returns true if all slots have been used up
+
+    // Forward a value to reservation stations waiting on a result written to a physical register
+    auto forwardToListeners = [&](uint8_t reg, double value, const DecodedInstruction *sourceInst)
+    {
+        auto tryForward = [&](auto &unit)
+        {
+            for (ReservationStation &rs : unit.reservationStations)
+            {
+                if (!rs.busy) {
+                    continue;
+                }
+
+                if (rs.inst->src1 == reg)
+                {
+                    rs.setSource1Value(value);
+                }
+
+                if (rs.inst->src2 == reg)
+                {
+                    rs.setSource2Value(value);
+                }
+            }
+        };
+
+        tryForward(sim.loadStoreUnit);
+        tryForward(sim.intUnit);
+        tryForward(sim.fpAddUnit);
+        tryForward(sim.fpMultUnit);
+        tryForward(sim.fpDivUnit);
+        tryForward(sim.branchUnit);
+    };
+
     auto writeBackRange = [&](auto &unit, size_t begin, size_t end, auto &&applyResult) -> bool
     {
         for (size_t i = begin; i < end; ++i)
@@ -23,6 +55,9 @@ void CommonDataBus::writeBack(Simulator &sim)
 
             // Send result to ROB
             sim.reorderBuffer.setResult(rs.ROBIndex, result);
+
+            // Update architected register file and forward to any waiting reservation stations
+            forwardToListeners(inst->dest, result, inst);
 
             // Update other CDB listeners as needed for the instruction
             applyResult(*inst, result);
