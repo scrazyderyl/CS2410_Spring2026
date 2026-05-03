@@ -6,6 +6,7 @@
 #include <iostream>
 #include <list>
 #include <map>
+#include <queue>
 #include <sys/types.h>
 #include <vector>
 #include <string>
@@ -31,6 +32,7 @@ using namespace nlohmann::literals;
 #include "types/ReservationStation.h"
 #include "types/ArchitecturalRegister.h"
 #include "types/RegisterFileEntry.h"
+#include "types/DecodedInstruction.h"
 #include "types/Instruction.h"
 
 #ifndef SIMULATOR_H
@@ -69,8 +71,10 @@ public:
 	 * @brief Instruction cache
 	 */
 	std::vector<Instruction> programInstructions;
+	std::vector<DecodedInstruction> instructionQueue;
+	std::queue<int> freePhysicalRegisters;
 
-	uint pc;
+	uint pc = 0;
 	
 	ArchitecturalRegisterFile architecturalRegisterFile;
 
@@ -133,7 +137,7 @@ public:
 	
 	void fetchStage();
 	void decodeStage();
-	void dispatchStage();
+	void dispatch();
 	void executeStage();
 	void writeBackStage();
 	void commitStage();

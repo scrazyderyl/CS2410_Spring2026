@@ -12,7 +12,8 @@ class ReorderBuffer
 public:
     ReorderBuffer(Simulator &sim);
 
-    bool add(ArchitecturalRegister dest, int physRegIndex);
+    // Returns index of new entry, or -1 if ROB is full
+    int add(ArchitecturalRegister dest, int physRegIndex = -1);
 
     void setResult(int index, double result);
 

@@ -7,8 +7,7 @@
 
 struct ROBEntry
 {
-    ArchitecturalRegister dest;
-    // Which physical register dest is mapped to, if any
+    ArchitecturalRegister dest{ArchitecturalRegister::X, 0};
     int physRegIndex = -1;
     double result = 0.0;
     bool done = false;

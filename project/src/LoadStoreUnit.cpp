@@ -5,7 +5,7 @@ LoadStoreUnit::LoadStoreUnit(double *dataMemoryPtr)
 {
 }
 
-bool LoadStoreUnit::reserve(const DecodedInstruction &inst, size_t ROBIndex)
+ReservationStation* LoadStoreUnit::getAvailableRS(const DecodedInstruction &inst)
 {
     switch (inst.op)
     {
@@ -16,8 +16,7 @@ bool LoadStoreUnit::reserve(const DecodedInstruction &inst, size_t ROBIndex)
 
             if (!rs.busy)
             {
-                rs.reserveInstruction(inst, ROBIndex);
-                return true;
+                return &rs;
             }
         }
 
@@ -29,17 +28,16 @@ bool LoadStoreUnit::reserve(const DecodedInstruction &inst, size_t ROBIndex)
 
             if (!rs.busy)
             {
-                rs.reserveInstruction(inst, ROBIndex);
-                return true;
+                return &rs;
             }
         }
 
         break;
     default:
-        return false;
+        return nullptr;
     }
 
-    return false;
+    return nullptr;
 }
 
 double LoadStoreUnit::calculateResult(const ReservationStation &rs)

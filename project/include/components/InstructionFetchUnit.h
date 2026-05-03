@@ -12,13 +12,18 @@ class InstructionFetchUnit
 public:
     InstructionFetchUnit(Simulator &sim);
 
-    std::vector<Instruction> fetch(uint pc);
+    std::vector<Instruction> fetch();
+
+    const std::vector<Instruction> &getFetchQueue() const;
+    void consumeFetchQueue(std::size_t count);
 
     void setFetchEnabled(bool enabled);
 
 private:
     Simulator &sim;
     std::vector<Instruction> fetchQueue;
+
+    unsigned int nextFetchPC = 0;
     bool fetchEnabled = true;
 };
 

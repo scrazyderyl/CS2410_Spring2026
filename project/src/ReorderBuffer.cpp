@@ -6,13 +6,15 @@ ReorderBuffer::ReorderBuffer(Simulator &sim) : sim(sim)
     buffer.resize(sim.configuration->NR);
 }
 
-bool ReorderBuffer::add(ArchitecturalRegister dest, int physRegIndex)
+int ReorderBuffer::add(ArchitecturalRegister dest, int physRegIndex)
 {
     // Check if ROB is full
     if (head == tail)
     {
-        return false;
+        return -1;
     }
+
+    int index = tail;
 
     // Add entry at tail
     ROBEntry newEntry = {
@@ -22,12 +24,12 @@ bool ReorderBuffer::add(ArchitecturalRegister dest, int physRegIndex)
         .done = false
     };
     
-    buffer[tail] = newEntry;
+    buffer[index] = newEntry;
 
     // Update tail
     tail = (tail + 1) % sim.configuration->NR;
 
-    return true;
+    return index;
 }
 
 void ReorderBuffer::setResult(int index, double result)
@@ -44,7 +46,13 @@ void ReorderBuffer::commit()
     {
         // Write result to architectural register file
         ROBEntry &entry = buffer[head];
-        sim.architecturalRegisterFile.setValue(entry.dest, entry.result);
+
+        // Instructions that don't write to a destination register will have dest set to X0 which is read-only
+        if (entry.dest.type != ArchitecturalRegister::X || entry.dest.num != 0)
+        {
+            sim.architecturalRegisterFile.setValue(entry.dest, entry.result);
+            sim.freePhysicalRegisters.push(entry.physRegIndex);
+        }
 
         // Update head
         head = (head + 1) % sim.configuration->NR;

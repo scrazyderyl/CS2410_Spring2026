@@ -5,8 +5,7 @@
 
 struct BTBEntry
 {
-    int targetAddress;
-    bool valid = false;
+    int targetAddress = -1;
 };
 
 #endif // TYPES_BTBENTRY_H

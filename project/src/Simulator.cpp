@@ -315,6 +315,11 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 	  fpDivUnit(),
 	  branchUnit()
 {
+	for (int i = 0; i < NUM_PHYS_REG; ++i)
+	{
+		freePhysicalRegisters.push(i);
+	}
+
 	instructionDispatcher.registerInstructionExecuter(0, nullptr);
 	instructionDispatcher.registerInstructionExecuter(1, &loadStoreUnit);
 	instructionDispatcher.registerInstructionExecuter(2, &loadStoreUnit);
@@ -389,7 +394,7 @@ void Simulator::writeBackStage()
 	CommonDataBus::writeBack(*this);
 }
 
-void Simulator::dispatchStage()
+void Simulator::dispatch()
 {
 	instructionDispatcher.dispatch();
 }
@@ -401,7 +406,7 @@ void Simulator::decodeStage()
 
 void Simulator::fetchStage()
 {
-	instructionFetchUnit.fetch(pc);
+	instructionFetchUnit.fetch();
 }
 
 void Simulator::printStats()

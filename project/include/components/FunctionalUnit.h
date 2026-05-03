@@ -19,17 +19,19 @@ public:
     // Try to reserve a decoded instruction
     // By default, this method can reserve any reservation station that is not busy
     // Can be overriden for functional units with different reservation stations for different instructions
-    virtual bool reserve(const DecodedInstruction &inst, size_t ROBIndex) {
+    virtual ReservationStation *getAvailableRS(const DecodedInstruction &inst)
+    {
+        (void)inst; // Suppress unused parameter warning
+
         for (ReservationStation &rs : reservationStations)
         {
             if (!rs.busy)
             {
-                rs.reserveInstruction(inst, ROBIndex);
-                return true;
+                return &rs;
             }
         }
 
-        return false;
+        return nullptr;
     }
 
     // Simulate one cycle
@@ -39,6 +41,7 @@ public:
     // Once this is called the reservation station is freed up
     // Does not do any safety checks, it assumes those have been done by the caller
     double getResult(size_t rsIndex);
+
 private:
     // Do the actual result calculation for the instruction
     // This method also does other operations associated with the instruction

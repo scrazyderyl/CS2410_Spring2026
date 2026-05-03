@@ -17,7 +17,7 @@ public:
 
     LoadStoreUnit(double *dataMemoryPtr);
 
-    virtual bool reserve(const DecodedInstruction &inst, size_t ROBIndex) override;
+    virtual ReservationStation* getAvailableRS(const DecodedInstruction &inst) override;
 
 private:
     double *dataMemory;

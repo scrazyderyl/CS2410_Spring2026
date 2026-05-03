@@ -33,7 +33,6 @@ void BranchPredictor::update(int branchAddress, bool taken)
     int index = hashAddress(branchAddress);
 
     bht[index].update(taken);
-    btb[index].valid = true;
     btb[index].targetAddress = branchAddress;
 }
 

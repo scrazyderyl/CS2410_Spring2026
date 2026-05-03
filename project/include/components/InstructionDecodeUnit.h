@@ -3,6 +3,7 @@
 
 #include "types/DecodedInstruction.h"
 #include "components/FunctionalUnit.h"
+#include "types/ArchitecturalRegister.h"
 
 class Simulator;
 
@@ -15,6 +16,11 @@ public:
 
 private:
     Simulator &simulator;
+
+    int allocatePhysicalRegister();
+    int resolveSourceRegister(const ArchitecturalRegister &reg);
+    int renameDestinationRegister(const ArchitecturalRegister &reg);
+    bool isPhysicalRegisterPending(uint8_t physReg) const;
 };
 
 #endif // COMPONENTS_INSTRUCTIONDECODEUNIT_H

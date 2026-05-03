@@ -27,6 +27,8 @@ public:
 
 private:
     Simulator &simulator;
+
+    bool isSourceRegisterReady(uint8_t physReg) const;
 };
 
 #endif // COMPONENTS_INSTRUCTIONDISPATCHER_H
