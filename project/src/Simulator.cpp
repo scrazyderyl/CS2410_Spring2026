@@ -273,6 +273,7 @@ void load_program(Simulator *sim, std::ifstream *program)
 		uint8_t opcode = instToOpCode.at(opcodeStr);
 
 		Instruction inst;
+		inst.address = static_cast<int>(i * 4);
 		inst.op = opcode;
 
 		std::string operandsStr = instruction.substr(spaceIndex + 1);
@@ -373,7 +374,9 @@ void Simulator::writeBackStage()
 
 		if (rs.isDone())
 		{
-			branchUnit.getResult(i);
+			// Update branch predictor with the result of the branch
+			bool branchResult = branchUnit.getResult(i) == 1.0;
+			branchPredictor.update(rs.inst->address, branchResult);
 
 			// Renable fetching if this was the instruction that caused a branch misprediction
 			if (rs.inst->imm == Instruction::MISPREDICTION_SENTINEL) {

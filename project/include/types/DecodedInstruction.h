@@ -7,6 +7,7 @@
 
 struct DecodedInstruction
 {
+    int address = 0;
     uint8_t op;
     uint8_t dest;
     uint8_t src1;

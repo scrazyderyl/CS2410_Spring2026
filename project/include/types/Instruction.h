@@ -52,6 +52,7 @@ struct Instruction
 
     static constexpr double MISPREDICTION_SENTINEL = 2410.0;
 
+    int address = 0;
     uint8_t op;
     ArchitecturalRegister dest;
     ArchitecturalRegister src1;

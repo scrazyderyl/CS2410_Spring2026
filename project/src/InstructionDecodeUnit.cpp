@@ -84,6 +84,7 @@ void InstructionDecodeUnit::decode()
 
 		// Register references that are not applicable should already be set X0
 		DecodedInstruction decoded = {
+			.address = inst.address,
 			.op = inst.op,
 			.dest = static_cast<uint8_t>(renameDestinationRegister(inst.dest)),
 			.src1 = static_cast<uint8_t>(resolveSourceRegister(inst.src1)),
