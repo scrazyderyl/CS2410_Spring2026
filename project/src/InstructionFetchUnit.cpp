@@ -53,11 +53,6 @@ const std::vector<Instruction> &InstructionFetchUnit::getFetchQueue()
 	return fetchQueue;
 }
 
-bool InstructionFetchUnit::isQueueEmpty()
-{
-	return fetchQueue.empty();
-}
-
 void InstructionFetchUnit::consumeFetchQueue(std::size_t count)
 {
 	if (count >= fetchQueue.size())
@@ -72,4 +67,9 @@ void InstructionFetchUnit::consumeFetchQueue(std::size_t count)
 void InstructionFetchUnit::setFetchEnabled(bool enabled)
 {
 	fetchEnabled = enabled;
+}
+
+bool InstructionFetchUnit::isQueueEmpty()
+{
+	return fetchQueue.empty();
 }

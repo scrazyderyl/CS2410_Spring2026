@@ -362,16 +362,6 @@ void Simulator::commitStage()
 	reorderBuffer.commit();
 }
 
-void Simulator::executeStage()
-{
-	intUnit.execute();
-	loadStoreUnit.execute();
-	fpAddUnit.execute();
-	fpMultUnit.execute();
-	fpDivUnit.execute();
-	branchUnit.execute();
-}
-
 void Simulator::writeBackStage()
 {
 	// Handle branches
@@ -391,6 +381,16 @@ void Simulator::writeBackStage()
 
 	// Handle reservation stations that need to push to the CDB
 	CommonDataBus::writeBack(*this);
+}
+
+void Simulator::executeStage()
+{
+	intUnit.execute();
+	loadStoreUnit.execute();
+	fpAddUnit.execute();
+	fpMultUnit.execute();
+	fpDivUnit.execute();
+	branchUnit.execute();
 }
 
 void Simulator::dispatch()
