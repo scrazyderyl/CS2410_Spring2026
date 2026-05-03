@@ -53,11 +53,11 @@ ArchitecturalRegister parseRegister(const std::string &regStr)
 	}
 }
 
-void parseLoadStoreInstruction(const std::string &operandsStr, Instruction &inst)
+void parseLoadInstruction(const std::string &operandsStr, Instruction &inst)
 {
 	size_t commaIndex = operandsStr.find(',');
 
-	// Source or destination register
+	// Destination register
 	std::string regStr = operandsStr.substr(0, commaIndex);
 	trim(regStr);
 	inst.dest = parseRegister(regStr);
@@ -70,10 +70,37 @@ void parseLoadStoreInstruction(const std::string &operandsStr, Instruction &inst
 	double offset = std::stod(addressStr.substr(0, parenIndex));
 	inst.imm = offset;
 
-	// Base register
+	// Address base register
 	std::string baseRegStr = addressStr.substr(parenIndex + 1, addressStr.length() - parenIndex - 2);
 	trim(baseRegStr);
 	inst.src1 = parseRegister(baseRegStr);
+
+	inst.src2 = ZERO_REG;
+}
+
+void parseStoreInstruction(const std::string &operandsStr, Instruction &inst)
+{
+	size_t commaIndex = operandsStr.find(',');
+
+	// Data source register
+	std::string regStr = operandsStr.substr(0, commaIndex);
+	trim(regStr);
+	inst.src2 = parseRegister(regStr);
+
+	std::string addressStr = operandsStr.substr(commaIndex + 1);
+	trim(addressStr);
+	size_t parenIndex = addressStr.find('(');
+
+	// Offset
+	double offset = std::stod(addressStr.substr(0, parenIndex));
+	inst.imm = offset;
+
+	// Address base register
+	std::string baseRegStr = addressStr.substr(parenIndex + 1, addressStr.length() - parenIndex - 2);
+	trim(baseRegStr);
+	inst.src1 = parseRegister(baseRegStr);
+	
+	inst.src1 = ZERO_REG;
 }
 
 void parseBranchInstruction(const std::string &operandsStr, Instruction &inst, std::map<std::string, int> &labelAddresses)
@@ -95,6 +122,8 @@ void parseBranchInstruction(const std::string &operandsStr, Instruction &inst, s
 	std::string labelStr = operandsStr.substr(secondCommaIndex + 1);
 	trim(labelStr);
 	inst.imm = labelAddresses[labelStr];
+
+	inst.dest = ZERO_REG;
 }
 
 void parseITypeInstruction(const std::string &operandsStr, Instruction &inst)
@@ -116,6 +145,8 @@ void parseITypeInstruction(const std::string &operandsStr, Instruction &inst)
 	std::string immStr = operandsStr.substr(secondCommaIndex + 1);
 	trim(immStr);
 	inst.imm = std::stod(immStr);
+
+	inst.src2 = ZERO_REG;
 }
 
 void parseRTypeInstruction(const std::string &operandsStr, Instruction &inst)
@@ -250,8 +281,10 @@ void load_program(Simulator *sim, std::ifstream *program)
 		switch (opcode)
 		{
 		case 1: // fld
+			parseLoadInstruction(operandsStr, inst);
+			break;
 		case 2: // fsd
-			parseLoadStoreInstruction(operandsStr, inst);
+			parseStoreInstruction(operandsStr, inst);
 			break;
 		case 4: // addi
 			parseITypeInstruction(operandsStr, inst);

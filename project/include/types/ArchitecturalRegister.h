@@ -24,4 +24,6 @@ struct ArchitecturalRegister
     }
 };
 
+constexpr ArchitecturalRegister ZERO_REG{ArchitecturalRegister::X, 0};
+
 #endif // TYPES_ARCHITECTURALREGISTER_H
