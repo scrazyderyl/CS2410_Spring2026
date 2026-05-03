@@ -77,7 +77,7 @@ public:
 	RegisterFileEntry registerFile[NUM_PHYS_REG_INCLUDING_X0];
 	std::map<ArchitecturalRegister, int> registerMapTable;
 
-	BranchPredictor branchPredictor;
+	BranchPredictor *branchPredictor;
 	InstructionFetchUnit *instructionFetchUnit;
 	InstructionDecodeUnit *instructionDecodeUnit;
 	InstructionDispatcher *instructionDispatcher;

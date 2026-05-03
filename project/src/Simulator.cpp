@@ -272,7 +272,6 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 {
 	configuration = c;
 
-	branchPredictor = BranchPredictor();
 	instructionFetchUnit = new InstructionFetchUnit(*this);
 	instructionDecodeUnit = new InstructionDecodeUnit(*this);
 	instructionDispatcher = new InstructionDispatcher(*this);
@@ -300,10 +299,13 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 	instructionDispatcher->registerInstructionExecuter(10, branchUnit);
 
 	load_program(this, program);
+
+	branchPredictor = new BranchPredictor(programInstructions, dataMemory);
 }
 
 Simulator::~Simulator()
 {
+	delete branchPredictor;
 	delete instructionFetchUnit;
 	delete instructionDecodeUnit;
 	delete instructionDispatcher;
