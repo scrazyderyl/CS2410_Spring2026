@@ -35,6 +35,8 @@ inline const std::map<uint8_t, std::string> opCodeToInst = {
 
 struct Instruction
 {
+    static constexpr double MISPREDICTION_SENTINEL = 2410.0;
+
     uint8_t op;
     ArchitecturalRegister dest;
     ArchitecturalRegister src1;

@@ -3,17 +3,17 @@
 
 #include <stdint.h>
 
-InstructionDecodeUnit::InstructionDecodeUnit(Simulator &sim) : simulator(sim) {}
+InstructionDecodeUnit::InstructionDecodeUnit(Simulator &sim) : sim(sim) {}
 
 int InstructionDecodeUnit::allocatePhysicalRegister()
 {
-	if (simulator.freePhysicalRegisters.empty())
+	if (sim.freePhysicalRegisters.empty())
 	{
 		return -1;
 	}
 
-	int physReg = simulator.freePhysicalRegisters.front();
-	simulator.freePhysicalRegisters.pop();
+	int physReg = sim.freePhysicalRegisters.front();
+	sim.freePhysicalRegisters.pop();
 
 	return physReg;
 }
@@ -27,9 +27,9 @@ int InstructionDecodeUnit::resolveSourceRegister(const ArchitecturalRegister &re
 	}
 
 	// Return the existing mapping if it exists
-	auto existing = simulator.registerMapTable.find(reg);
+	auto existing = sim.registerMapTable.find(reg);
 
-	if (existing != simulator.registerMapTable.end())
+	if (existing != sim.registerMapTable.end())
 	{
 		return existing->second;
 	}
@@ -43,8 +43,8 @@ int InstructionDecodeUnit::resolveSourceRegister(const ArchitecturalRegister &re
 		return -1;
 	}
 
-	simulator.registerFile[physReg].value = simulator.architecturalRegisterFile.getValue(reg);
-	simulator.registerMapTable[reg] = physReg;
+	sim.registerFile[physReg].value = sim.architecturalRegisterFile.getValue(reg);
+	sim.registerMapTable[reg] = physReg;
 
 	return physReg;
 }
@@ -63,33 +63,36 @@ int InstructionDecodeUnit::renameDestinationRegister(const ArchitecturalRegister
 		return -1;
 	}
 
-	simulator.registerMapTable[reg] = physReg;
+	sim.registerMapTable[reg] = physReg;
 
 	return physReg;
 }
 
 void InstructionDecodeUnit::decode()
 {
-	const std::vector<Instruction> &fetchQueue = simulator.instructionFetchUnit.getFetchQueue();
+	const std::vector<Instruction> &fetchQueue = sim.instructionFetchUnit.getFetchQueue();
 
 	size_t i = 0;
 
-	for (; i < fetchQueue.size() && static_cast<int>(simulator.instructionQueue.size()) < simulator.configuration->NI; i++)
+	for (; i < fetchQueue.size() && static_cast<int>(sim.instructionQueue.size()) < sim.configuration->NI; i++)
 	{
 		const Instruction &inst = fetchQueue[i];
 
-		// Register fields that are not applicable should already be set X0
+		// If the last instruction in the fetch queue is a branch and the fetch unit is paused
+		// then this instruction caused a branch misprediction
+		bool causedMisprediction = inst.op == 10 && i == fetchQueue.size() - 1 && !sim.instructionFetchUnit.isFetchEnabled();
+
+		// Register references that are not applicable should already be set X0
 		DecodedInstruction decoded = {
 			.op = inst.op,
 			.dest = static_cast<uint8_t>(renameDestinationRegister(inst.dest)),
 			.src1 = static_cast<uint8_t>(resolveSourceRegister(inst.src1)),
 			.src2 = static_cast<uint8_t>(resolveSourceRegister(inst.src2)),
-			.imm = inst.imm,
-			.archDest = inst.dest
-		};
+			.imm = causedMisprediction ? Instruction::MISPREDICTION_SENTINEL : inst.imm,
+			.archDest = inst.dest};
 
-		simulator.instructionQueue.push_back(decoded);
+		sim.instructionQueue.push_back(decoded);
 	}
 
-	simulator.instructionFetchUnit.consumeFetchQueue(i);
+	sim.instructionFetchUnit.consumeFetchQueue(i);
 }

@@ -64,6 +64,11 @@ void InstructionFetchUnit::consumeFetchQueue(std::size_t count)
 	fetchQueue.erase(fetchQueue.begin(), fetchQueue.begin() + count);
 }
 
+bool InstructionFetchUnit::isFetchEnabled()
+{
+	return fetchEnabled;
+}
+
 void InstructionFetchUnit::setFetchEnabled(bool enabled)
 {
 	fetchEnabled = enabled;

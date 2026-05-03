@@ -15,6 +15,7 @@ public:
     static const int BTB_SIZE = 16;
     static const int BTB_INDEX_SHIFT = 4;
 
+    BranchPredictor() = default;
     BranchPredictor(const std::vector<Instruction> &programInstructions, const double *initialMemory);
 
     // Simple simulator to get the actual branch outcomes ahead of time

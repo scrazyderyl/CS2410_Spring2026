@@ -15,7 +15,10 @@ public:
     std::vector<Instruction> fetch();
 
     const std::vector<Instruction> &getFetchQueue();
+
     void consumeFetchQueue(std::size_t count);
+
+    bool isFetchEnabled();
 
     void setFetchEnabled(bool enabled);
 

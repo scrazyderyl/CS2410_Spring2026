@@ -15,7 +15,7 @@ public:
     void decode();
 
 private:
-    Simulator &simulator;
+    Simulator &sim;
 
     int allocatePhysicalRegister();
     int resolveSourceRegister(const ArchitecturalRegister &reg);

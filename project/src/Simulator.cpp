@@ -303,7 +303,7 @@ void load_program(Simulator *sim, std::ifstream *program)
 
 Simulator::Simulator(std::ifstream *program, Config *c)
 	: configuration(c),
-	  branchPredictor(programInstructions, dataMemory),
+	  branchPredictor(),
 	  instructionFetchUnit(*this),
 	  instructionDecodeUnit(*this),
 	  instructionDispatcher(*this),
@@ -333,6 +333,8 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 	instructionDispatcher.registerInstructionExecuter(10, &branchUnit);
 
 	load_program(this, program);
+
+	branchPredictor = BranchPredictor(programInstructions, dataMemory);
 }
 
 void Simulator::runUntilCompletion()
@@ -373,9 +375,13 @@ void Simulator::writeBackStage()
 		{
 			branchUnit.getResult(i);
 
-			// As mentioned in the notes for the branch predictor,
-			// the branch predictor doesn't need to be updated with the branch outcome
-			// This just notifies the fetch unit that the misprediction has been resolved
+			// Renable fetching if this was the instruction that caused a branch misprediction
+			if (rs.inst->imm == Instruction::MISPREDICTION_SENTINEL) {
+				instructionFetchUnit.setFetchEnabled(true);
+			}
+			
+			// Set reorder buffer entry as done
+			reorderBuffer.setResult(rs.ROBIndex, 0);
 		}
 	}
 
@@ -444,7 +450,8 @@ bool Simulator::isProgramComplete()
 	}
 
 	// Check reorder buffer is empty
-	if (!reorderBuffer.isEmpty()) {
+	if (!reorderBuffer.isEmpty())
+	{
 		return false;
 	}
 

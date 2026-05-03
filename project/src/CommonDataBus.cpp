@@ -56,7 +56,7 @@ void CommonDataBus::writeBack(Simulator &sim)
             // Send result to ROB
             sim.reorderBuffer.setResult(rs.ROBIndex, result);
 
-            // Update architected register file and forward to any waiting reservation stations
+            // Forward to any waiting reservation stations
             forwardToListeners(inst->dest, result);
 
             // Update other CDB listeners as needed for the instruction
