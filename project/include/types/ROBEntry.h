@@ -7,10 +7,11 @@
 
 struct ROBEntry
 {
-    // Could also include result value and instruction info for debugging but not necessary for execution
-    bool busy; // Technically this is also unnecessary since no flushing happens
-    bool done;
     ArchitecturalRegister dest;
+    // Which physical register dest is mapped to, if any
+    int physRegIndex = -1;
+    double result = 0.0;
+    bool done = false;
 };
 
 #endif // TYPES_ROBENTRY_H

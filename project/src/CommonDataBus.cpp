@@ -26,14 +26,22 @@ void CommonDataBus::writeBack(Simulator &sim)
     {
         for (size_t i = begin; i < end; ++i)
         {
-            if (!unit.reservationStations[i].isDone())
+            ReservationStation &rs = unit.reservationStations[i];
+
+            if (!rs.isDone())
             {
                 continue;
             }
 
-            const DecodedInstruction *inst = unit.reservationStations[i].inst;
+            const DecodedInstruction *inst = rs.inst;
             double result = unit.getResult(i);
+
+            // Send result to ROB
+            sim.reorderBuffer.setResult(rs.ROBIndex, result);
+
+            // Update other CDB listeners as needed for the instruction
             applyResult(*inst, result);
+            
             --slots;
 
             if (slots == 0)
