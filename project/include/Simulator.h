@@ -20,6 +20,7 @@ using namespace nlohmann::literals;
 #include "components/ReorderBuffer.h"
 #include "components/BranchPredictor.h"
 #include "components/CommonDataBus.h"
+#include "components/ArchitecturalRegisterFile.h"
 #include "components/functional_units/IntegerUnit.h"
 #include "components/functional_units/LoadStoreUnit.h"
 #include "components/functional_units/FPAddUnit.h"

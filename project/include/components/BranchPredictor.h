@@ -2,10 +2,8 @@
 #define COMPONENTS_BRANCHPREDICTOR_H
 
 #include <vector>
-#include <map>
 #include <types/BHTEntry.h>
 #include <types/BTBEntry.h>
-#include <types/ArchitecturalRegisterFile.h>
 #include <types/Instruction.h>
 
 // Since the fetcher is checking against the actual outcome, the branch predictor isn't really needed by the simulator

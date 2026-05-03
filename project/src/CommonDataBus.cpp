@@ -9,7 +9,7 @@ void CommonDataBus::writeBack(Simulator &sim)
     // Returns true if all slots have been used up
 
     // Forward a value to reservation stations waiting on a result written to a physical register
-    auto forwardToListeners = [&](uint8_t reg, double value, const DecodedInstruction *sourceInst)
+    auto forwardToListeners = [&](uint8_t reg, double value)
     {
         auto tryForward = [&](auto &unit)
         {
@@ -57,7 +57,7 @@ void CommonDataBus::writeBack(Simulator &sim)
             sim.reorderBuffer.setResult(rs.ROBIndex, result);
 
             // Update architected register file and forward to any waiting reservation stations
-            forwardToListeners(inst->dest, result, inst);
+            forwardToListeners(inst->dest, result);
 
             // Update other CDB listeners as needed for the instruction
             applyResult(*inst, result);
