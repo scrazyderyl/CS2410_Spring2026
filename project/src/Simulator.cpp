@@ -100,7 +100,7 @@ void parseStoreInstruction(const std::string &operandsStr, Instruction &inst)
 	trim(baseRegStr);
 	inst.src1 = parseRegister(baseRegStr);
 
-	inst.src1 = ZERO_REG;
+	inst.dest = ZERO_REG;
 }
 
 void parseBranchInstruction(const std::string &operandsStr, Instruction &inst, std::map<std::string, int> &labelAddresses)
