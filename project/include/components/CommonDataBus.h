@@ -6,7 +6,7 @@ class Simulator;
 class CommonDataBus
 {
 public:
-    static void writeBack(Simulator &simulator);
+    static void writeBack(Simulator &sim);
 };
 
 #endif // COMPONENTS_COMMONDATABUS_H
