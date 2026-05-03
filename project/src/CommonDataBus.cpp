@@ -5,21 +5,6 @@ void CommonDataBus::writeBack(Simulator &sim)
 {
     int slots = sim.configuration->NB;
 
-    // Handle branches
-    for (size_t i = 0; i < sim.branchUnit.reservationStations.size(); i++)
-    {
-        ReservationStation &rs = sim.branchUnit.reservationStations[i];
-
-        if (rs.isDone())
-        {
-            sim.branchUnit.getResult(i);
-
-            // As mentioned in the notes for the branch predictor,
-            // the branch predictor doesn't need to be updated with the branch outcome
-            // This just notifies the fetch unit that the misprediction has been resolved
-        }
-    }
-
     // Priority: Load, INT, FPadd, FPmult, FPdiv, Store
     // Returns true if all slots have been used up
     auto writeBackRange = [&](auto &unit, size_t begin, size_t end, auto &&applyResult) -> bool

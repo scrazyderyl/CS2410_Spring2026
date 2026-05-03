@@ -357,6 +357,22 @@ void Simulator::executeStage()
 
 void Simulator::writeBackStage()
 {
+    // Handle branches
+    for (size_t i = 0; i < branchUnit.reservationStations.size(); i++)
+    {
+        ReservationStation &rs = branchUnit.reservationStations[i];
+
+        if (rs.isDone())
+        {
+            branchUnit.getResult(i);
+
+            // As mentioned in the notes for the branch predictor,
+            // the branch predictor doesn't need to be updated with the branch outcome
+            // This just notifies the fetch unit that the misprediction has been resolved
+        }
+    }
+
+	// Handle reservation stations that need to push to the CDB
 	CommonDataBus::writeBack(*this);
 }
 
