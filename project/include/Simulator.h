@@ -82,7 +82,6 @@ public:
 	InstructionDecodeUnit *instructionDecodeUnit;
 	InstructionDispatcher *instructionDispatcher;
 	ReorderBuffer *reorderBuffer;
-	CommonDataBus *cdb;
 
 	// Functional units
 	IntegerUnit *intUnit;

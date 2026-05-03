@@ -6,12 +6,7 @@ class Simulator;
 class CommonDataBus
 {
 public:
-    CommonDataBus(Simulator &sim);
-
-    void writeBack();
-
-private:
-    Simulator &simulator;
+    static void writeBack(Simulator &simulator);
 };
 
 #endif // COMPONENTS_COMMONDATABUS_H

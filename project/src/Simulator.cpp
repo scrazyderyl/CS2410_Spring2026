@@ -276,7 +276,6 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 	instructionDecodeUnit = new InstructionDecodeUnit(*this);
 	instructionDispatcher = new InstructionDispatcher(*this);
 	reorderBuffer = new ReorderBuffer(*this);
-	cdb = new CommonDataBus(*this);
 
 	// Instantiate functional units and keep pointers in simulator
 	intUnit = new IntegerUnit(registerFile);
@@ -310,7 +309,6 @@ Simulator::~Simulator()
 	delete instructionDecodeUnit;
 	delete instructionDispatcher;
 	delete reorderBuffer;
-	delete cdb;
 
 	delete intUnit;
 	delete loadStoreUnit;
@@ -380,7 +378,7 @@ void Simulator::executeStage()
 
 void Simulator::writeBackStage()
 {
-	cdb->writeBack();
+	CommonDataBus::writeBack(*this);
 }
 
 void Simulator::dispatchStage()
