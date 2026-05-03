@@ -30,6 +30,7 @@ private:
 
     int head = 0;
     int tail = 0; // Actually points to the next slot to populate
+    int count = 0;
 };
 
 #endif // COMPONENTS_REORDERBUFFER_H
