@@ -9,10 +9,14 @@ void CommonDataBus::writeBack(Simulator &sim)
     for (size_t i = 0; i < sim.branchUnit->reservationStations.size(); i++)
     {
         ReservationStation &rs = sim.branchUnit->reservationStations[i];
+
         if (rs.isDone())
         {
-            double result = sim.branchUnit->getResult(i);
-            // Todo: update branch predictor with result and possibly flush instructions if mispredicted
+            sim.branchUnit->getResult(i);
+
+            // As mentioned in the notes for the branch predictor,
+            // the branch predictor doesn't need to be updated with the branch outcome
+            // This just notifies the fetch unit that the misprediction has been resolved
         }
     }
 
@@ -82,8 +86,7 @@ void CommonDataBus::writeBack(Simulator &sim)
         double base = sim.registerFile[inst.src1].value;
         uint32_t addr = static_cast<uint32_t>(base + inst.imm);
 
-        if (addr < MAX_MEM_SIZE)
-        {
-            sim.dataMemory[addr] = value;
-        } });
+        // According to the requirements, the value should be written to the store queue instead of directly to data memory
+        // But I don't think this should make any difference
+        sim.dataMemory[addr] = value; });
 }

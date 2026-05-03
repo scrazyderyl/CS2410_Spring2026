@@ -1,6 +1,8 @@
 #include "components/BranchPredictor.h"
 #include <types/ArchitecturalRegister.h>
 
+#include "Simulator.h"
+
 BranchPredictor::BranchPredictor(const std::vector<Instruction> &programInstructions, const double *initialMemory)
 {
     for (int i = 0; i < BTB_SIZE; ++i)
@@ -48,6 +50,14 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
     std::vector<bool> outcomes;
     ArchitecturalRegisterFile registerFile;
 
+    // Make a copy of data memory
+    double dataMemory[MAX_MEM_SIZE];
+    
+    for (int i = 0; i < MAX_MEM_SIZE; ++i)
+    {
+        dataMemory[i] = initialMemory[i];
+    }
+
     int instIndex = 0;
 
     while (instIndex < static_cast<int>(programInstructions.size()))
@@ -61,56 +71,74 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
 
         case 1: // fld
         {
-            double val1 = registerFile.getValue(inst.src1);
-            int addr = static_cast<int>(val1 + inst.imm);
-            registerFile.setValue(inst.dest, initialMemory[addr]);
+            double baseAddress = registerFile.getValue(inst.src1);
+            int addr = static_cast<int>(baseAddress + inst.imm);
+            registerFile.setValue(inst.dest, dataMemory[addr]);
             break;
         }
 
         case 2: // fsd
-            // Since the test cases don't actually have any RAW dependencies going through the data memory, the fsd instructions can be ignored for simplicity
+        {
+            double baseAddress = registerFile.getValue(inst.src1);
+            int addr = static_cast<int>(baseAddress + inst.imm);
+            dataMemory[addr] = registerFile.getValue(inst.dest);
             break;
+        }
 
         case 3: // add
+        {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
             registerFile.setValue(inst.dest, val1 + val2);
             break;
+        }
 
         case 4: // addi
+        {
             double val1 = registerFile.getValue(inst.src1);
             registerFile.setValue(inst.dest, val1 + inst.imm);
             break;
+        }
 
         case 5: // slt
+        {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
             registerFile.setValue(inst.dest, val1 < val2 ? 1.0 : 0.0);
             break;
+        }
 
         case 6: // fadd
+        {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
             registerFile.setValue(inst.dest, val1 + val2);
             break;
+        }
 
         case 7: // fsub
+        {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
             registerFile.setValue(inst.dest, val1 - val2);
             break;
+        }
 
         case 8: // fmul
+        {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
             registerFile.setValue(inst.dest, val1 * val2);
             break;
+        }
 
         case 9: // fdiv
+        {
             double val1 = registerFile.getValue(inst.src1);
             double val2 = registerFile.getValue(inst.src2);
             registerFile.setValue(inst.dest, val1 / val2);
             break;
+        }
 
         case 10: // bne
         {
