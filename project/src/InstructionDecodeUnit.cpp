@@ -82,15 +82,16 @@ void InstructionDecodeUnit::decode()
 		// then this instruction caused a branch misprediction
 		bool causedMisprediction = inst.op == Instruction::BNE && i == fetchQueue.size() - 1 && !sim.instructionFetchUnit.isFetchEnabled();
 
-		// Register references that are not applicable should already be set X0
-		DecodedInstruction decoded = {
-			.address = inst.address,
-			.op = inst.op,
-			.dest = static_cast<uint8_t>(renameDestinationRegister(inst.dest)),
-			.src1 = static_cast<uint8_t>(resolveSourceRegister(inst.src1)),
-			.src2 = static_cast<uint8_t>(resolveSourceRegister(inst.src2)),
-			.imm = causedMisprediction ? Instruction::MISPREDICTION_SENTINEL : inst.imm,
-			.archDest = inst.dest};
+		// Resolve sources against the previous architectural mapping before
+		// assigning the new destination physical register for this instruction.
+		DecodedInstruction decoded;
+		decoded.address = inst.address;
+		decoded.op = inst.op;
+		decoded.src1 = static_cast<uint8_t>(resolveSourceRegister(inst.src1));
+		decoded.src2 = static_cast<uint8_t>(resolveSourceRegister(inst.src2));
+		decoded.dest = static_cast<uint8_t>(renameDestinationRegister(inst.dest));
+		decoded.imm = causedMisprediction ? Instruction::MISPREDICTION_SENTINEL : inst.imm;
+		decoded.archDest = inst.dest;
 
 		sim.instructionQueue.push_back(decoded);
 	}
