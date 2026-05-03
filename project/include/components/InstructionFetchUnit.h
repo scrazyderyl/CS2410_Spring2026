@@ -1,6 +1,10 @@
 #ifndef COMPONENTS_INSTRUCTIONFETCHUNIT_H
 #define COMPONENTS_INSTRUCTIONFETCHUNIT_H
 
+#include <vector>
+
+#include "types/Instruction.h"
+
 class Simulator;
 
 class InstructionFetchUnit
@@ -8,11 +12,14 @@ class InstructionFetchUnit
 public:
     InstructionFetchUnit(Simulator &sim);
 
-    // Fetch up to NF instructions from instruction cache
-    void fetch();
+    std::vector<Instruction> fetch(uint pc);
+
+    void setFetchEnabled(bool enabled);
 
 private:
-    Simulator &simulator;
+    Simulator &sim;
+    std::vector<Instruction> fetchQueue;
+    bool fetchEnabled = true;
 };
 
 #endif // COMPONENTS_INSTRUCTIONFETCHUNIT_H

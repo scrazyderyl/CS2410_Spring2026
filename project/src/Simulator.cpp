@@ -372,7 +372,7 @@ void Simulator::decodeStage()
 
 void Simulator::fetchStage()
 {
-	instructionFetchUnit.fetch();
+	instructionFetchUnit.fetch(pc);
 }
 
 void Simulator::printStats()

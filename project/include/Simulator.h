@@ -68,6 +68,8 @@ public:
 	 * @brief Instruction cache
 	 */
 	std::vector<Instruction> programInstructions;
+
+	uint pc;
 	
 	ArchitecturalRegisterFile architecturalRegisterFile;
 
