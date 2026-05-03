@@ -77,7 +77,7 @@ std::vector<bool> BranchPredictor::simulateBranches(const std::vector<Instructio
         {
             double baseAddress = registerFile.getValue(inst.src1);
             int addr = static_cast<int>(baseAddress + inst.imm);
-            dataMemory[addr] = registerFile.getValue(inst.dest);
+            dataMemory[addr] = registerFile.getValue(inst.src2);
             break;
         }
 
