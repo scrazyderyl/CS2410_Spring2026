@@ -1,16 +1,16 @@
 #include "components/functional_units/FPAddUnit.h"
 
-FPAddUnit::FPAddUnit(RegisterFileEntry *regFile)
-    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), registerFile(regFile)
+FPAddUnit::FPAddUnit()
+    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED)
 {
 }
 
-double FPAddUnit::calculateResult(const DecodedInstruction &inst)
+double FPAddUnit::calculateResult(const ReservationStation &rs)
 {
-    double v1 = registerFile[inst.src1].value;
-    double v2 = registerFile[inst.src2].value;
+    double v1 = rs.src1_value;
+    double v2 = rs.src2_value;
 
-    switch (inst.op)
+    switch (rs.inst->op)
     {
     case 6: // fadd
         return v1 + v2;

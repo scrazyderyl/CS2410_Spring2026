@@ -3,7 +3,6 @@
 
 #include "components/FunctionalUnit.h"
 #include "types/DecodedInstruction.h"
-#include "types/RegisterFileEntry.h"
 
 #include <vector>
 
@@ -14,12 +13,10 @@ public:
     static constexpr int LATENCY = 3;
     static constexpr bool PIPELINED = true;
 
-    FPAddUnit(RegisterFileEntry *regFile);
+    FPAddUnit();
 
 private:
-    RegisterFileEntry *registerFile;
-
-    virtual double calculateResult(const DecodedInstruction &inst) override;
+    virtual double calculateResult(const ReservationStation &rs) override;
 };
 
 #endif // COMPONENTS_FPADUNIT_H

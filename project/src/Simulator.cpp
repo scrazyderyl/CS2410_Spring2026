@@ -275,12 +275,12 @@ Simulator::Simulator(std::ifstream *program, Config *c)
 	  instructionDecodeUnit(*this),
 	  instructionDispatcher(*this),
 	  reorderBuffer(*this),
-	  intUnit(registerFile),
-	  loadStoreUnit(dataMemory, registerFile),
-	  fpAddUnit(registerFile),
-	  fpMultUnit(registerFile),
-	  fpDivUnit(registerFile),
-	  branchUnit(registerFile)
+	  intUnit(),
+	  loadStoreUnit(dataMemory),
+	  fpAddUnit(),
+	  fpMultUnit(),
+	  fpDivUnit(),
+	  branchUnit()
 {
 	instructionDispatcher.registerInstructionExecuter(0, nullptr);
 	instructionDispatcher.registerInstructionExecuter(1, &loadStoreUnit);

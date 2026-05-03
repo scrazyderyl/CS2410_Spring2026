@@ -1,14 +1,14 @@
 #include "components/functional_units/FPMultUnit.h"
 
-FPMultUnit::FPMultUnit(RegisterFileEntry *regFile)
-    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), registerFile(regFile)
+FPMultUnit::FPMultUnit()
+    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED)
 {
 }
 
-double FPMultUnit::calculateResult(const DecodedInstruction &inst)
+double FPMultUnit::calculateResult(const ReservationStation &rs)
 {
-    double v1 = registerFile[inst.src1].value;
-    double v2 = registerFile[inst.src2].value;
+    double v1 = rs.src1_value;
+    double v2 = rs.src2_value;
     
     return v1 * v2;
 }

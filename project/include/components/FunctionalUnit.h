@@ -42,7 +42,7 @@ public:
 private:
     // Do the actual result calculation for the instruction
     // This method also does other operations associated with the instruction
-    virtual double calculateResult(const DecodedInstruction &inst) = 0;
+    virtual double calculateResult(const ReservationStation &rs) = 0;
 };
 
 #endif // COMPONENTS_FUNCTIONALUNIT_H

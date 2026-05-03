@@ -3,7 +3,6 @@
 
 #include "components/FunctionalUnit.h"
 #include "types/DecodedInstruction.h"
-#include "types/RegisterFileEntry.h"
 
 #include <vector>
 
@@ -16,15 +15,14 @@ public:
     static constexpr int LATENCY = 1;
     static constexpr bool PIPELINED = true;
 
-    LoadStoreUnit(double *dataMemoryPtr, RegisterFileEntry *regFile);
+    LoadStoreUnit(double *dataMemoryPtr);
 
     virtual bool reserve(const DecodedInstruction &inst, size_t ROBIndex) override;
 
 private:
     double *dataMemory;
-    RegisterFileEntry *registerFile;
 
-    virtual double calculateResult(const DecodedInstruction &inst) override;
+    virtual double calculateResult(const ReservationStation &rs) override;
 };
 
 #endif // COMPONENTS_LOADSTOREUNIT_H

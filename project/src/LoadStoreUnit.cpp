@@ -1,7 +1,7 @@
 #include "components/functional_units/LoadStoreUnit.h"
 
-LoadStoreUnit::LoadStoreUnit(double *dataMemoryPtr, RegisterFileEntry *regFile)
-    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), dataMemory(dataMemoryPtr), registerFile(regFile)
+LoadStoreUnit::LoadStoreUnit(double *dataMemoryPtr)
+    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), dataMemory(dataMemoryPtr)
 {
 }
 
@@ -42,17 +42,17 @@ bool LoadStoreUnit::reserve(const DecodedInstruction &inst, size_t ROBIndex)
     return false;
 }
 
-double LoadStoreUnit::calculateResult(const DecodedInstruction &inst)
+double LoadStoreUnit::calculateResult(const ReservationStation &rs)
 {
-    double base = registerFile[inst.src1].value;
-    int addr = (uint32_t)(base + inst.imm);
+    double base = rs.src1_value;
+    int addr = (uint32_t)(base + rs.inst->imm);
 
-    switch (inst.op)
+    switch (rs.inst->op)
     {
     case 1: // fld
         return dataMemory[addr];
     case 2: // fsd
-        return registerFile[inst.src2].value;
+        return rs.src2_value;
     default:
         return 0;
     }

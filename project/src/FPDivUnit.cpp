@@ -1,20 +1,20 @@
 #include "components/functional_units/FPDivUnit.h"
 
-FPDivUnit::FPDivUnit(RegisterFileEntry *regFile)
-    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), registerFile(regFile)
+FPDivUnit::FPDivUnit()
+    : FunctionalUnit(NUM_RS, LATENCY, PIPELINED)
 {
 }
 
-double FPDivUnit::calculateResult(const DecodedInstruction &inst)
+double FPDivUnit::calculateResult(const ReservationStation &rs)
 {
-    double v2 = registerFile[inst.src2].value;
+    double v2 = rs.src2_value;
 
     if (v2 == 0)
     {
         return 0;
     }
 
-    double v1 = registerFile[inst.src1].value;
+    double v1 = rs.src1_value;
 
     return v1 / v2;
 }
