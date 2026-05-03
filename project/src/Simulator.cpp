@@ -340,36 +340,16 @@ void Simulator::runUntilCompletion()
 
 bool Simulator::runOneCycle()
 {
-	// Commit stage: Commit up to NC instructions from the ROB
-	// TODO: Implement commit stage
 	commitStage();
-
-	// Execute stage: Execute one instruction from each functional unit
-	// TODO: Implement execute stage
-	executeStage();
-
-	// Write back stage: Write results to CDB (up to NB results)
-	// (writeback happens after execute to simulate falling-edge writeback)
 	writeBackStage();
-	
-	// Dispatch stage: Dispatch up to NW instructions from instruction queue to reservation stations
-	// TODO: Implement dispatch stage
-	dispatchStage();
-	
-	// Decode stage: Decode fetched instructions and store in instruction queue
-	// TODO: Implement decode stage
+	executeStage();
+	dispatch();
 	decodeStage();
-	
-	// Fetch stage: Fetch up to NF instructions from instruction cache (last, so new instructions don't execute this cycle)
-	// TODO: Implement fetch stage
 	fetchStage();
 	
-	// Increment cycle counter
 	cc++;
 	
 	// Check if program is complete
-	// TODO: Implement program completion check
-	// For now, return false (program complete) to avoid infinite loop
 	return false;
 }
 
