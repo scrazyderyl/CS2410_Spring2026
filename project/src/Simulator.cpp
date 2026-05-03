@@ -257,6 +257,7 @@ void load_program(Simulator *sim, std::ifstream *program)
 		else
 		{
 			// Store unprocessed assembly instruction
+			trim(line);
 			programInstructions.push_back(line);
 		}
 	}
