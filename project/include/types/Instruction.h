@@ -66,21 +66,22 @@ struct Instruction
         
         switch (op)
         {
-        case 0: // nop
+        case NOP: // nop
             return "nop";
-        case 1: // fld
-        case 2: // fsd
+        case FLD: // fld
             return instStr + dest.toString() + ", " + std::to_string((int)imm) + "(" + src1.toString() + ")";
-        case 3: // add
-        case 5: // slt
-        case 6: // fadd
-        case 7: // fsub
-        case 8: // fmul
-        case 9: // fdiv
+        case FSD: // fsd
+            return instStr + src2.toString() + ", " + std::to_string((int)imm) + "(" + src1.toString() + ")";
+        case ADD: // add
+        case SLT: // slt
+        case FADD: // fadd
+        case FSUB: // fsub
+        case FMUL: // fmul
+        case FDIV: // fdiv
             return instStr + dest.toString() + ", " + src1.toString() + ", " + src2.toString();
-        case 4: // addi
+        case ADDI: // addi
             return instStr + dest.toString() + ", " + src1.toString() + ", " + std::to_string((int)imm);
-        case 10: // bne
+        case BNE: // bne
             return instStr + src1.toString() + ", " + src2.toString() + ", " + std::to_string((int)imm);
         default:
             return "Invalid op code";
