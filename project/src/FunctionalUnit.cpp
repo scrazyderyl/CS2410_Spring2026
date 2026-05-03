@@ -6,23 +6,22 @@ void FunctionalUnit::execute()
 {
     if (pipelined)
     {
-        // See if there's an reservation station that had already started executing
+        // Start at most one ready reservation station each cycle
+        for (ReservationStation &rs : reservationStations)
+        {
+            if (rs.isReadyToExecute())
+            {
+                rs.cycles_left = latency;
+                break;
+            }
+        }
+
+        // Advance every instruction that is already executing
         for (ReservationStation &rs : reservationStations)
         {
             if (rs.isExecuting())
             {
                 rs.cycles_left--;
-                return;
-            }
-        }
-
-        // Otherwise find a reservation station that is ready to start executing
-        for (ReservationStation &rs : reservationStations)
-        {
-            if (rs.busy)
-            {
-                rs.cycles_left = latency;
-                break;
             }
         }
     }

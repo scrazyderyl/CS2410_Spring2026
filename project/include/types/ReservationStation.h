@@ -40,6 +40,10 @@ struct ReservationStation
         cycles_left = -1;
         inst = decodedInst;
         ROBIndex = robIndex;
+        src1_ready = false;
+        src2_ready = false;
+        src1_value = 0.0;
+        src2_value = 0.0;
     }
 
     inline void setSource1Value(double value)
