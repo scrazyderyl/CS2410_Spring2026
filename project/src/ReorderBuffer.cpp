@@ -32,6 +32,27 @@ int ReorderBuffer::add(ArchitecturalRegister dest, int physRegIndex)
     return index;
 }
 
+bool ReorderBuffer::isRegisterReady(int physRegIndex)
+{
+    // Zero register is always ready
+    if (physRegIndex == NUM_PHYS_REG)
+    {
+        return true;
+    }
+
+    // Search ROB for physical register and check if it's done
+    for (int i = head; i != tail; i = (i + 1) % sim.configuration->NR)
+    {
+        if (buffer[i].physRegIndex == physRegIndex)
+        {
+            return buffer[i].done;
+        }
+    }
+
+    // This means it's a source register whose value is directly loaded in from the architectural register file
+    return true;
+}
+
 void ReorderBuffer::setResult(int index, double result)
 {
     buffer[index].result = result;

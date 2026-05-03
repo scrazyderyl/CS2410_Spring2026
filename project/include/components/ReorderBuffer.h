@@ -15,6 +15,9 @@ public:
     // Returns index of new entry, or -1 if ROB is full
     int add(ArchitecturalRegister dest, int physRegIndex = -1);
 
+    // Check if the result of the physical register is still pending
+    bool isRegisterReady(int physRegIndex);
+
     void setResult(int index, double result);
 
     void commit();
