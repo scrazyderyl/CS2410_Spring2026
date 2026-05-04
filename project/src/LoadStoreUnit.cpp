@@ -44,7 +44,7 @@ ReservationStation* LoadStoreUnit::getAvailableRS(const DecodedInstruction &inst
 double LoadStoreUnit::calculateResult(const ReservationStation &rs)
 {
     double base = rs.src1_value;
-    int addr = (uint32_t)(base + rs.inst.imm);
+    int addr = static_cast<int>(base + rs.inst.imm);
 
     switch (rs.inst.op)
     {
