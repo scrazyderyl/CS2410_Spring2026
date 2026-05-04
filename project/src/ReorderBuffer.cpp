@@ -22,9 +22,8 @@ int ReorderBuffer::add(ArchitecturalRegister dest, int physRegIndex, int oldPhys
         .physRegIndex = physRegIndex,
         .oldPhysRegIndex = oldPhysRegIndex,
         .result = 0.0,
-        .done = false
-    };
-    
+        .done = false};
+
     buffer[index] = newEntry;
 
     // Update tail
@@ -43,12 +42,16 @@ bool ReorderBuffer::isRegisterReady(int physRegIndex)
     }
 
     // Search ROB for physical register and check if it's done
-    for (int i = head; i != tail; i = (i + 1) % sim.configuration->NR)
+    int i = head;
+    
+    for (int c = 0; c < count; c++)
     {
         if (buffer[i].physRegIndex == physRegIndex)
         {
             return buffer[i].done;
         }
+
+        i = (i + 1) % sim.configuration->NR;
     }
 
     // This means it's a source register whose value is directly loaded in from the architectural register file
@@ -70,10 +73,10 @@ void ReorderBuffer::commit()
 {
     int commitCount = 0;
 
-    while (head != tail && commitCount < sim.configuration->NC && buffer[head].done)
+    while (count > 0 && commitCount < sim.configuration->NC && buffer[head].done)
     {
         ROBEntry &entry = buffer[head];
-        
+
         // Instructions that don't write to a destination register will have dest set to X0 which is read-only
         // For other instructions need to write result to architectural register file and add back to physical register free list
         if (entry.dest.type != ArchitecturalRegister::X || entry.dest.num != 0)
