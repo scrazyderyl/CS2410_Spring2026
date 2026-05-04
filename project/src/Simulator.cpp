@@ -358,6 +358,13 @@ bool Simulator::runOneCycle()
 
 	cc++;
 
+	// Terminate on infinite loop
+	// None of the test cases should run this long
+	if (cc > 500)
+	{
+		return false;
+	}
+
 	return !isProgramComplete();
 }
 
