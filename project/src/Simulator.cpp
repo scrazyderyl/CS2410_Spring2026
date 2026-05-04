@@ -350,11 +350,11 @@ void Simulator::runUntilCompletion()
 bool Simulator::runOneCycle()
 {
 	commitStage();
+	dispatch();
 	fetchStage();
 	decodeStage();
 	executeStage();
 	writeBackStage();
-	dispatch();
 
 	cc++;
 
