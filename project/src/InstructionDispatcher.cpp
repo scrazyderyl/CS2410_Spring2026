@@ -1,7 +1,7 @@
-#include "components/InstructionDispatcher.h"
+#include "InstructionDispatcher.h"
 #include "Simulator.h"
 
-#include "components/functional_units/LoadStoreUnit.h"
+#include "LoadStoreUnit.h"
 
 #include <algorithm>
 

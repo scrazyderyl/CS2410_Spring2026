@@ -1,5 +1,5 @@
-#include "components/BranchPredictor.h"
-#include <types/ArchitecturalRegister.h>
+#include "BranchPredictor.h"
+#include <ArchitecturalRegister.h>
 
 #include "Simulator.h"
 

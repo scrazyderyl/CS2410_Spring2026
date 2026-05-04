@@ -1,4 +1,4 @@
-#include "components/InstructionFetchUnit.h"
+#include "InstructionFetchUnit.h"
 #include "Simulator.h"
 
 InstructionFetchUnit::InstructionFetchUnit(Simulator &sim) : sim(sim) {}

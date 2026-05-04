@@ -3,7 +3,7 @@
 
 #include <cstdint>
 
-#include <types/ArchitecturalRegister.h>
+#include <ArchitecturalRegister.h>
 
 struct DecodedInstruction
 {

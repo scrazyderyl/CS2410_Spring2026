@@ -3,7 +3,7 @@
 
 #include <vector>
 
-#include "types/Instruction.h"
+#include "Instruction.h"
 
 class Simulator;
 

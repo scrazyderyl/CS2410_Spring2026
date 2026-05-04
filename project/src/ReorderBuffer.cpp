@@ -1,4 +1,4 @@
-#include "components/ReorderBuffer.h"
+#include "ReorderBuffer.h"
 #include "Simulator.h"
 
 ReorderBuffer::ReorderBuffer(Simulator &sim) : sim(sim)

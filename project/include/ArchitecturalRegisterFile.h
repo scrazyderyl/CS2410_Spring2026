@@ -1,7 +1,7 @@
 #ifndef TYPES_ARCHITECTURALREGISTERFILE_H
 #define TYPES_ARCHITECTURALREGISTERFILE_H
 
-#include <types/ArchitecturalRegister.h>
+#include <ArchitecturalRegister.h>
 
 class ArchitecturalRegisterFile
 {

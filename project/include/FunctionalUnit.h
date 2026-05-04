@@ -1,8 +1,8 @@
 #ifndef COMPONENTS_FUNCTIONALUNIT_H
 #define COMPONENTS_FUNCTIONALUNIT_H
 
-#include "types/DecodedInstruction.h"
-#include "types/ReservationStation.h"
+#include "DecodedInstruction.h"
+#include "ReservationStation.h"
 
 #include <vector>
 

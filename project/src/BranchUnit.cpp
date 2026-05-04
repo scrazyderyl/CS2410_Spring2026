@@ -1,4 +1,4 @@
-#include "components/functional_units/BranchUnit.h"
+#include "BranchUnit.h"
 
 BranchUnit::BranchUnit()
     : FunctionalUnit(NUM_RS, LATENCY, PIPELINED)

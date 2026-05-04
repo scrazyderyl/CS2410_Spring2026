@@ -4,9 +4,9 @@
 #define NUM_INSTRUCTIONS 11
 
 #include <cstdint>
-#include "types/DecodedInstruction.h"
-#include "components/FunctionalUnit.h"
-#include "components/InstructionDecodeUnit.h"
+#include "DecodedInstruction.h"
+#include "FunctionalUnit.h"
+#include "InstructionDecodeUnit.h"
 
 #include <vector>
 

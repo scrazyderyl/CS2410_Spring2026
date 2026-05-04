@@ -1,4 +1,4 @@
-#include "components/functional_units/FPDivUnit.h"
+#include "FPDivUnit.h"
 
 FPDivUnit::FPDivUnit()
     : FunctionalUnit(NUM_RS, LATENCY, PIPELINED)

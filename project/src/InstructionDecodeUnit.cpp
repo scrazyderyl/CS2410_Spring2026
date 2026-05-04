@@ -1,4 +1,4 @@
-#include "components/InstructionDecodeUnit.h"
+#include "InstructionDecodeUnit.h"
 #include "Simulator.h"
 
 #include <stdint.h>

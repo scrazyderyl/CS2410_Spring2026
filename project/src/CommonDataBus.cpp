@@ -1,4 +1,4 @@
-#include "components/CommonDataBus.h"
+#include "CommonDataBus.h"
 #include "Simulator.h"
 
 void CommonDataBus::writeBack(Simulator &sim)

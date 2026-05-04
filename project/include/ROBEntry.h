@@ -1,7 +1,7 @@
 #ifndef TYPES_ROBENTRY_H
 #define TYPES_ROBENTRY_H
 
-#include <types/ArchitecturalRegister.h>
+#include <ArchitecturalRegister.h>
 
 #include <cstdint>
 

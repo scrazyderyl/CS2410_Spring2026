@@ -1,7 +1,7 @@
 #ifndef COMPONENTS_REORDERBUFFER_H
 #define COMPONENTS_REORDERBUFFER_H
 
-#include <types/ROBEntry.h>
+#include <ROBEntry.h>
 #include <vector>
 #include <cstdint>
 

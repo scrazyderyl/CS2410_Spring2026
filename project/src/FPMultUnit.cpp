@@ -1,4 +1,4 @@
-#include "components/functional_units/FPMultUnit.h"
+#include "FPMultUnit.h"
 
 FPMultUnit::FPMultUnit()
     : FunctionalUnit(NUM_RS, LATENCY, PIPELINED)

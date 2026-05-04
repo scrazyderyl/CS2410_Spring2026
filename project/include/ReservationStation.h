@@ -4,7 +4,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "types/DecodedInstruction.h"
+#include "DecodedInstruction.h"
 
 struct ReservationStation
 {

@@ -1,5 +1,5 @@
-#include "components/functional_units/LoadStoreUnit.h"
-#include "types/Instruction.h"
+#include "LoadStoreUnit.h"
+#include "Instruction.h"
 
 LoadStoreUnit::LoadStoreUnit(double *dataMemoryPtr)
     : FunctionalUnit(NUM_RS, LATENCY, PIPELINED), dataMemory(dataMemoryPtr)

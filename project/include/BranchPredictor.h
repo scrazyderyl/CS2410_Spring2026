@@ -2,9 +2,9 @@
 #define COMPONENTS_BRANCHPREDICTOR_H
 
 #include <vector>
-#include <types/BHTEntry.h>
-#include <types/BTBEntry.h>
-#include <types/Instruction.h>
+#include <BHTEntry.h>
+#include <BTBEntry.h>
+#include <Instruction.h>
 
 // Since the fetcher is checking against the actual outcome, the branch predictor isn't really needed by the simulator
 // It just needs the outcome and can derive the target address from the instruction itself

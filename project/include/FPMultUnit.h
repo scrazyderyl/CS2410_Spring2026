@@ -1,8 +1,8 @@
 #ifndef COMPONENTS_FPMULTUNIT_H
 #define COMPONENTS_FPMULTUNIT_H
 
-#include "components/FunctionalUnit.h"
-#include "types/DecodedInstruction.h"
+#include "FunctionalUnit.h"
+#include "DecodedInstruction.h"
 
 #include <vector>
 

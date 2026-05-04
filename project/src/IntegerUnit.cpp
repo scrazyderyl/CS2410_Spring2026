@@ -1,4 +1,4 @@
-#include "components/functional_units/IntegerUnit.h"
+#include "IntegerUnit.h"
 
 IntegerUnit::IntegerUnit()
     : FunctionalUnit(NUM_RS, LATENCY, PIPELINED)

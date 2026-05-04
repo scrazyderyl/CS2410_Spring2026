@@ -5,7 +5,7 @@
 #include <cstdint>
 #include <map>
 
-#include <types/ArchitecturalRegister.h>
+#include <ArchitecturalRegister.h>
 
 inline const std::map<std::string, uint8_t> instToOpCode = {
     {"nop", 0},

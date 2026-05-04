@@ -1,4 +1,4 @@
-#include "components/functional_units/FPAddUnit.h"
+#include "FPAddUnit.h"
 
 FPAddUnit::FPAddUnit()
     : FunctionalUnit(NUM_RS, LATENCY, PIPELINED)
